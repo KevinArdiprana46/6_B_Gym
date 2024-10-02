@@ -11,11 +11,13 @@ Padding inputForm(Function(String?) validasi,
     child: SizedBox(
         width: 350,
         child: TextFormField(
+
           validator: (value) => validasi(value),
           autofocus: true,
           controller: controller,
           obscureText: password,
           decoration: InputDecoration(
+
               hintText: hintTxt,
               border: const OutlineInputBorder(),
               helperText: helperTxt,
@@ -23,3 +25,4 @@ Padding inputForm(Function(String?) validasi,
         )),
   );
 }
+
