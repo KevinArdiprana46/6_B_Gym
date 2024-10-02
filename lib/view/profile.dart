@@ -32,9 +32,9 @@ class MyWidget extends StatelessWidget {
                     ),
                     kSizeBox2,
                     Container(
-                      child: const Column(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text('Aku Manusia Sehat'),
                           Text('Sehat'),
                         ],
@@ -49,26 +49,26 @@ class MyWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
-                      child: const Column(
+                      child: Column(
                         children: [
                           Text('Berat Badan', style: kTextStyle3),
-                          Text('80', style: kTextStyle3),
+                          const Text('80', style: kTextStyle3),
                         ],
                       ),
                     ),
                     Container(
-                      child: const Column(
+                      child: Column(
                         children: [
                           Text('Tinggi Badan', style: kTextStyle3),
-                          Text('180', style: kTextStyle3),
+                          const Text('180', style: kTextStyle3),
                         ],
                       ),
                     ),
                     Container(
-                      child: const Column(
+                      child: Column(
                         children: [
                           Text('Riwayat Sakit', style: kTextStyle3),
-                          Text('-', style: kTextStyle3),
+                          const Text('-', style: kTextStyle3),
                         ],
                       ),
                     ),

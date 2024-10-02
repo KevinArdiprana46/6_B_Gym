@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/component/form_component.dart';
 import 'package:tubes_pbp_6/view/login.dart';
 
+
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
@@ -21,7 +22,8 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
+
           image: DecorationImage(
             image: NetworkImage('https://st4.depositphotos.com/18672748/21457/v/450/depositphotos_214578124-stock-illustration-gym-icon-vector-isolated-white.jpg'),
             fit: BoxFit.scaleDown,
@@ -112,6 +114,6 @@ class _RegisterViewState extends State<RegisterView> {
           ),
         ),
       ),
-      );
+    );
   }
 }

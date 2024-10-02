@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:tubes_pbp_6/view/login.dart';
 
-// import 'package:tubes_pbp_6/view/profile.dart';
 
 
 void main() {
