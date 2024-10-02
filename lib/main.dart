@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:tubes_pbp_6/view/login.dart';
 
+import 'package:tubes_pbp_6/profile.dart';
+
+
 void main() {
-  runApp(const MainApp());
+  runApp(MaterialApp(
+    home: MyWidget(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -11,7 +17,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+
       home: LoginView(),
+
     );
   }
 }
