@@ -6,7 +6,7 @@ import 'package:tubes_pbp_6/view/login.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: MyWidget(),
+    home: LoginView(),
   ));
 }
 
