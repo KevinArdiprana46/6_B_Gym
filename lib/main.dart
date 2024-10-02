@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/profile.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MaterialApp(
+    home: MyWidget(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -13,6 +16,7 @@ class MainApp extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: Text('Hai');
+
         ),
       ),
     );
