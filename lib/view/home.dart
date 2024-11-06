@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:6_b_gym/view/view_list.dart';
+import "package:tubes_pbp_6/view/view_list.dart";
 
 class BerandaView extends StatefulWidget {
   const BerandaView({super.key});
