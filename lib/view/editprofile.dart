@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tubes_pbp_6/view/camera.dart';
 import 'package:tubes_pbp_6/view/view_list.dart';
 import 'package:tubes_pbp_6/view/home.dart';
@@ -14,6 +15,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   String? _profileImagePath;
   int _selectedIndex = 4;
+  final ImagePicker _picker = ImagePicker();
 
   void _onItemTapped(int index) {
     Navigator.pushReplacement(
@@ -22,6 +24,43 @@ class _EditProfileState extends State<EditProfile> {
         builder: (context) => BerandaView(initialIndex: index),
       ),
     );
+  }
+
+  Future<void> _showImageSourceActionSheet() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('Take Photo'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library),
+              title: Text('Choose from Gallery'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? image = await _picker.pickImage(source: source);
+    if (image != null) {
+      setState(() {
+        _profileImagePath = image.path;
+      });
+    }
   }
 
   @override
@@ -80,17 +119,7 @@ class _EditProfileState extends State<EditProfile> {
                               icon: const Icon(Icons.camera_alt,
                                   color: Color(0xFF5565E8)),
                               onPressed: () async {
-                                final imagePath = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CameraView(),
-                                  ),
-                                );
-                                if (imagePath != null) {
-                                  setState(() {
-                                    _profileImagePath = imagePath;
-                                  });
-                                }
+                                await _showImageSourceActionSheet();
                               },
                               iconSize: 18,
                             ),
@@ -142,7 +171,6 @@ class _EditProfileState extends State<EditProfile> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        // Kembali ke halaman profile
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -205,7 +233,6 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  // Helper method for creating Text Fields
   Widget _buildTextField(String label,
       {String? initialValue, IconData? icon, bool obscureText = false}) {
     return TextField(
