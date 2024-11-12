@@ -22,7 +22,7 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
 
           image: DecorationImage(
             image: NetworkImage('https://st4.depositphotos.com/18672748/21457/v/450/depositphotos_214578124-stock-illustration-gym-icon-vector-isolated-white.jpg'),
