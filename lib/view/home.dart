@@ -6,8 +6,7 @@ import 'package:tubes_pbp_6/view/editprofile.dart';
 class BerandaView extends StatefulWidget {
   final int initialIndex;
 
-  const BerandaView(
-      {super.key, this.initialIndex = 0}); // Tambahkan parameter initialIndex
+  const BerandaView({super.key, this.initialIndex = 0});
 
   @override
   State<BerandaView> createState() => _HomeViewState();
@@ -19,7 +18,7 @@ class _HomeViewState extends State<BerandaView> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initialIndex; // Inisialisasi selectedIndex
+    _selectedIndex = widget.initialIndex;
   }
 
   void _onItemTapped(int index) {
@@ -71,7 +70,7 @@ class _HomeViewState extends State<BerandaView> {
         ],
       ),
     ),
-    EditProfile(), // Tambahkan halaman EditProfile sebagai opsi dalam _widgetOptions
+    EditProfile(),
   ];
 
   @override
@@ -82,7 +81,7 @@ class _HomeViewState extends State<BerandaView> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.grey,
         unselectedItemColor: Colors.white,
-        backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+        backgroundColor: Color(0xFF5565E8),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

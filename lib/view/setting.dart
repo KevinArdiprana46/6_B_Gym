@@ -7,7 +7,7 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+        backgroundColor: Color(0xFF5565E8),
         title: const Text('Setting', style: TextStyle(fontSize: 20)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -35,7 +35,7 @@ class Settings extends StatelessWidget {
         currentIndex: 4,
         selectedItemColor: Colors.grey,
         unselectedItemColor: Colors.white,
-        backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+        backgroundColor: Color(0xFF5565E8),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -62,7 +62,6 @@ class Settings extends StatelessWidget {
     );
   }
 
-  // Helper widget untuk item pengaturan
   Widget _buildSettingItem(String title, {String? trailing}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),

@@ -32,14 +32,13 @@ class _EditProfileState extends State<EditProfile> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              // Custom Header with Profile Image
               Stack(
                 alignment: Alignment.center,
                 children: [
                   Container(
                     height: 200,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(85, 101, 232, 100),
+                      color: Color(0xFF5565E8),
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.circular(40),
                       ),
@@ -79,7 +78,7 @@ class _EditProfileState extends State<EditProfile> {
                             radius: 18,
                             child: IconButton(
                               icon: const Icon(Icons.camera_alt,
-                                  color: Color.fromRGBO(85, 101, 232, 100)),
+                                  color: Color(0xFF5565E8)),
                               onPressed: () async {
                                 final imagePath = await Navigator.push(
                                   context,
@@ -103,7 +102,6 @@ class _EditProfileState extends State<EditProfile> {
                 ],
               ),
               const SizedBox(height: 20),
-              // Form Fields for Profile Data
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -153,7 +151,7 @@ class _EditProfileState extends State<EditProfile> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+                        backgroundColor: Color(0xFF5565E8),
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 80),
                         shape: RoundedRectangleBorder(
@@ -176,7 +174,7 @@ class _EditProfileState extends State<EditProfile> {
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.grey,
           unselectedItemColor: Colors.white,
-          backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+          backgroundColor: Color(0xFF5565E8),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -214,9 +212,7 @@ class _EditProfileState extends State<EditProfile> {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: icon != null
-            ? Icon(icon, color: Color.fromRGBO(85, 101, 232, 100))
-            : null,
+        prefixIcon: icon != null ? Icon(icon, color: Color(0xFF5565E8)) : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),

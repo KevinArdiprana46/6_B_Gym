@@ -20,7 +20,7 @@ class _AboutUsState extends State<AboutUs> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+        backgroundColor: Color(0xFF5565E8),
         title: const Text('About Us', style: TextStyle(fontSize: 20)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -68,7 +68,7 @@ class _AboutUsState extends State<AboutUs> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.grey,
         unselectedItemColor: Colors.white,
-        backgroundColor: Color.fromRGBO(85, 101, 232, 100),
+        backgroundColor: Color(0xFF5565E8),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

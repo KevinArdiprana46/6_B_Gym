@@ -20,7 +20,7 @@ class MyWidget extends StatelessWidget {
                 Container(
                   height: 220,
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(85, 101, 232, 100),
+                    color: Color(0xFF5565E8),
                     borderRadius: BorderRadius.vertical(
                       bottom: Radius.circular(20),
                     ),
@@ -100,7 +100,7 @@ class MyWidget extends StatelessWidget {
                         child: Text(
                           'Edit Profile',
                           style: TextStyle(
-                              color: Color.fromRGBO(85, 101, 232, 100),
+                              color: Color(0xFF5565E8),
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -222,7 +222,7 @@ class ProfileMenuItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: Color.fromRGBO(85, 101, 232, 100)),
+            Icon(icon, color: Color(0xFF5565E8)),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
