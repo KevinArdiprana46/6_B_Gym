@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tubes_pbp_6/view/view_list.dart';
+import 'package:tubes_pbp_6/view/booking.dart';
 import 'package:tubes_pbp_6/view/profile.dart';
 
 class BerandaView extends StatefulWidget {
@@ -29,7 +29,7 @@ static const List<Widget> _widgetOptions = <Widget>[
       ],
     ),
   ),
-  ListLayanan(),
+  BookClass(),
   MyWidget(),
   Center(
     child: Column(
