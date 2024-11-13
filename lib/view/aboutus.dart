@@ -33,7 +33,7 @@ class _AboutUsState extends State<AboutUs> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            Image.asset('images/gym_image_1.jpg'),
+            Image.asset('images/gambar1.png'),
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
@@ -51,7 +51,7 @@ class _AboutUsState extends State<AboutUs> {
               ),
             ),
             const SizedBox(height: 20),
-            Image.asset('images/gym_image_2.jpg'),
+            Image.asset('images/gambar3.jpg'),
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(

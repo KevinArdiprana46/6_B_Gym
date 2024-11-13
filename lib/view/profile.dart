@@ -14,11 +14,10 @@ class MyWidget extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            // Custom header using Stack
             Stack(
               children: [
                 Container(
-                  height: 220,
+                  height: 250,
                   decoration: BoxDecoration(
                     color: Color(0xFF5565E8),
                     borderRadius: BorderRadius.vertical(
