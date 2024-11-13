@@ -155,7 +155,8 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             child: Text(
                               'Login',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ),
@@ -204,8 +205,10 @@ class BottomWaveClipper extends CustomClipper<Path> {
 
     // Membuat lengkungan ke atas
     path.quadraticBezierTo(
-      size.width / 2, size.height, // Titik kontrol lengkungan
-      size.width, size.height - 50); // Titik akhir lengkungan di sisi kanan
+        size.width / 2,
+        size.height, // Titik kontrol lengkungan
+        size.width,
+        size.height - 50); // Titik akhir lengkungan di sisi kanan
 
     path.lineTo(size.width, 0);
     path.close();
