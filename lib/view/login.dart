@@ -22,7 +22,7 @@ class _LoginViewState extends State<LoginView> {
     Map? dataForm = widget.data;
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: NetworkImage('https://st4.depositphotos.com/18672748/21457/v/450/depositphotos_214578124-stock-illustration-gym-icon-vector-isolated-white.jpg'),
             fit: BoxFit.fill,
@@ -57,13 +57,63 @@ class _LoginViewState extends State<LoginView> {
                   hintTxt: "Password",
                   helperTxt: "Inputkan Password",
                   iconData: Icons.password),
+                  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //* Tombol Login
+                  ElevatedButton(
+                    onPressed: () {
+                      if(_formKey.currentState!.validate()){
+                        //* Jika sudah valid, cek username dan password pada form sudah sesuai dengan data
+                        //* yang dibawah dari halaman register atau belum
+                        if(dataForm!['username'] == usernameController.text && dataForm['password'] == passwordController.text )
+                        {
+                          //* Jika sesuai navigasi ke halaman Home
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BerandaView()));
+                        }
+                        else{
+                          //* Jika belum tampilkan Alert Dialog
+                          showDialog(context: context, builder: (_)=>AlertDialog(
+                            title: const Text('Password Salah'),
+                            content: TextButton(
+                              onPressed: () =>pushRegister(context),
+                              child: const Text('Daftar Disini !!')),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                                ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
+                                ),
+                            ],
+                          ),);
+                        }
+                      }
+                    },
+                    child: const Text('Login')),
+                    //* Tombol ke halaman register
+                    TextButton(
+                      onPressed: () {
+                        Map<String, dynamic> formData = {};
+                        formData['username'] = usernameController.text;
+                        formData['password'] = passwordController.text;
+                        pushRegister(context);
+                      },
+                      child: const Text('Belum punya akun ?')),
+                ],
+              ),
             ],
           ),
         ),
       ),
     );
   }
-  // void pushRegister(BuildContext context){
-  //   Navigator.push(context,MaterialPageRoute(builder: (_) => const RegisterView(),),);
-  // }
+  void pushRegister(BuildContext context){
+    Navigator.push(context,MaterialPageRoute(builder: (_) => const RegisterView(),),);
+  }
 }
