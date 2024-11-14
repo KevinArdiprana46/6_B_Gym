@@ -1,12 +1,47 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubes_pbp_6/view/editprofile.dart';
 import 'package:tubes_pbp_6/view/aboutus.dart';
 import 'package:tubes_pbp_6/view/setting.dart';
 import 'package:tubes_pbp_6/view/login.dart';
-import 'package:tubes_pbp_6/view/view_list.dart';
 
-class MyWidget extends StatelessWidget {
+class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
+
+  @override
+  _MyWidgetState createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  String username = 'Fahmy';
+  String email = 'fahmy8394@gmail.com';
+  String phone = '+62 821-5766-3661';
+  String gender = 'Male';
+  String age = '20 years';
+  String height = '150 cms';
+  String weight = '55 kgs';
+  String? profileImagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  Future<void> _loadProfileData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? 'Fahmy';
+      email = prefs.getString('email') ?? 'fahmy8394@gmail.com';
+      phone = prefs.getString('phone') ?? '+62 821-5766-3661';
+      gender = prefs.getString('gender') ?? 'Male';
+      age = prefs.getString('age') ?? '20 years';
+      height = prefs.getString('height') ?? '150 cms';
+      weight = prefs.getString('weight') ?? '55 kgs';
+      profileImagePath = prefs.getString('profileImagePath');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +77,9 @@ class MyWidget extends StatelessWidget {
                     ),
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: AssetImage('images/download.jpg'),
+                      backgroundImage: profileImagePath != null
+                          ? FileImage(File(profileImagePath!))
+                          : AssetImage('images/download.jpg') as ImageProvider,
                     ),
                   ],
                 ),
@@ -54,7 +91,7 @@ class MyWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Fahmy',
+                          username,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -67,7 +104,7 @@ class MyWidget extends StatelessWidget {
                             Icon(Icons.mail, color: Colors.white70, size: 18),
                             const SizedBox(width: 8),
                             Text(
-                              'fahmy8394@gmail.com',
+                              email,
                               style: TextStyle(
                                   color: Colors.white70, fontSize: 14),
                             ),
@@ -79,7 +116,7 @@ class MyWidget extends StatelessWidget {
                             Icon(Icons.phone, color: Colors.white70, size: 18),
                             const SizedBox(width: 8),
                             Text(
-                              '+62 821-5766-3661',
+                              phone,
                               style: TextStyle(
                                   color: Colors.white70, fontSize: 14),
                             ),
@@ -88,13 +125,14 @@ class MyWidget extends StatelessWidget {
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => EditProfile(),
                           ),
                         );
+                        _loadProfileData(); // Reload profile data after edit
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -118,11 +156,11 @@ class MyWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Gender: Male',
+                      'Gender: $gender',
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                     Text(
-                      'Age: 20 years',
+                      'Age: $age',
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                   ],
@@ -132,11 +170,11 @@ class MyWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Height: 150 cms',
+                      'Height: $height',
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                     Text(
-                      'Weight: 55 kgs',
+                      'Weight: $weight',
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                   ],

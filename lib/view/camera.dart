@@ -9,8 +9,8 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraViewState extends State<CameraView> {
-  late CameraController _cameraController;
   Future<void>? _initializeCameraFuture;
+  late CameraController _cameraController;
 
   @override
   void initState() {
@@ -24,7 +24,7 @@ class _CameraViewState extends State<CameraView> {
 
     _cameraController = CameraController(
       firstCamera,
-      ResolutionPreset.medium,
+      ResolutionPreset.high,
     );
 
     _initializeCameraFuture = _cameraController.initialize();
@@ -57,13 +57,68 @@ class _CameraViewState extends State<CameraView> {
         onPressed: () async {
           try {
             await _initializeCameraFuture;
+
             final image = await _cameraController.takePicture();
-            Navigator.pop(context, image.path);
+
+            // Navigate to DisplayPictureScreen and pass the image path
+            final result = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    DisplayPictureScreen(imagePath: image.path),
+              ),
+            );
+
+            // If image path is returned, pop back to EditProfile with result
+            if (result != null) {
+              Navigator.pop(context, result);
+            }
           } catch (e) {
             print(e);
           }
         },
         child: const Icon(Icons.camera_alt),
+      ),
+    );
+  }
+}
+
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen({Key? key, required this.imagePath})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Display the Picture')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Image.file(File(imagePath)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red, size: 40),
+                  onPressed: () {
+                    Navigator.pop(context, null); // Discard the photo
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.check_circle, color: Colors.green, size: 40),
+                  onPressed: () {
+                    Navigator.pop(context, imagePath); // Confirm the photo
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
