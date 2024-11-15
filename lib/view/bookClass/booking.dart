@@ -8,7 +8,7 @@ class BookClass extends StatefulWidget {
 }
 
 class _BookClassState extends State<BookClass> {
-  String selectedDate = "14"; // Default selected date
+  String selectedDate = "14"; 
 
   final Map<String, List<Map<String, String>>> classSchedules = {
     "13": [
@@ -25,10 +25,8 @@ class _BookClassState extends State<BookClass> {
       {"className": "Lifting", "time": "18.00 - 20.00 WIB"},
       {"className": "Dance", "time": "19.00 - 20.00 WIB"},
     ],
-    // Add more dates and classes as needed
   };
 
-  // Update selected date and refresh displayed classes
   void _onDateSelected(String date) {
     setState(() {
       selectedDate = date;
@@ -72,11 +70,11 @@ class CustomHeader extends StatelessWidget {
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.35,
+          height: MediaQuery.of(context).size.height * 0.33,
           color: Color.fromARGB(255, 85, 101, 232),
         ),
         Positioned(
-          top: 140,
+          top: 120,
           left: 0,
           right: 0,
           child: Column(
@@ -92,14 +90,40 @@ class CustomHeader extends StatelessWidget {
                     topRight: Radius.circular(25),
                   ),
                 ),
-                child: Center(
-                  child: Text(
-                    'OCTOBER',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Custom logo on the left
+                      Image.asset(
+                        'lib/assets/preLoginAsset/Logo.jpg', // Replace with your logo asset path
+                        width: 40,
+                        height: 40,
+                      ),
+                      // "OCTOBER" text in the center
+                      Text(
+                        'OCTOBER',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      // Notification icon on the right
+                      Transform.scale(
+                        scale: 2,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.notifications,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -253,6 +277,19 @@ class ClassCard extends StatelessWidget {
   const ClassCard({Key? key, required this.className, required this.time})
       : super(key: key);
 
+  String _getImagePath(String className) {
+    final imageMap = {
+      'Zumba': 'images/zumba.jpg',
+      'Aerobic': 'images/aerobic.jpg',
+      'Boxing': 'images/boxing.jpg',
+      'Pilates': 'images/pilates.jpg',
+      'Lifting': 'images/lifting.jpg',
+      'Dance': 'images/dance.jpg',
+      'Yoga': 'images/yoga.jpg',
+    };
+    return imageMap[className] ?? 'images/download.jpg'; // gambar default
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -265,7 +302,7 @@ class ClassCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
               image: DecorationImage(
-                image: AssetImage('images/download.jpg'),
+                image: AssetImage(_getImagePath(className)),
                 fit: BoxFit.cover,
               ),
             ),

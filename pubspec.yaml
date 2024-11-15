@@ -20,3 +20,11 @@ flutter:
   
   assets:
     - images/download.jpg
+    - images/zumba.jpg
+    - images/aerobic.jpg
+    - images/boxing.jpg
+    - images/pilates.jpg
+    - images/lifting.jpg
+    - images/dance.jpg
+    - images/yoga.jpg
+    - lib/assets/preLoginAsset/Logo.jpg
