@@ -8,7 +8,7 @@ class BookClass extends StatefulWidget {
 }
 
 class _BookClassState extends State<BookClass> {
-  String selectedDate = "14"; 
+  String selectedDate = "14";
 
   final Map<String, List<Map<String, String>>> classSchedules = {
     "13": [
@@ -118,9 +118,7 @@ class CustomHeader extends StatelessWidget {
                             Icons.notifications,
                             color: Colors.black,
                           ),
-                          onPressed: () {
-                            
-                          },
+                          onPressed: () {},
                         ),
                       ),
                     ],
@@ -257,16 +255,30 @@ class ClassList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: classes.length,
-      itemBuilder: (context, index) {
-        final classInfo = classes[index];
-        return ClassCard(
-          className: classInfo["className"]!,
-          time: classInfo["time"]!,
-        );
-      },
-    );
+    if (classes.isEmpty) {
+      // Display message when there are no classes available
+      return Center(
+        child: Text(
+          "There is no class available \nfor this day...",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+            fontWeight: FontWeight.bold),
+        ),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: classes.length,
+        itemBuilder: (context, index) {
+          final classInfo = classes[index];
+          return ClassCard(
+            className: classInfo["className"]!,
+            time: classInfo["time"]!,
+          );
+        },
+      );
+    }
   }
 }
 
