@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
+import 'package:tubes_pbp_6/data/classData.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
@@ -10,26 +12,31 @@ class BookClass extends StatefulWidget {
 class _BookClassState extends State<BookClass> {
   String selectedDate = "14";
 
-  final Map<String, List<Map<String, String>>> classSchedules = {
-    "13": [
-      {"className": "Yoga", "time": "08.00 - 09.00 WIB"},
-      {"className": "Zumba", "time": "10.00 - 11.00 WIB"},
-    ],
-    "14": [
-      {"className": "Aerobic", "time": "17.00 - 18.00 WIB"},
-      {"className": "Boxing", "time": "17.00 - 18.00 WIB"},
-      {"className": "Pilates", "time": "17.00 - 19.00 WIB"},
-      {"className": "Zumba", "time": "18.00 - 20.00 WIB"},
-    ],
-    "15": [
-      {"className": "Lifting", "time": "18.00 - 20.00 WIB"},
-      {"className": "Dance", "time": "19.00 - 20.00 WIB"},
-    ],
-  };
-
   void _onDateSelected(String date) {
     setState(() {
       selectedDate = date;
+    });
+  }
+
+  void _onBookClass(String className) {
+    setState(() {
+      final classes = classSchedules[selectedDate];
+      if (classes != null) {
+        final classToBook =
+            classes.firstWhere((c) => c['className'] == className);
+        classToBook['state'] = 'ordered';
+      }
+    });
+  }
+
+  void _onCancelClass(String className) {
+    setState(() {
+      final classes = classSchedules[selectedDate];
+      if (classes != null) {
+        final classToCancel =
+            classes.firstWhere((c) => c['className'] == className);
+        classToCancel['state'] = 'available';
+      }
     });
   }
 
@@ -44,8 +51,9 @@ class _BookClassState extends State<BookClass> {
           ),
           Expanded(
             child: ClassList(
-              classes: classSchedules[selectedDate] ??
-                  [], // Show classes for the selected date
+              classes: classSchedules[selectedDate] ?? [],
+              onBook: _onBookClass,
+              onCancel: _onCancelClass,
             ),
           ),
         ],
@@ -249,14 +257,20 @@ class DateCircle extends StatelessWidget {
 }
 
 class ClassList extends StatelessWidget {
-  final List<Map<String, String>> classes;
+  final List<Map<String, dynamic>> classes;
+  final Function(String) onBook;
+  final Function(String) onCancel;
 
-  const ClassList({Key? key, required this.classes}) : super(key: key);
+  const ClassList({
+    Key? key,
+    required this.classes,
+    required this.onBook,
+    required this.onCancel,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (classes.isEmpty) {
-      // Display message when there are no classes available
       return Center(
         child: Text(
           "There is no class available \nfor this day...",
@@ -264,7 +278,8 @@ class ClassList extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             color: Colors.black,
-            fontWeight: FontWeight.bold),
+            fontWeight: FontWeight.bold,
+          ),
         ),
       );
     } else {
@@ -274,7 +289,12 @@ class ClassList extends StatelessWidget {
           final classInfo = classes[index];
           return ClassCard(
             className: classInfo["className"]!,
-            time: classInfo["time"]!,
+            timeStart: classInfo["timeStart"]!,
+            timeEnd: classInfo["timeEnd"]!,
+            imagePath: classInfo["className"],
+            details: classInfo,
+            onBook: onBook,
+            onCancel: onCancel,
           );
         },
       );
@@ -284,10 +304,23 @@ class ClassList extends StatelessWidget {
 
 class ClassCard extends StatelessWidget {
   final String className;
-  final String time;
+  final String timeStart;
+  final String timeEnd;
+  final String imagePath;
+  final Map<String, dynamic> details;
+  final Function(String) onBook;
+  final Function(String) onCancel;
 
-  const ClassCard({Key? key, required this.className, required this.time})
-      : super(key: key);
+  const ClassCard({
+    Key? key,
+    required this.className,
+    required this.timeStart,
+    required this.timeEnd,
+    required this.imagePath,
+    required this.details,
+    required this.onBook,
+    required this.onCancel,
+  }) : super(key: key);
 
   String _getImagePath(String className) {
     final imageMap = {
@@ -299,106 +332,156 @@ class ClassCard extends StatelessWidget {
       'Dance': 'images/dance.jpg',
       'Yoga': 'images/yoga.jpg',
     };
-    return imageMap[className] ?? 'images/download.jpg'; // gambar default
+    return imageMap[className] ?? 'images/download.jpg';
+  }
+
+  Color _getContainerColor(String state) {
+    switch (state) {
+      case 'ordered':
+        return Colors.yellow;
+      case 'booked':
+        return Colors.green;
+      default:
+        return Color.fromARGB(255, 85, 101, 232);
+    }
+  }
+
+  String _getContainerText(String state) {
+    switch (state) {
+      case 'ordered':
+        return 'O\nR\nD\nE\nR\nE\nD';
+      case 'booked':
+        return 'B\nO\nO\nK\nE\nD';
+      default:
+        return 'O\nR\nD\nE\nR';
+    }
+  }
+
+  TextStyle _getContainerTextStyle(String state) {
+    switch (state) {
+      case 'ordered':
+        return TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        );
+      default:
+        return TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Stack(
-        children: [
-          // gambar kelas
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40),
-              image: DecorationImage(
-                image: AssetImage(_getImagePath(className)),
-                fit: BoxFit.cover,
-              ),
+    final String state = details['state'] ?? 'available';
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SelectedClassBook(
+              className: className,
+              timeStart: timeStart,
+              timeEnd: timeEnd,
+              imagePath: _getImagePath(className),
+              details: details,
+              onBook: onBook,
+              onCancel: onCancel,
             ),
           ),
-          // gradien gambar
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40),
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Colors.black.withOpacity(0.6),
-                  Colors.transparent,
-                ],
-              ),
-            ),
-          ),
-          // className
-          Positioned(
-            left: 16,
-            bottom: 16,
-            child: Text(
-              className,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          // time
-          Positioned(
-            right: 65,
-            bottom: 16,
-            child: Text(
-              time,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          // book
-          Positioned(
-            right: 0,
-            top: 0,
-            bottom: 0,
-            child: Container(
-              width: 60,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Stack(
+          children: [
+            Container(
+              height: 150,
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 85, 101, 232),
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(40),
-                  bottomRight: Radius.circular(40),
+                borderRadius: BorderRadius.circular(40),
+                image: DecorationImage(
+                  image: AssetImage(_getImagePath(className)),
+                  fit: BoxFit.cover,
                 ),
               ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'B\nO\nO\nK',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: 25,
-                    ),
+            ),
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.6),
+                    Colors.transparent,
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              left: 16,
+              bottom: 16,
+              child: Text(
+                className,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 65,
+              bottom: 16,
+              child: Text(
+                "$timeStart - $timeEnd",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: 60,
+                decoration: BoxDecoration(
+                  color: _getContainerColor(state),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(40),
+                    bottomRight: Radius.circular(40),
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _getContainerText(state),
+                        textAlign: TextAlign.center,
+                        style: _getContainerTextStyle(state),
+                      ),
+                      SizedBox(height: 8),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 25,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
