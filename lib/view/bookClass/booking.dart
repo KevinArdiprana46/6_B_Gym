@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
+import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
 
 class BookClass extends StatefulWidget {
@@ -54,6 +55,7 @@ class _BookClassState extends State<BookClass> {
               classes: classSchedules[selectedDate] ?? [],
               onBook: _onBookClass,
               onCancel: _onCancelClass,
+              selectedDate: selectedDate,
             ),
           ),
         ],
@@ -79,7 +81,7 @@ class CustomHeader extends StatelessWidget {
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.33,
-          color: Color.fromARGB(255, 85, 101, 232),
+          color: const Color.fromARGB(255, 85, 101, 232),
         ),
         Positioned(
           top: 120,
@@ -91,7 +93,7 @@ class CustomHeader extends StatelessWidget {
               Container(
                 width: MediaQuery.of(context).size.width - 70,
                 height: MediaQuery.of(context).size.height * 0.12,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25),
@@ -105,12 +107,12 @@ class CustomHeader extends StatelessWidget {
                     children: [
                       // Custom logo on the left
                       Image.asset(
-                        'lib/assets/preLoginAsset/Logo.jpg', // Replace with your logo asset path
+                        'lib/assets/preLoginAsset/Logo.jpg',
                         width: 40,
                         height: 40,
                       ),
                       // "OCTOBER" text in the center
-                      Text(
+                      const Text(
                         'OCTOBER',
                         style: TextStyle(
                           color: Colors.black,
@@ -122,12 +124,39 @@ class CustomHeader extends StatelessWidget {
                       Transform.scale(
                         scale: 2,
                         child: IconButton(
-                          icon: Icon(
-                            Icons.notifications,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {},
-                        ),
+                            icon: const Icon(
+                              Icons.notifications,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              final orderedClasses = classSchedules.values
+                                  .expand((classes) => classes)
+                                  .where((classInfo) =>
+                                      classInfo['state'] == 'ordered')
+                                  .map((classInfo) {
+                                final parts = classInfo['timeStart'].split(":");
+                                int hour =
+                                    int.parse(parts[0]) - 2; // Subtract 2 hours
+                                if (hour < 0)
+                                  hour += 24; // Handle negative hours
+
+                                // Add the reminderTime to the class details
+                                return {
+                                  ...classInfo,
+                                  'reminderTime':
+                                      "${hour.toString().padLeft(2, '0')}:${parts[1].padLeft(2, '0')}",
+                                };
+                              }).toList();
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NotificationBooking(
+                                    orderedClasses: orderedClasses,
+                                  ),
+                                ),
+                              );
+                            }),
                       ),
                     ],
                   ),
@@ -160,7 +189,7 @@ class CalendarStrip extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width - 70,
       height: 60,
-      color: Color.fromARGB(255, 85, 101, 232),
+      color: const Color.fromARGB(255, 85, 101, 232),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -236,14 +265,14 @@ class DateCircle extends StatelessWidget {
             children: [
               Text(
                 day,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 date,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -260,18 +289,20 @@ class ClassList extends StatelessWidget {
   final List<Map<String, dynamic>> classes;
   final Function(String) onBook;
   final Function(String) onCancel;
+  final String selectedDate;
 
   const ClassList({
     Key? key,
     required this.classes,
     required this.onBook,
     required this.onCancel,
+    required this.selectedDate,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (classes.isEmpty) {
-      return Center(
+      return const Center(
         child: Text(
           "There is no class available \nfor this day...",
           textAlign: TextAlign.center,
@@ -291,10 +322,11 @@ class ClassList extends StatelessWidget {
             className: classInfo["className"]!,
             timeStart: classInfo["timeStart"]!,
             timeEnd: classInfo["timeEnd"]!,
-            imagePath: classInfo["className"],
+            imagePath: classInfo["imagePath"],
             details: classInfo,
             onBook: onBook,
             onCancel: onCancel,
+            selectedDate: selectedDate,
           );
         },
       );
@@ -310,6 +342,7 @@ class ClassCard extends StatelessWidget {
   final Map<String, dynamic> details;
   final Function(String) onBook;
   final Function(String) onCancel;
+  final String selectedDate;
 
   const ClassCard({
     Key? key,
@@ -320,33 +353,48 @@ class ClassCard extends StatelessWidget {
     required this.details,
     required this.onBook,
     required this.onCancel,
+    required this.selectedDate,
   }) : super(key: key);
 
-  String _getImagePath(String className) {
-    final imageMap = {
-      'Zumba': 'images/zumba.jpg',
-      'Aerobic': 'images/aerobic.jpg',
-      'Boxing': 'images/boxing.jpg',
-      'Pilates': 'images/pilates.jpg',
-      'Lifting': 'images/lifting.jpg',
-      'Dance': 'images/dance.jpg',
-      'Yoga': 'images/yoga.jpg',
-    };
-    return imageMap[className] ?? 'images/download.jpg';
+  bool _isConflict(String currentStart, String currentEnd) {
+    final currentClasses = classSchedules[selectedDate] ?? [];
+
+    return currentClasses.any((classItem) {
+      if (classItem['className'] == className ||
+          classItem['state'] != 'ordered' && classItem['state'] != 'booked') {
+        return false;
+      }
+      final startTime = _parseTime(currentStart);
+      final endTime = _parseTime(currentEnd);
+      final otherStartTime = _parseTime(classItem['timeStart']);
+      final otherEndTime = _parseTime(classItem['timeEnd']);
+
+      return (startTime.isBefore(otherEndTime) &&
+          endTime.isAfter(otherStartTime));
+    });
   }
 
-  Color _getContainerColor(String state) {
+  DateTime _parseTime(String time) {
+    final parts = time.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+    return DateTime(0, 1, 1, hour, minute);
+  }
+
+  Color _getContainerColor(String state, bool conflict) {
+    if (conflict) return Colors.grey;
     switch (state) {
       case 'ordered':
-        return Colors.yellow;
-      case 'booked':
         return Colors.green;
+      case 'booked':
+        return Colors.red;
       default:
-        return Color.fromARGB(255, 85, 101, 232);
+        return const Color.fromARGB(255, 85, 101, 232);
     }
   }
 
-  String _getContainerText(String state) {
+  String _getContainerText(String state, bool conflict) {
+    if (conflict) return 'Not\nAvailable';
     switch (state) {
       case 'ordered':
         return 'O\nR\nD\nE\nR\nE\nD';
@@ -357,16 +405,29 @@ class ClassCard extends StatelessWidget {
     }
   }
 
-  TextStyle _getContainerTextStyle(String state) {
+  TextStyle _getContainerTextStyle(String state, bool conflict) {
+    if (conflict) {
+      return const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 10,
+      );
+    }
     switch (state) {
       case 'ordered':
-        return TextStyle(
+        return const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 10,
         );
+      case 'booked':
+        return const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        );
       default:
-        return TextStyle(
+        return const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 14,
@@ -377,23 +438,26 @@ class ClassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String state = details['state'] ?? 'available';
+    final bool conflict = _isConflict(timeStart, timeEnd);
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SelectedClassBook(
-              className: className,
-              timeStart: timeStart,
-              timeEnd: timeEnd,
-              imagePath: _getImagePath(className),
-              details: details,
-              onBook: onBook,
-              onCancel: onCancel,
+        if (!conflict) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SelectedClassBook(
+                className: className,
+                timeStart: timeStart,
+                timeEnd: timeEnd,
+                imagePath: imagePath,
+                details: details,
+                onBook: onBook,
+                onCancel: onCancel,
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -404,7 +468,7 @@ class ClassCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
                 image: DecorationImage(
-                  image: AssetImage(_getImagePath(className)),
+                  image: AssetImage(imagePath),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -413,11 +477,11 @@ class ClassCard extends StatelessWidget {
               height: 150,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.black.withOpacity(0.6),
+                    Colors.black,
                     Colors.transparent,
                   ],
                 ),
@@ -428,7 +492,7 @@ class ClassCard extends StatelessWidget {
               bottom: 16,
               child: Text(
                 className,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -439,8 +503,8 @@ class ClassCard extends StatelessWidget {
               right: 65,
               bottom: 16,
               child: Text(
-                "$timeStart - $timeEnd",
-                style: TextStyle(
+                "$timeStart - $timeEnd WIB",
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -454,8 +518,8 @@ class ClassCard extends StatelessWidget {
               child: Container(
                 width: 60,
                 decoration: BoxDecoration(
-                  color: _getContainerColor(state),
-                  borderRadius: BorderRadius.only(
+                  color: _getContainerColor(state, conflict),
+                  borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(40),
                     bottomRight: Radius.circular(40),
                   ),
@@ -465,16 +529,18 @@ class ClassCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _getContainerText(state),
+                        _getContainerText(state, conflict),
                         textAlign: TextAlign.center,
-                        style: _getContainerTextStyle(state),
+                        style: _getContainerTextStyle(state, conflict),
                       ),
-                      SizedBox(height: 8),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 25,
-                      ),
+                      if (!conflict) ...[
+                        const SizedBox(height: 8),
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                      ],
                     ],
                   ),
                 ),

@@ -9,8 +9,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "John Doe",
       "rating": 4.5,
       "reviews": 25,
-      "description": "Focus on flexibility, balance, and mental clarity. This session includes gentle stretches and breathing exercises. Great for relaxation and stress relief.",
+      "description":
+          "Focus on flexibility, balance, and mental clarity. This session includes gentle stretches and breathing exercises. Great for relaxation and stress relief.",
       "state": "available",
+      "imagePath": "images/yoga.jpg",
     },
     {
       "className": "Zumba",
@@ -21,8 +23,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Jane Doe",
       "rating": 4.7,
       "reviews": 40,
-      "description": "An energetic dance workout to Latin-inspired music. Burn calories while having fun with easy-to-follow moves. Perfect for boosting mood and fitness.",
+      "description":
+          "An energetic dance workout to Latin-inspired music. Burn calories while having fun with easy-to-follow moves. Perfect for boosting mood and fitness.",
       "state": "available",
+      "imagePath": "images/zumba.jpg",
     },
   ],
   "14": [
@@ -35,8 +39,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Agus Doe",
       "rating": 4.8,
       "reviews": 30,
-      "description": "A cardio workout that combines rhythmic movement with strength exercises. Ideal for heart health and endurance. Enjoy upbeat music to keep you motivated.",
+      "description":
+          "A cardio workout that combines rhythmic movement with strength exercises. Ideal for heart health and endurance. Enjoy upbeat music to keep you motivated.",
       "state": "available",
+      "imagePath": "images/aerobic.jpg",
     },
     {
       "className": "Boxing",
@@ -47,8 +53,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Mike Tyson",
       "rating": 4.9,
       "reviews": 50,
-      "description": "Learn boxing techniques in a high-energy session. Great for cardio, strength, and agility. Perfect for stress relief and building confidence.",
+      "description":
+          "Learn boxing techniques in a high-energy session. Great for cardio, strength, and agility. Perfect for stress relief and building confidence.",
       "state": "available",
+      "imagePath": "images/boxing.jpg",
     },
     {
       "className": "Pilates",
@@ -59,8 +67,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Joseph Pilates",
       "rating": 4.6,
       "reviews": 15,
-      "description": "Strengthen core muscles with low-impact exercises. Pilates enhances flexibility and balance. Excellent for improving posture and muscle tone.",
+      "description":
+          "Strengthen core muscles with low-impact exercises. Pilates enhances flexibility and balance. Excellent for improving posture and muscle tone.",
       "state": "available",
+      "imagePath": "images/pilates.jpg",
     },
     {
       "className": "Zumba",
@@ -71,8 +81,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Jane Doe",
       "rating": 4.7,
       "reviews": 40,
-      "description": "Dance-based workout set to lively music. Perfect for burning calories and toning muscles. Fun and engaging, leaving you energized.",
+      "description":
+          "Dance-based workout set to lively music. Perfect for burning calories and toning muscles. Fun and engaging, leaving you energized.",
       "state": "available",
+      "imagePath": "images/zumba.jpg",
     },
   ],
   "15": [
@@ -85,8 +97,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Arnold Schwarzenegger",
       "rating": 4.9,
       "reviews": 60,
-      "description": "Intense strength training to build muscle mass. Focus on technique and endurance with a variety of lifts. Ideal for increasing strength and power.",
+      "description":
+          "Intense strength training to build muscle mass. Focus on technique and endurance with a variety of lifts. Ideal for increasing strength and power.",
       "state": "available",
+      "imagePath": "images/lifting.jpg",
     },
     {
       "className": "Dance",
@@ -97,8 +111,10 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "instructor": "Martha Graham",
       "rating": 4.8,
       "reviews": 35,
-      "description": "Express yourself through movement in this creative dance session. Improve coordination and rhythm with guided choreography. Great for all skill levels.",
+      "description":
+          "Express yourself through movement in this creative dance session. Improve coordination and rhythm with guided choreography. Great for all skill levels.",
       "state": "available",
+      "imagePath": "images/dance.jpg",
     },
   ],
 };

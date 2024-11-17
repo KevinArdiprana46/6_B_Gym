@@ -6,8 +6,8 @@ class SelectedClassBook extends StatelessWidget {
   final String timeEnd;
   final String imagePath;
   final Map<String, dynamic> details;
-  final Function(String) onBook; // Callback for ordering the class
-  final Function(String) onCancel; // Callback for canceling the order
+  final Function(String) onBook;
+  final Function(String) onCancel;
 
   const SelectedClassBook({
     Key? key,
@@ -32,7 +32,7 @@ class SelectedClassBook extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context); // Go back to the previous page
+            Navigator.pop(context);
           },
         ),
         title: const Text(
@@ -91,7 +91,8 @@ class SelectedClassBook extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.local_fire_department, color: Colors.grey),
+                      const Icon(Icons.local_fire_department,
+                          color: Colors.grey),
                       const SizedBox(width: 8),
                       Text(
                         "Burned Calories: ${details['burnedCalories']}",
@@ -161,35 +162,39 @@ class SelectedClassBook extends StatelessWidget {
                   const SizedBox(height: 24),
                   // Conditional Button for "Order Class" or "Cancel Order"
                   Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (state == 'available') {
-                          onBook(details['className']);
-                        } else if (state == 'ordered') {
-                          onCancel(details['className']);
-                        }
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: state == 'ordered'
-                            ? Colors.yellow // Yellow for 'Cancel Order'
-                            : const Color.fromARGB(255, 85, 101, 232), // Blue for 'Order Class'
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 100,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        state == 'ordered' ? "Cancel Order" : "Order Class",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    child: state == 'booked'
+                        ? const SizedBox() // Do nothing if the class is booked
+                        : ElevatedButton(
+                            onPressed: () {
+                              if (state == 'available') {
+                                onBook(details['className']);
+                              } else if (state == 'ordered') {
+                                onCancel(details['className']);
+                              }
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: state == 'ordered'
+                                  ? Colors.red
+                                  : const Color.fromARGB(255, 85, 101, 232),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 100,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              state == 'ordered'
+                                  ? "Cancel Order"
+                                  : "Order Class",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                   ),
                 ],
               ),
