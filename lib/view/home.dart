@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/view/view_list.dart';
-import 'package:tubes_pbp_6/view/profile.dart';
-import 'package:tubes_pbp_6/view/editprofile.dart';
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
+import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
 
 class BerandaView extends StatefulWidget {
   final int initialIndex;

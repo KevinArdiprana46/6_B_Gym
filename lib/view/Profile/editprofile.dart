@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tubes_pbp_6/view/camera.dart';
+import 'package:tubes_pbp_6/view/Profile/camera.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});

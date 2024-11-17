@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tubes_pbp_6/view/editprofile.dart';
-import 'package:tubes_pbp_6/view/aboutus.dart';
-import 'package:tubes_pbp_6/view/setting.dart';
-import 'package:tubes_pbp_6/view/login.dart';
+import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
+import 'package:tubes_pbp_6/view/Profile/aboutus.dart';
+import 'package:tubes_pbp_6/view/Profile/setting.dart';
+import 'package:tubes_pbp_6/view/login_register/login.dart';
 
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
