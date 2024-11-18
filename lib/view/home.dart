@@ -110,7 +110,7 @@ class _HomeViewState extends State<BerandaView> with TickerProviderStateMixin {
           Icons.home,
           Icons.reviews,
           Icons.calendar_view_week_rounded,
-          Icons.shop,
+          Icons.shopping_cart,
           Icons.person,
         ],
         tabIconColor: Colors.blue[600],
