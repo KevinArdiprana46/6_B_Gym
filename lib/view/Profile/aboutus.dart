@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:motion_tab_bar/MotionTabBar.dart';
+import 'package:motion_tab_bar/MotionTabBarController.dart';
+import 'package:tubes_pbp_6/view/view_list.dart';
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
+import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
 
 class AboutUs extends StatefulWidget {
   const AboutUs({Key? key}) : super(key: key);
@@ -7,23 +12,71 @@ class AboutUs extends StatefulWidget {
   _AboutUsState createState() => _AboutUsState();
 }
 
-class _AboutUsState extends State<AboutUs> {
-  int _selectedIndex = 4;
+class _AboutUsState extends State<AboutUs> with TickerProviderStateMixin {
+  late MotionTabBarController _motionTabBarController;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 4, // Tab default: Profile
+      length: 5,
+      vsync: this,
+    );
   }
+
+  @override
+  void dispose() {
+    _motionTabBarController.dispose();
+    super.dispose();
+  }
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Home Page'),
+        ],
+      ),
+    ),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Review Page'),
+        ],
+      ),
+    ),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Calendar Page'),
+        ],
+      ),
+    ),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Shop Page'),
+        ],
+      ),
+    ),
+    MyWidget(), // Halaman Profile
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          const Color(0xFF8E95F2), // Warna background diubah menjadi #8E95F2
       appBar: AppBar(
-        backgroundColor: Color(0xFF5565E8),
+        backgroundColor: const Color(0xFF5565E8),
         title: const Text('About Us', style: TextStyle(fontSize: 20)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -63,36 +116,47 @@ class _AboutUsState extends State<AboutUs> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.grey,
-        unselectedItemColor: Colors.white,
-        backgroundColor: Color(0xFF5565E8),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.reviews),
-            label: 'Review',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Shop',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        initialSelectedTab: "Profile",
+        labels: const ["Home", "Review", "Calendar", "Shop", "Profile"],
+        icons: const [
+          Icons.home,
+          Icons.reviews,
+          Icons.calendar_today,
+          Icons.shopping_cart,
+          Icons.person,
         ],
-        onTap: (index) {
-          _onItemTapped(index);
+        tabIconColor: Colors.blue[600],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 26.0,
+        tabSelectedColor: Colors.blue[900],
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: Colors.white,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+        onTabItemSelected: (int index) {
+          setState(() {
+            _motionTabBarController.index = index;
+          });
+          // Navigasi berdasarkan index
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ListLayanan()),
+              );
+              break;
+            case 4:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MyWidget()),
+              );
+              break;
+          }
         },
       ),
     );

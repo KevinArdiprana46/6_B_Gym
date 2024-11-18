@@ -1,16 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:motion_tab_bar/MotionTabBar.dart';
+import 'package:motion_tab_bar/MotionTabBarController.dart';
+import 'package:tubes_pbp_6/view/view_list.dart';
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
+
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> with TickerProviderStateMixin {
+  late MotionTabBarController _motionTabBarController;
+
+  @override
+  void initState() {
+    super.initState();
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 4, // Tab default: Profile
+      length: 5,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _motionTabBarController.dispose();
+    super.dispose();
+  }
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Home Page'),
+        ],
+      ),
+    ),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Review Page'),
+        ],
+      ),
+    ),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Calendar Page'),
+        ],
+      ),
+    ),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Shop Page'),
+        ],
+      ),
+    ),
+    MyWidget(), // Halaman Profile
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF5565E8),
-        title: const Text('Setting', style: TextStyle(fontSize: 20)),
+        backgroundColor: const Color(0xFF5565E8),
+        title: const Text('Settings', style: TextStyle(fontSize: 20)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -30,34 +93,48 @@ class Settings extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 4,
-        selectedItemColor: Colors.grey,
-        unselectedItemColor: Colors.white,
-        backgroundColor: Color(0xFF5565E8),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.reviews),
-            label: 'Review',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Shop',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        initialSelectedTab: "Profile",
+        labels: const ["Home", "Review", "Calendar", "Shop", "Profile"],
+        icons: const [
+          Icons.home,
+          Icons.reviews,
+          Icons.calendar_today,
+          Icons.shopping_cart,
+          Icons.person,
         ],
+        tabIconColor: Colors.blue[600],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 26.0,
+        tabSelectedColor: Colors.blue[900],
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: Colors.white,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+        onTabItemSelected: (int index) {
+          setState(() {
+            _motionTabBarController.index = index;
+          });
+          // Navigasi berdasarkan index
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ListLayanan()),
+              );
+              break;
+            case 4:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MyWidget()),
+              );
+              break;
+          }
+        },
       ),
     );
   }
