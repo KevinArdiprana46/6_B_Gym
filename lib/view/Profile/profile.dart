@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:motion_tab_bar/MotionTabBar.dart';
+import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
 import 'package:tubes_pbp_6/view/Profile/aboutus.dart';
 import 'package:tubes_pbp_6/view/Profile/setting.dart';
 import 'package:tubes_pbp_6/view/login_register/login.dart';
+import 'package:tubes_pbp_6/view/home.dart';
 
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
@@ -13,7 +16,7 @@ class MyWidget extends StatefulWidget {
   _MyWidgetState createState() => _MyWidgetState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
   String username = 'Fahmy';
   String email = 'fahmy8394@gmail.com';
   String phone = '+62 821-5766-3661';
@@ -23,10 +26,23 @@ class _MyWidgetState extends State<MyWidget> {
   String weight = '55 kgs';
   String? profileImagePath;
 
+  MotionTabBarController? _motionTabBarController;
+
   @override
   void initState() {
     super.initState();
     _loadProfileData();
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 4, // Tab Profile
+      length: 5,
+      vsync: this, // Fix untuk masalah TickerProvider
+    );
+  }
+
+  @override
+  void dispose() {
+    _motionTabBarController?.dispose();
+    super.dispose();
   }
 
   Future<void> _loadProfileData() async {
@@ -43,9 +59,53 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
+  void _onItemTapped(int index) {
+    if (index != 4) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => BerandaView()),
+          );
+          break;
+        // case 1:
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => ReviewPage()),
+        //   );
+        //   break;
+        // case 2:
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => BookingPage()),
+        //   );
+        //   break;
+        // case 3:
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => PaymentPage()),
+        //   );
+        //   break;
+        case 4:
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyWidget()),
+          );
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        backgroundColor: const Color(0xFF5565E8),
+        automaticallyImplyLeading: false,
+      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -133,7 +193,7 @@ class _MyWidgetState extends State<MyWidget> {
                                 builder: (context) => EditProfile(),
                               ),
                             );
-                            _loadProfileData(); // Reload profile data after edit
+                            _loadProfileData();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -241,6 +301,32 @@ class _MyWidgetState extends State<MyWidget> {
           ),
         ],
       ),
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        initialSelectedTab: "Profile",
+        labels: const ["Home", "Review", "Booking", "Payment", "Profile"],
+        icons: const [
+          Icons.home,
+          Icons.reviews,
+          Icons.calendar_month_outlined,
+          Icons.shopping_cart,
+          Icons.people_alt,
+        ],
+        tabSize: 50,
+        tabBarHeight: 55,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+        tabIconColor: Colors.blue[600],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 26.0,
+        tabSelectedColor: Colors.blue[900],
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: Colors.white,
+        onTabItemSelected: _onItemTapped,
+      ),
     );
   }
 }
@@ -284,7 +370,7 @@ class ProfileMenuItem extends StatelessWidget {
               ),
             ),
             const Icon(Icons.arrow_forward_ios,
-                color: Color(0xFFBDBDBD), size: 16), // Warna statis
+                color: Color(0xFFBDBDBD), size: 16),
           ],
         ),
       ),

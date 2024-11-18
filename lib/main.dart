@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/view/home.dart';
-import 'package:tubes_pbp_6/view/login_register/login.dart';
+import 'package:tubes_pbp_6/view/login_register/prelogin.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: LoginView(),
+  runApp(MaterialApp(
+    home: PreLoginView(),
   ));
 }
 

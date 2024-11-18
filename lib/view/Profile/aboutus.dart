@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
-import 'package:tubes_pbp_6/view/view_list.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
-import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
+import 'package:tubes_pbp_6/view/home.dart';
 
 class AboutUs extends StatefulWidget {
-  const AboutUs({Key? key}) : super(key: key);
+  AboutUs({Key? key}) : super(key: key);
 
   @override
   _AboutUsState createState() => _AboutUsState();
@@ -19,7 +18,7 @@ class _AboutUsState extends State<AboutUs> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _motionTabBarController = MotionTabBarController(
-      initialIndex: 4, // Tab default: Profile
+      initialIndex: 4, // Tetapkan index ke tab Profile
       length: 5,
       vsync: this,
     );
@@ -31,47 +30,47 @@ class _AboutUsState extends State<AboutUs> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Home Page'),
-        ],
-      ),
-    ),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Review Page'),
-        ],
-      ),
-    ),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Calendar Page'),
-        ],
-      ),
-    ),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Shop Page'),
-        ],
-      ),
-    ),
-    MyWidget(), // Halaman Profile
-  ];
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => BerandaView()),
+        );
+        break;
+      // case 1:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => ReviewPage()),
+      //   );
+      //   break;
+      // case 2:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => BookingPage()),
+      //   );
+      //   break;
+      // case 3:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => PaymentPage()),
+      //   );
+      //   break;
+      case 4:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MyWidget()),
+        );
+        break;
+      default:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color(0xFF8E95F2), // Warna background diubah menjadi #8E95F2
+      backgroundColor: const Color(0xFF8E95F2),
       appBar: AppBar(
         backgroundColor: const Color(0xFF5565E8),
         title: const Text('About Us', style: TextStyle(fontSize: 20)),
@@ -118,7 +117,7 @@ class _AboutUsState extends State<AboutUs> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: MotionTabBar(
         controller: _motionTabBarController,
-        initialSelectedTab: "Profile",
+        initialSelectedTab: "Profile", // Tetapkan tab default ke Profile
         labels: const ["Home", "Review", "Calendar", "Shop", "Profile"],
         icons: const [
           Icons.home,
@@ -142,21 +141,7 @@ class _AboutUsState extends State<AboutUs> with TickerProviderStateMixin {
           setState(() {
             _motionTabBarController.index = index;
           });
-          // Navigasi berdasarkan index
-          switch (index) {
-            case 0:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ListLayanan()),
-              );
-              break;
-            case 4:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MyWidget()),
-              );
-              break;
-          }
+          _onItemTapped(index);
         },
       ),
     );

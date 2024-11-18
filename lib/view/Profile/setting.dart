@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
-import 'package:tubes_pbp_6/view/view_list.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
+import 'package:tubes_pbp_6/view/home.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -30,41 +30,25 @@ class _SettingsState extends State<Settings> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Home Page'),
-        ],
-      ),
-    ),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Review Page'),
-        ],
-      ),
-    ),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Calendar Page'),
-        ],
-      ),
-    ),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Shop Page'),
-        ],
-      ),
-    ),
-    MyWidget(), // Halaman Profile
-  ];
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => BerandaView()),
+        );
+        break;
+      case 4:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MyWidget()),
+        );
+        break;
+      // Tambahkan navigasi untuk tab lain jika diperlukan
+      default:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +79,7 @@ class _SettingsState extends State<Settings> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: MotionTabBar(
         controller: _motionTabBarController,
-        initialSelectedTab: "Profile",
+        initialSelectedTab: "Profile", // Tetap pada tab Profile
         labels: const ["Home", "Review", "Calendar", "Shop", "Profile"],
         icons: const [
           Icons.home,
@@ -119,21 +103,7 @@ class _SettingsState extends State<Settings> with TickerProviderStateMixin {
           setState(() {
             _motionTabBarController.index = index;
           });
-          // Navigasi berdasarkan index
-          switch (index) {
-            case 0:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ListLayanan()),
-              );
-              break;
-            case 4:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MyWidget()),
-              );
-              break;
-          }
+          _onItemTapped(index);
         },
       ),
     );
