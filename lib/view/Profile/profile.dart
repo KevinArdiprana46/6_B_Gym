@@ -33,9 +33,9 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
     super.initState();
     _loadProfileData();
     _motionTabBarController = MotionTabBarController(
-      initialIndex: 4, // Tab Profile
+      initialIndex: 4,
       length: 5,
-      vsync: this, // Fix untuk masalah TickerProvider
+      vsync: this,
     );
   }
 
@@ -67,7 +67,6 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
             context,
             MaterialPageRoute(builder: (context) => BerandaView()),
           );
-          break;
         // case 1:
         //   Navigator.push(
         //     context,
@@ -102,7 +101,6 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
         backgroundColor: const Color(0xFF5565E8),
         automaticallyImplyLeading: false,
       ),

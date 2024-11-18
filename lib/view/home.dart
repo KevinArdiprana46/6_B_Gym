@@ -73,6 +73,7 @@ class _BerandaViewState extends State<BerandaView>
       appBar: AppBar(
         title: const Text("UNI FIT"),
         backgroundColor: const Color(0xFF5565E8),
+        automaticallyImplyLeading: false, // Menghapus tanda panah balik
       ),
       bottomNavigationBar: MotionTabBar(
         controller: _motionTabBarController,
