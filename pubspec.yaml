@@ -4,11 +4,12 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.5.1
+  sdk: ^3.5.4
 
 dependencies:
   flutter:
     sdk: flutter
+  motion_tab_bar: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -17,7 +18,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
-flutter:
+
   assets:
+    - lib/assets/gym.jpg
+    - lib/assets/trainer.png
+    - lib/assets/class.png
     - images/download.jpg
