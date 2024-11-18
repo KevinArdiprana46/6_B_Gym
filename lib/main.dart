@@ -17,7 +17,6 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
 
       home: PreLoginView(),
-
     );
   }
 }
