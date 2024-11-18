@@ -13,6 +13,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "Focus on flexibility, balance, and mental clarity. This session includes gentle stretches and breathing exercises. Great for relaxation and stress relief.",
       "state": "available",
       "imagePath": "images/yoga.jpg",
+      "reminderTime": "06:00",
     },
     {
       "className": "Zumba",
@@ -27,6 +28,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "An energetic dance workout to Latin-inspired music. Burn calories while having fun with easy-to-follow moves. Perfect for boosting mood and fitness.",
       "state": "available",
       "imagePath": "images/zumba.jpg",
+      "reminderTime": "08:00",
     },
   ],
   "14": [
@@ -43,6 +45,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "A cardio workout that combines rhythmic movement with strength exercises. Ideal for heart health and endurance. Enjoy upbeat music to keep you motivated.",
       "state": "available",
       "imagePath": "images/aerobic.jpg",
+      "reminderTime": "15:00",
     },
     {
       "className": "Boxing",
@@ -57,6 +60,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "Learn boxing techniques in a high-energy session. Great for cardio, strength, and agility. Perfect for stress relief and building confidence.",
       "state": "available",
       "imagePath": "images/boxing.jpg",
+      "reminderTime": "15:00",
     },
     {
       "className": "Pilates",
@@ -71,6 +75,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "Strengthen core muscles with low-impact exercises. Pilates enhances flexibility and balance. Excellent for improving posture and muscle tone.",
       "state": "available",
       "imagePath": "images/pilates.jpg",
+      "reminderTime": "15:00",
     },
     {
       "className": "Zumba",
@@ -85,6 +90,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "Dance-based workout set to lively music. Perfect for burning calories and toning muscles. Fun and engaging, leaving you energized.",
       "state": "available",
       "imagePath": "images/zumba.jpg",
+      "reminderTime": "16:00",
     },
   ],
   "15": [
@@ -101,6 +107,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "Intense strength training to build muscle mass. Focus on technique and endurance with a variety of lifts. Ideal for increasing strength and power.",
       "state": "available",
       "imagePath": "images/lifting.jpg",
+      "reminderTime": "16:00",
     },
     {
       "className": "Dance",
@@ -115,6 +122,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
           "Express yourself through movement in this creative dance session. Improve coordination and rhythm with guided choreography. Great for all skill levels.",
       "state": "available",
       "imagePath": "images/dance.jpg",
+      "reminderTime": "17:00",
     },
   ],
 };

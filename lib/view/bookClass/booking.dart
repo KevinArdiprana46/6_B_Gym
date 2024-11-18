@@ -124,39 +124,27 @@ class CustomHeader extends StatelessWidget {
                       Transform.scale(
                         scale: 2,
                         child: IconButton(
-                            icon: const Icon(
-                              Icons.notifications,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              final orderedClasses = classSchedules.values
-                                  .expand((classes) => classes)
-                                  .where((classInfo) =>
-                                      classInfo['state'] == 'ordered')
-                                  .map((classInfo) {
-                                final parts = classInfo['timeStart'].split(":");
-                                int hour =
-                                    int.parse(parts[0]) - 2; // Subtract 2 hours
-                                if (hour < 0)
-                                  hour += 24; // Handle negative hours
+                          icon: const Icon(
+                            Icons.notifications,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            final bookedClasses = classSchedules.values
+                                .expand((classes) => classes)
+                                .where((classInfo) =>
+                                    classInfo['state'] == 'ordered')
+                                .toList();
 
-                                // Add the reminderTime to the class details
-                                return {
-                                  ...classInfo,
-                                  'reminderTime':
-                                      "${hour.toString().padLeft(2, '0')}:${parts[1].padLeft(2, '0')}",
-                                };
-                              }).toList();
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NotificationBooking(
-                                    orderedClasses: orderedClasses,
-                                  ),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NotificationBooking(
+                                  bookedClasses: bookedClasses,
                                 ),
-                              );
-                            }),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -212,7 +200,7 @@ class CalendarStrip extends StatelessWidget {
             onPressed: onDateSelected,
           ),
           DateCircle(
-            day: "Wen",
+            day: "Wed",
             date: "16",
             isSelected: selectedDate == "16",
             onPressed: onDateSelected,
@@ -319,9 +307,9 @@ class ClassList extends StatelessWidget {
         itemBuilder: (context, index) {
           final classInfo = classes[index];
           return ClassCard(
-            className: classInfo["className"]!,
-            timeStart: classInfo["timeStart"]!,
-            timeEnd: classInfo["timeEnd"]!,
+            className: classInfo["className"],
+            timeStart: classInfo["timeStart"],
+            timeEnd: classInfo["timeEnd"],
             imagePath: classInfo["imagePath"],
             details: classInfo,
             onBook: onBook,

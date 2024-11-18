@@ -1,12 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/view/bookClass/changeReminder.dart';
 
-class NotificationBooking extends StatelessWidget {
-  final List<Map<String, dynamic>> orderedClasses;
+class NotificationBooking extends StatefulWidget {
+  final List<Map<String, dynamic>> bookedClasses;
 
   const NotificationBooking({
     Key? key,
-    required this.orderedClasses,
+    required this.bookedClasses,
   }) : super(key: key);
+
+  @override
+  _NotificationBookingState createState() => _NotificationBookingState();
+}
+
+class _NotificationBookingState extends State<NotificationBooking> {
+  late TextEditingController _searchController;
+  List<Map<String, dynamic>> _filteredClasses = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _filteredClasses = widget.bookedClasses;
+
+    _searchController.addListener(() {
+      setState(() {
+        _filteredClasses = widget.bookedClasses
+            .where((classInfo) => classInfo['className']
+                .toLowerCase()
+                .startsWith(_searchController.text
+                    .toLowerCase()))
+            .toList();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +76,7 @@ class NotificationBooking extends StatelessWidget {
                 ],
               ),
               child: TextField(
+                controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Search Class",
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -53,24 +87,24 @@ class NotificationBooking extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // List of Ordered Classes
-            orderedClasses.isEmpty
+            // List of Filtered Classes
+            _filteredClasses.isEmpty
                 ? const Expanded(
                     child: Center(
                       child: Text(
-                        "No booked classes available.",
+                        "No classes match your search...",
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.grey,
+                          color: Colors.black,
                         ),
                       ),
                     ),
                   )
                 : Expanded(
                     child: ListView.builder(
-                      itemCount: orderedClasses.length,
+                      itemCount: _filteredClasses.length,
                       itemBuilder: (context, index) {
-                        final classInfo = orderedClasses[index];
+                        final classInfo = _filteredClasses[index];
                         return ClassCard(
                           className: classInfo['className'],
                           timeStart: classInfo['timeStart'],
@@ -78,6 +112,11 @@ class NotificationBooking extends StatelessWidget {
                           imagePath: classInfo['imagePath'] ??
                               'assets/default.jpg', // Fallback image
                           details: classInfo,
+                          onReminderChanged: (newTime) {
+                            setState(() {
+                              classInfo['reminderTime'] = newTime;
+                            });
+                          },
                         );
                       },
                     ),
@@ -95,6 +134,7 @@ class ClassCard extends StatelessWidget {
   final String timeEnd;
   final String imagePath;
   final Map<String, dynamic> details;
+  final Function(String) onReminderChanged;
 
   const ClassCard({
     Key? key,
@@ -103,13 +143,35 @@ class ClassCard extends StatelessWidget {
     required this.timeEnd,
     required this.imagePath,
     required this.details,
+    required this.onReminderChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Handle tap for detailed view or action
+        // Navigate to ChangeReminder screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChangeReminder(
+              reminderTime: details['reminderTime'],
+              timeStart: timeStart,
+              onReminderChanged: (newTime) {
+                // Callback to update the reminder time
+                onReminderChanged(newTime);
+
+                // Optionally, show a confirmation message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Reminder updated to $newTime"),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -174,7 +236,7 @@ class ClassCard extends StatelessWidget {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 85, 101, 232),
+                  color: const Color.fromARGB(255, 85, 101, 232),
                   borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(16),
                   ),
@@ -200,7 +262,29 @@ class ClassCard extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Navigate to change reminder page
+                        // Navigate to ChangeReminder screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChangeReminder(
+                              reminderTime: details['reminderTime'] ?? "08:00",
+                              timeStart: timeStart,
+                              onReminderChanged: (newTime) {
+                                // Update the reminder time in the dataset
+                                onReminderChanged(newTime);
+
+                                // Show confirmation message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text("Reminder updated to $newTime"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
                       },
                       child: Row(
                         children: const [
