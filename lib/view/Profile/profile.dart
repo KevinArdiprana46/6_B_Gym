@@ -60,36 +60,22 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
   }
 
   void _onItemTapped(int index) {
-    if (index != 4) {
+    if (index != _motionTabBarController!.index) {
       switch (index) {
         case 0:
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => BerandaView()),
-          );
-        // case 1:
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => ReviewPage()),
-        //   );
-        //   break;
-        // case 2:
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => BookingPage()),
-        //   );
-        //   break;
-        // case 3:
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => PaymentPage()),
-        //   );
-        //   break;
+          ).then((_) {
+            // Memastikan navbar di-update setelah navigasi selesai
+            setState(() {
+              _motionTabBarController?.index = index;
+            });
+          });
+          break;
+        // Uncomment and implement similar cases for other tabs if needed
         case 4:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MyWidget()),
-          );
+          // Tidak melakukan apa-apa karena sudah di halaman Profile
           break;
         default:
           break;
