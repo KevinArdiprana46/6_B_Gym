@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/view/view_list.dart';
-import 'package:tubes_pbp_6/view/profile.dart';
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:motion_tab_bar/MotionBadgeWidget.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
@@ -124,9 +124,48 @@ class _HomeViewState extends State<BerandaView> with TickerProviderStateMixin{
         tabIconSelectedColor: Colors.white,
         tabBarColor: Colors.white,
         onTabItemSelected: (int value) {
-          setState(() {
-            _motionTabBarController!.index = value;
-          });
+          switch (value) {
+    case 0:
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => BenuPage()),
+      // );
+      break;
+    case 1:
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomePage()),
+      // );
+      break;
+    case 2:
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => ReviewPage()),
+      // );
+      break;
+    case 3:
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => BookingPage()),
+      // );
+      break;
+    case 4:
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => PembayaranPage()),
+      // );
+      break;
+    case 5:
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyWidget()), // Profile page
+      );
+      break;
+    default:
+      setState(() {
+        _motionTabBarController!.index = value;
+      });
+  }
         },
       ),
       body: TabBarView(

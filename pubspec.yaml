@@ -9,18 +9,28 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  motion_tab_bar: ^2.0.4
+  font_awesome_flutter: ^10.8.0
+  image_picker: ^0.8.4+4
+  motion_tab_bar : ^2.0.4
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
+  camera: ^0.10.5+2
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  mobile_scanner: ^3.2.0 
+  path_provider: ^2.0.15 
+  qr_flutter: ^4.1.0 
 
 flutter:
   uses-material-design: true
   
   assets:
     - images/download.jpg
+    - images/download1.jpg
+    - images/gambar1.png
+    - images/gambar3.jpg
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/preLoginAsset/orangPreLogin.png
     - lib/assets/registerAsset/vektorRegister1.png
