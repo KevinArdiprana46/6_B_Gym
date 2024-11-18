@@ -46,182 +46,195 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.4,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: Color(0xFF5565E8),
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(30),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: MediaQuery.of(context).size.height * 0.4,
+            floating: false,
+            pinned: true,
+            backgroundColor: const Color(0xFF5565E8),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Profile',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: profileImagePath != null
-                          ? FileImage(File(profileImagePath!))
-                          : AssetImage('images/download.jpg') as ImageProvider,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          username,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        Expanded(
+                          child: Text(
+                            'Profile',
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(Icons.mail, color: Colors.white70, size: 18),
-                            const SizedBox(width: 8),
-                            Text(
-                              email,
-                              style: TextStyle(
-                                  color: Colors.white70, fontSize: 14),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(Icons.phone, color: Colors.white70, size: 18),
-                            const SizedBox(width: 8),
-                            Text(
-                              phone,
-                              style: TextStyle(
-                                  color: Colors.white70, fontSize: 14),
-                            ),
-                          ],
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundImage: profileImagePath != null
+                              ? FileImage(File(profileImagePath!))
+                              : const AssetImage('images/download.jpg')
+                                  as ImageProvider,
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfile(),
-                          ),
-                        );
-                        _loadProfileData(); // Reload profile data after edit
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              username,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.mail,
+                                    color: Colors.white70, size: 18),
+                                const SizedBox(width: 8),
+                                Text(
+                                  email,
+                                  style: const TextStyle(
+                                      color: Colors.white70, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.phone,
+                                    color: Colors.white70, size: 18),
+                                const SizedBox(width: 8),
+                                Text(
+                                  phone,
+                                  style: const TextStyle(
+                                      color: Colors.white70, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 8),
-                      ),
-                      child: Text(
-                        'Edit Profile',
-                        style: TextStyle(
-                            color: Color(0xFF5565E8),
-                            fontWeight: FontWeight.bold),
-                      ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfile(),
+                              ),
+                            );
+                            _loadProfileData(); // Reload profile data after edit
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                          ),
+                          child: const Text(
+                            'Edit Profile',
+                            style: TextStyle(
+                                color: Color(0xFF5565E8),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Gender: $gender',
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 14),
+                        ),
+                        Text(
+                          'Age: $age',
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Height: $height',
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 14),
+                        ),
+                        Text(
+                          'Weight: $weight',
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 14),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Gender: $gender',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    Text(
-                      'Age: $age',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Height: $height',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    Text(
-                      'Weight: $weight',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                ProfileMenuItem(
-                  icon: Icons.info_outline,
-                  title: 'About Us',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AboutUs(),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      ProfileMenuItem(
+                        icon: Icons.info_outline,
+                        title: 'About Us',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AboutUs(),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                ProfileMenuItem(
-                  icon: Icons.settings,
-                  title: 'Setting',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Settings(),
+                      ProfileMenuItem(
+                        icon: Icons.settings,
+                        title: 'Setting',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Settings(),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                ProfileMenuItem(
-                  icon: Icons.logout,
-                  title: 'Log Out',
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginView(),
+                      ProfileMenuItem(
+                        icon: Icons.logout,
+                        title: 'Log Out',
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginView(),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -258,7 +271,7 @@ class ProfileMenuItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: Color(0xFF5565E8)),
+            Icon(icon, color: const Color(0xFF5565E8)),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
@@ -270,8 +283,8 @@ class ProfileMenuItem extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios,
-                color: Colors.grey.shade400, size: 16),
+            const Icon(Icons.arrow_forward_ios,
+                color: Color(0xFFBDBDBD), size: 16), // Warna statis
           ],
         ),
       ),
