@@ -37,7 +37,7 @@ class _HomeViewState extends State<BerandaView> with TickerProviderStateMixin {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image(image: AssetImage('images/download.jpg')),
+          Image(image: AssetImage('images/download1.jpg')),
           Text('ATMA GYM',
               style: TextStyle(
                   fontSize: 24,

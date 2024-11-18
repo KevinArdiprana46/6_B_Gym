@@ -27,7 +27,7 @@ flutter:
   uses-material-design: true
   
   assets:
-    - images/download.jpg
+    - images/download1.jpg
     - images/gambar1.png
     - images/gambar3.jpg
     - lib/assets/preLoginAsset/Logo.jpg
