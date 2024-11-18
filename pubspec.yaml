@@ -21,3 +21,5 @@ flutter:
   assets:
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/preLoginAsset/orangPreLogin.png
+    - lib/assets/registerAsset/vektorRegister1.png
+    - lib/assets/registerAsset/vektorRegister2.png

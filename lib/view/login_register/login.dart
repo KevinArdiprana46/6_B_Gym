@@ -149,7 +149,7 @@ class _LoginViewState extends State<LoginView> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF5565E8),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(25),
                               ),
                               padding: EdgeInsets.symmetric(vertical: 15),
                             ),
@@ -195,17 +195,14 @@ class _LoginViewState extends State<LoginView> {
   }
 }
 
-// BottomWaveClipper untuk membuat lengkungan di bagian bawah
 class BottomWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
-    path.lineTo(0, size.height - 50); // Posisi awal di sisi kiri
-
-    // Membuat lengkungan ke atas
+    path.lineTo(0, size.height - 50); 
     path.quadraticBezierTo(
-      size.width / 2, size.height, // Titik kontrol lengkungan
-      size.width, size.height - 50); // Titik akhir lengkungan di sisi kanan
+      size.width / 2, size.height, 
+      size.width, size.height - 50);
 
     path.lineTo(size.width, 0);
     path.close();
