@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  motion_tab_bar: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -19,7 +20,11 @@ flutter:
   uses-material-design: true
   
   assets:
+    - images/download.jpg
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/preLoginAsset/orangPreLogin.png
     - lib/assets/registerAsset/vektorRegister1.png
     - lib/assets/registerAsset/vektorRegister2.png
+    - lib/assets/image.png
+    - lib/assets/Logo 3.png
+
