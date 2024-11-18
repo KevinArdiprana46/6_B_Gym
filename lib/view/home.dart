@@ -57,7 +57,7 @@ class _HomeViewState extends State<BerandaView> with TickerProviderStateMixin {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Review Page'),
+          Text('Booking Page'),
         ],
       ),
     ),
@@ -65,7 +65,7 @@ class _HomeViewState extends State<BerandaView> with TickerProviderStateMixin {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Calendar Page'),
+          Text('Payment Page'),
         ],
       ),
     ),
