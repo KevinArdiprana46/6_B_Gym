@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class BerandaView extends StatefulWidget {
   const BerandaView({super.key});
@@ -73,7 +74,7 @@ class _BerandaViewState extends State<BerandaView>
       appBar: AppBar(
         title: const Text("UNI FIT"),
         backgroundColor: const Color(0xFF5565E8),
-        automaticallyImplyLeading: false, // Menghapus tanda panah balik
+        automaticallyImplyLeading: false,
       ),
       bottomNavigationBar: MotionTabBar(
         controller: _motionTabBarController,
