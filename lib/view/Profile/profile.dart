@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
 import 'package:tubes_pbp_6/view/Profile/aboutus.dart';
 import 'package:tubes_pbp_6/view/Profile/setting.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 import 'package:tubes_pbp_6/view/login_register/login.dart';
 import 'package:tubes_pbp_6/view/home.dart';
 
@@ -74,6 +75,18 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
           });
           break;
         // Uncomment and implement similar cases for other tabs if needed
+        // booking
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => BookClass()),
+          ).then((_) {
+            // Memastikan navbar di-update setelah navigasi selesai
+            setState(() {
+              _motionTabBarController?.index = index;
+            });
+          });
+        break;
         case 4:
           // Tidak melakukan apa-apa karena sudah di halaman Profile
           break;
