@@ -51,7 +51,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           break;
         case 2:
           // Booking
-        break;
+          break;
         case 4:
           Navigator.pushReplacement(
             context,
@@ -176,10 +176,13 @@ class CustomHeader extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(
-                        'lib/assets/preLoginAsset/Logo.jpg',
-                        width: 40,
-                        height: 40,
+                      Transform.scale(
+                        scale: 2,
+                        child: Image.asset(
+                          'lib/assets/Logo2.png',
+                          width: 40,
+                          height: 40,
+                        ),
                       ),
                       const Text(
                         'OCTOBER',
