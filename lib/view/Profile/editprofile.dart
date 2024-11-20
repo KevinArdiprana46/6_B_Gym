@@ -59,7 +59,7 @@ class _EditProfileState extends State<EditProfile> {
     if (_profileImagePath != null) {
       await prefs.setString('profileImagePath', _profileImagePath!);
     }
-    Navigator.pop(context); // Go back to Profile page after saving
+    Navigator.pop(context);
   }
 
   Future<void> _showImageSourceActionSheet() async {
