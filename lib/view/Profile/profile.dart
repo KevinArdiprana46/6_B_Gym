@@ -109,6 +109,13 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        centerTitle: true, // Memusatkan teks
+        titleTextStyle: const TextStyle(
+          color: Colors.white, // Warna teks
+          fontSize: 20, // Ukuran teks
+          fontWeight: FontWeight.bold, // Ketebalan teks
+        ),
+        automaticallyImplyLeading: false, // Menghapus tanda panah kembali
         backgroundColor: const Color(0xFF5565E8),
         actions: [
           IconButton(
