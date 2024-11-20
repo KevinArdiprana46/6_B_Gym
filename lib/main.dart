@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-
-import 'package:tubes_pbp_6/view/login.dart';
-
-
+import 'package:tubes_pbp_6/view/home.dart';
+import 'package:tubes_pbp_6/view/login_register/prelogin.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: MyWidget(),
+  runApp(MaterialApp(
+    home: PreLoginView(),
   ));
 }
 
@@ -16,13 +14,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-
-      home: LoginView(),
-
+      home: BerandaView(),
     );
   }
 }
-
 
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});

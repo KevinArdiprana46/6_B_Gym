@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/component/form_component.dart';
-import 'package:tubes_pbp_6/view/login.dart';
+import 'package:tubes_pbp_6/view/login_register/login.dart';
 
 
 class RegisterView extends StatefulWidget {
