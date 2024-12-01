@@ -32,6 +32,7 @@ flutter:
     - images/gambar1.png
     - images/gambar3.jpg
     - lib/assets/preLoginAsset/Logo.jpg
+    - lib/assets/Logo2.png
     - lib/assets/preLoginAsset/orangPreLogin.png
     - lib/assets/image.png
     - lib/assets/Logo 3.png
