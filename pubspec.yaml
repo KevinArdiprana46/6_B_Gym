@@ -34,6 +34,9 @@ flutter:
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/Logo2.png
     - lib/assets/preLoginAsset/orangPreLogin.png
+    - lib/assets/image.png
+    - lib/assets/Logo 3.png
+    - lib/assets/Logo2.png
     - images/download.jpg
     - images/zumba.jpg
     - images/aerobic.jpg
@@ -43,3 +46,5 @@ flutter:
     - images/dance.jpg
     - images/yoga.jpg
     - lib/assets/preLoginAsset/Logo.jpg
+    - lib/assets/registerAsset/vektorRegister1.png
+    - lib/assets/registerAsset/vektorRegister2.png
