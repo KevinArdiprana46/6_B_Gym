@@ -48,3 +48,6 @@ flutter:
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/registerAsset/vektorRegister1.png
     - lib/assets/registerAsset/vektorRegister2.png
+    - lib/assets/gym.jpg
+    - lib/assets/trainer.png
+    - lib/assets/class.png
