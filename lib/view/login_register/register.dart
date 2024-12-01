@@ -26,7 +26,6 @@ class _RegisterViewState extends State<RegisterView> {
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', username);
-    await prefs.setString('lastName', lastName);
     await prefs.setString('email', email);
     await prefs.setString('password', password);
   }
