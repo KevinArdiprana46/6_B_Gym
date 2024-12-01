@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:motion_tab_bar/MotionTabBar.dart';
+import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
 import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
+import 'package:tubes_pbp_6/view/home.dart';
+import 'package:tubes_pbp_6/view/Profile/profile.dart'; // Add your Profile page import
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
@@ -10,13 +14,57 @@ class BookClass extends StatefulWidget {
   State<BookClass> createState() => _BookClassState();
 }
 
-class _BookClassState extends State<BookClass> {
+class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
   String selectedDate = "14";
+  MotionTabBarController? _motionTabBarController;
+
+  @override
+  void initState() {
+    super.initState();
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 2,
+      length: 5,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _motionTabBarController?.dispose();
+    super.dispose();
+  }
 
   void _onDateSelected(String date) {
     setState(() {
       selectedDate = date;
     });
+  }
+
+  void _onItemTapped(int index) {
+    if (index != _motionTabBarController!.index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => BerandaView()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => BookClass()),
+          );
+          break;
+        case 4:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MyWidget()),
+          );
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   void _onBookClass(String className) {
@@ -59,6 +107,32 @@ class _BookClassState extends State<BookClass> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        initialSelectedTab: "Booking",
+        labels: const ["Home", "Review", "Booking", "Payment", "Profile"],
+        icons: const [
+          Icons.home,
+          Icons.reviews,
+          Icons.calendar_month_outlined,
+          Icons.shopping_cart,
+          Icons.people_alt,
+        ],
+        tabSize: 50,
+        tabBarHeight: 55,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+        tabIconColor: Colors.blue[600],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 26.0,
+        tabSelectedColor: Colors.blue[900],
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: Colors.white,
+        onTabItemSelected: _onItemTapped,
       ),
     );
   }
@@ -105,13 +179,14 @@ class CustomHeader extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Custom logo on the left
-                      Image.asset(
-                        'lib/assets/preLoginAsset/Logo.jpg',
-                        width: 40,
-                        height: 40,
+                      Transform.scale(
+                        scale: 2,
+                        child: Image.asset(
+                          'lib/assets/Logo2.png',
+                          width: 40,
+                          height: 40,
+                        ),
                       ),
-                      // "OCTOBER" text in the center
                       const Text(
                         'OCTOBER',
                         style: TextStyle(
@@ -120,7 +195,6 @@ class CustomHeader extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // Notification icon on the right
                       Transform.scale(
                         scale: 2,
                         child: IconButton(

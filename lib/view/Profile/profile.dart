@@ -16,13 +16,13 @@ class MyWidget extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
-  String username = 'Fahmy';
-  String email = 'fahmy8394@gmail.com';
-  String phone = '+62 821-5766-3661';
-  String gender = 'Male';
-  String dateOfBirth = '1988/01/21';
-  String height = '200 CM';
-  String weight = '75 KG';
+  String? username;
+  String? email;
+  String? phone;
+  String? gender;
+  String? dateOfBirth;
+  String? height;
+  String? weight;
   String? profileImagePath;
 
   MotionTabBarController? _motionTabBarController;
@@ -44,20 +44,23 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // Load profile data from SharedPreferences
   Future<void> _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
-      username = prefs.getString('username') ?? 'Fahmy';
-      email = prefs.getString('email') ?? 'fahmy8394@gmail.com';
-      phone = prefs.getString('phone') ?? '+62 821-5766-3661';
-      gender = prefs.getString('gender') ?? 'Male';
-      dateOfBirth = prefs.getString('dateOfBirth') ?? '1988/01/21';
-      height = prefs.getString('height') ?? '200 CM';
-      weight = prefs.getString('weight') ?? '75 KG';
+      username = prefs.getString('username') ?? 'No Username';
+      email = prefs.getString('email') ?? 'No Email';
+      phone = prefs.getString('phone') ?? 'No Phone';
+      gender = prefs.getString('gender') ?? 'No Gender';
+      dateOfBirth = prefs.getString('dateOfBirth') ?? 'No Date of Birth';
+      height = prefs.getString('height') ?? 'No Height';
+      weight = prefs.getString('weight') ?? 'No Weight';
       profileImagePath = prefs.getString('profileImagePath');
     });
   }
 
+  // Handling tab selection
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
@@ -66,23 +69,11 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
           MaterialPageRoute(builder: (context) => BerandaView()),
         );
         break;
-      case 1:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ReviewPage()),
-        // );
-        break;
       case 2:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => BookClass()),
         );
-        break;
-      case 3:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => PaymentPage()),
-        // );
         break;
       case 4:
         Navigator.push(
@@ -95,6 +86,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     }
   }
 
+  // Logout function
   void _logout() {
     Navigator.pushReplacement(
       context,
@@ -141,7 +133,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    username,
+                    username!,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -150,7 +142,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    email,
+                    email!,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white70,
@@ -165,23 +157,23 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  _buildProfileField('No Telephone', phone, Icons.phone),
+                  _buildProfileField('No Telephone', phone!, Icons.phone),
                   _buildProfileField(
-                      'Date of Birth', dateOfBirth, Icons.calendar_today),
+                      'Date of Birth', dateOfBirth!, Icons.calendar_today),
                   Row(
                     children: [
                       Expanded(
                         child:
-                            _buildProfileField('Height', height, Icons.height),
+                            _buildProfileField('Height', height!, Icons.height),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildProfileField(
-                            'Weight', weight, Icons.monitor_weight),
+                            'Weight', weight!, Icons.monitor_weight),
                       ),
                     ],
                   ),
-                  _buildProfileField('Gender', gender, Icons.person),
+                  _buildProfileField('Gender', gender!, Icons.person),
                 ],
               ),
             ),
@@ -198,7 +190,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                     ),
                   );
                   if (result == true) {
-                    _loadProfileData();
+                    _loadProfileData(); // Refresh data if profile is updated
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -247,6 +239,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     );
   }
 
+  // Widget to build the profile field
   Widget _buildProfileField(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
