@@ -14,6 +14,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/yoga.jpg",
       "reminderTime": "06:00",
+      "availableSlots": 20,
     },
     {
       "className": "Zumba",
@@ -29,6 +30,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/zumba.jpg",
       "reminderTime": "08:00",
+      "availableSlots": 30,
     },
   ],
   "14": [
@@ -46,6 +48,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/aerobic.jpg",
       "reminderTime": "15:00",
+      "availableSlots": 30,
     },
     {
       "className": "Boxing",
@@ -61,6 +64,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/boxing.jpg",
       "reminderTime": "15:00",
+      "availableSlots": 15,
     },
     {
       "className": "Pilates",
@@ -76,6 +80,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/pilates.jpg",
       "reminderTime": "15:00",
+      "availableSlots": 20,
     },
     {
       "className": "Zumba",
@@ -91,6 +96,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/zumba.jpg",
       "reminderTime": "16:00",
+      "availableSlots": 30,
     },
   ],
   "15": [
@@ -108,6 +114,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/lifting.jpg",
       "reminderTime": "16:00",
+      "availableSlots": 10,
     },
     {
       "className": "Dance",
@@ -123,6 +130,7 @@ final Map<String, List<Map<String, dynamic>>> classSchedules = {
       "state": "available",
       "imagePath": "images/dance.jpg",
       "reminderTime": "17:00",
+      "availableSlots": 20,
     },
   ],
 };
