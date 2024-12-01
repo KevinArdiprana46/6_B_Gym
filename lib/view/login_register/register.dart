@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubes_pbp_6/view/login_register/login.dart';
 import 'package:tubes_pbp_6/view/login_register/register2.dart';
 
@@ -15,6 +16,20 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  // Fungsi untuk menyimpan data ke SharedPreferences
+  void _saveProfileData(
+    String username,
+    String email,
+    String lastName,
+    String password,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+    await prefs.setString('lastName', lastName);
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +161,13 @@ class _RegisterViewState extends State<RegisterView> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      // Simpan data ke SharedPreferences
+                      _saveProfileData(
+                          firstNameController.text,
+                          lastNameController.text,
+                          emailController.text,
+                          passwordController.text);
+                      // Pindah ke halaman berikutnya setelah menyimpan data
                       Navigator.push(
                         context,
                         MaterialPageRoute(

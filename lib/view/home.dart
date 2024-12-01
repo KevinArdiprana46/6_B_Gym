@@ -45,11 +45,11 @@ class _BerandaViewState extends State<BerandaView>
       //     MaterialPageRoute(builder: (context) => ReviewPage()),
       //   );
       //   break;
-      // case 2:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => BookingPage()),
-      //   );
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BookClass()),
+        );
       //   break;
       // case 3:
       //   Navigator.push(

@@ -22,7 +22,6 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
-  int _selectedIndex = 4; // Default to profile tab
 
   @override
   void initState() {
@@ -48,6 +47,8 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> _saveProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Simpan data yang diperbarui
     await prefs.setString('username', _usernameController.text);
     await prefs.setString('phone', _phoneController.text);
     await prefs.setString('email', _emailController.text);
@@ -56,10 +57,11 @@ class _EditProfileState extends State<EditProfile> {
     await prefs.setString('height', _heightController.text);
     await prefs.setString('weight', _weightController.text);
     await prefs.setString('gender', _genderController.text);
+
     if (_profileImagePath != null) {
       await prefs.setString('profileImagePath', _profileImagePath!);
     }
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   Future<void> _showImageSourceActionSheet() async {
@@ -105,14 +107,6 @@ class _EditProfileState extends State<EditProfile> {
         _profileImagePath = image.path;
       });
     }
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    // Add navigation logic based on the selected index, e.g.,
-    // navigate to different pages depending on the index.
   }
 
   @override
