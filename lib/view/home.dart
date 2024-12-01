@@ -58,15 +58,6 @@ class _BerandaViewState extends State<BerandaView>
         //   MaterialPageRoute(builder: (context) => PaymentPage()),
         // );
         break;
-      case 4:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyWidget()),
-        );
-        break;
-      default:
-        break;
-    }
   }
 
   @override
