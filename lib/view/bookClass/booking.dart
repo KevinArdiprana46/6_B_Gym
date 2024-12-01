@@ -5,7 +5,7 @@ import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
 import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
 import 'package:tubes_pbp_6/view/home.dart';
-import 'package:tubes_pbp_6/view/Profile/profile.dart'; // Add your Profile page import
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
@@ -50,10 +50,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           );
           break;
         case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => BookClass()),
-          );
+          // Booking
           break;
         case 4:
           Navigator.pushReplacement(
@@ -206,7 +203,7 @@ class CustomHeader extends StatelessWidget {
                             final bookedClasses = classSchedules.values
                                 .expand((classes) => classes)
                                 .where((classInfo) =>
-                                    classInfo['state'] == 'ordered')
+                                    classInfo['state'] == 'booked')
                                 .toList();
 
                             Navigator.push(
@@ -443,8 +440,8 @@ class ClassCard extends StatelessWidget {
     return DateTime(0, 1, 1, hour, minute);
   }
 
-  Color _getContainerColor(String state, bool conflict) {
-    if (conflict) return Colors.grey;
+  Color _getContainerColor(String state, bool conflict, int availableSlots) {
+    if (availableSlots == 0 || conflict) return Colors.grey;
     switch (state) {
       case 'ordered':
         return Colors.green;
@@ -455,8 +452,8 @@ class ClassCard extends StatelessWidget {
     }
   }
 
-  String _getContainerText(String state, bool conflict) {
-    if (conflict) return 'Not\nAvailable';
+  String _getContainerText(String state, bool conflict, int availableSlots) {
+    if (availableSlots == 0 || conflict) return 'Not\nAvailable';
     switch (state) {
       case 'ordered':
         return 'O\nR\nD\nE\nR\nE\nD';
@@ -467,8 +464,9 @@ class ClassCard extends StatelessWidget {
     }
   }
 
-  TextStyle _getContainerTextStyle(String state, bool conflict) {
-    if (conflict) {
+  TextStyle _getContainerTextStyle(
+      String state, bool conflict, int availableSlots) {
+    if (availableSlots == 0 || conflict) {
       return const TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
@@ -500,11 +498,12 @@ class ClassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String state = details['state'] ?? 'available';
+    final int availableSlots = details['availableSlots'] ?? 0;
     final bool conflict = _isConflict(timeStart, timeEnd);
 
     return GestureDetector(
       onTap: () {
-        if (!conflict) {
+        if (availableSlots > 0 && !conflict) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -563,6 +562,19 @@ class ClassCard extends StatelessWidget {
             ),
             Positioned(
               right: 65,
+              bottom:
+                  40, // Adjust as needed to place it above timeStart-timeEnd
+              child: Text(
+                '$availableSlots slot left', // Displaying available slots
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18, // Adjust font size as needed
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 65,
               bottom: 16,
               child: Text(
                 "$timeStart - $timeEnd WIB",
@@ -580,7 +592,7 @@ class ClassCard extends StatelessWidget {
               child: Container(
                 width: 60,
                 decoration: BoxDecoration(
-                  color: _getContainerColor(state, conflict),
+                  color: _getContainerColor(state, conflict, availableSlots),
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(40),
                     bottomRight: Radius.circular(40),
@@ -591,11 +603,12 @@ class ClassCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _getContainerText(state, conflict),
+                        _getContainerText(state, conflict, availableSlots),
                         textAlign: TextAlign.center,
-                        style: _getContainerTextStyle(state, conflict),
+                        style: _getContainerTextStyle(
+                            state, conflict, availableSlots),
                       ),
-                      if (!conflict) ...[
+                      if (availableSlots > 0 && !conflict) ...[
                         const SizedBox(height: 8),
                         const Icon(
                           Icons.arrow_forward,
