@@ -1,32 +1,47 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:motion_tab_bar/MotionTabBar.dart';
+import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
-import 'package:tubes_pbp_6/view/Profile/aboutus.dart';
-import 'package:tubes_pbp_6/view/Profile/setting.dart';
 import 'package:tubes_pbp_6/view/login_register/login.dart';
+import 'package:tubes_pbp_6/view/home.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+  const MyWidget({Key? key}) : super(key: key);
 
   @override
-  _MyWidgetState createState() => _MyWidgetState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
   String username = 'Fahmy';
   String email = 'fahmy8394@gmail.com';
   String phone = '+62 821-5766-3661';
   String gender = 'Male';
-  String age = '20 years';
-  String height = '150 cms';
-  String weight = '55 kgs';
+  String dateOfBirth = '1988/01/21';
+  String height = '200 CM';
+  String weight = '75 KG';
   String? profileImagePath;
+
+  MotionTabBarController? _motionTabBarController;
 
   @override
   void initState() {
     super.initState();
     _loadProfileData();
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 4,
+      length: 5,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _motionTabBarController?.dispose();
+    super.dispose();
   }
 
   Future<void> _loadProfileData() async {
@@ -36,256 +51,223 @@ class _MyWidgetState extends State<MyWidget> {
       email = prefs.getString('email') ?? 'fahmy8394@gmail.com';
       phone = prefs.getString('phone') ?? '+62 821-5766-3661';
       gender = prefs.getString('gender') ?? 'Male';
-      age = prefs.getString('age') ?? '20 years';
-      height = prefs.getString('height') ?? '150 cms';
-      weight = prefs.getString('weight') ?? '55 kgs';
+      dateOfBirth = prefs.getString('dateOfBirth') ?? '1988/01/21';
+      height = prefs.getString('height') ?? '200 CM';
+      weight = prefs.getString('weight') ?? '75 KG';
       profileImagePath = prefs.getString('profileImagePath');
     });
+  }
+
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => BerandaView()),
+        );
+        break;
+      case 1:
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => ReviewPage()),
+        // );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BookClass()),
+        );
+        break;
+      case 3:
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => PaymentPage()),
+        // );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyWidget()),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginView(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: MediaQuery.of(context).size.height * 0.4,
-            floating: false,
-            pinned: true,
-            backgroundColor: const Color(0xFF5565E8),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Profile',
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundImage: profileImagePath != null
-                              ? FileImage(File(profileImagePath!))
-                              : const AssetImage('images/download.jpg')
-                                  as ImageProvider,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              username,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.mail,
-                                    color: Colors.white70, size: 18),
-                                const SizedBox(width: 8),
-                                Text(
-                                  email,
-                                  style: const TextStyle(
-                                      color: Colors.white70, fontSize: 14),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.phone,
-                                    color: Colors.white70, size: 18),
-                                const SizedBox(width: 8),
-                                Text(
-                                  phone,
-                                  style: const TextStyle(
-                                      color: Colors.white70, fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditProfile(),
-                              ),
-                            );
-                            _loadProfileData(); // Reload profile data after edit
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
-                          ),
-                          child: const Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                                color: Color(0xFF5565E8),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Gender: $gender',
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 14),
-                        ),
-                        Text(
-                          'Age: $age',
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Height: $height',
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 14),
-                        ),
-                        Text(
-                          'Weight: $weight',
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      ProfileMenuItem(
-                        icon: Icons.info_outline,
-                        title: 'About Us',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AboutUs(),
-                            ),
-                          );
-                        },
-                      ),
-                      ProfileMenuItem(
-                        icon: Icons.settings,
-                        title: 'Setting',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Settings(),
-                            ),
-                          );
-                        },
-                      ),
-                      ProfileMenuItem(
-                        icon: Icons.logout,
-                        title: 'Log Out',
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginView(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: const Color(0xFF5565E8),
+        actions: [
+          IconButton(
+            onPressed: _logout,
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
           ),
         ],
       ),
-    );
-  }
-}
-
-class ProfileMenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const ProfileMenuItem({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Row(
+      body: SingleChildScrollView(
+        child: Column(
           children: [
-            Icon(icon, color: const Color(0xFF5565E8)),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
+            // Profile Header
+            Container(
+              width: double.infinity,
+              color: const Color(0xFF5565E8),
+              padding: const EdgeInsets.symmetric(vertical: 30),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.white, // Background for the image
+                    child: CircleAvatar(
+                      radius: 55,
+                      backgroundImage: profileImagePath != null
+                          ? FileImage(File(profileImagePath!))
+                          : const AssetImage('images/download.jpg')
+                              as ImageProvider,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    username,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    email,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Data Fields
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  _buildProfileField('No Telephone', phone, Icons.phone),
+                  _buildProfileField(
+                      'Date of Birth', dateOfBirth, Icons.calendar_today),
+                  Row(
+                    children: [
+                      Expanded(
+                        child:
+                            _buildProfileField('Height', height, Icons.height),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildProfileField(
+                            'Weight', weight, Icons.monitor_weight),
+                      ),
+                    ],
+                  ),
+                  _buildProfileField('Gender', gender, Icons.person),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Edit Profile Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfile(),
+                    ),
+                  );
+                  if (result == true) {
+                    _loadProfileData();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF5565E8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text(
+                  'Edit Profile',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios,
-                color: Color(0xFFBDBDBD), size: 16), // Warna statis
           ],
+        ),
+      ),
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        initialSelectedTab: "Profile",
+        labels: const ["Home", "Review", "Booking", "Payment", "Profile"],
+        icons: const [
+          Icons.home,
+          Icons.reviews,
+          Icons.calendar_month_outlined,
+          Icons.shopping_cart,
+          Icons.people_alt,
+        ],
+        tabSize: 50,
+        tabBarHeight: 55,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+        tabIconColor: Colors.blue[600],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 26.0,
+        tabSelectedColor: Colors.blue[900],
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: Colors.white,
+        onTabItemSelected: _onItemTapped,
+      ),
+    );
+  }
+
+  Widget _buildProfileField(String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: TextEditingController(text: value),
+        enabled: false, // Non-editable for Profile Page
+        readOnly: true, // Ensure the field is not editable
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: const Color(0xFF5565E8)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+          fillColor: Colors.grey[100],
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
