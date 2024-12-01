@@ -34,8 +34,12 @@ flutter:
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/preLoginAsset/orangPreLogin.png
     - lib/assets/image.png
+<<<<<<< Updated upstream
     - lib/assets/Logo 3.png
     - lib/assets/Logo2.png
+=======
+    - lib/assets/logo 3.png
+>>>>>>> Stashed changes
     - images/download.jpg
     - images/zumba.jpg
     - images/aerobic.jpg
