@@ -14,8 +14,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -33,8 +32,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _firstNameController.text = prefs.getString('username') ?? 'Fahmy';
-      _lastNameController.text = prefs.getString('username') ?? 'Junaidi';
+      _usernameController.text = prefs.getString('username') ?? 'Fahmy';
       _phoneController.text = prefs.getString('phone') ?? '+62xxxxxxxxx';
       _emailController.text = prefs.getString('email') ?? 'fahmy8394@gmail.com';
       _passwordController.text = prefs.getString('password') ?? '*******';
@@ -51,8 +49,7 @@ class _EditProfileState extends State<EditProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Simpan data yang diperbarui
-    await prefs.setString('firstName', _firstNameController.text);
-    await prefs.setString('lastName', _lastNameController.text);
+    await prefs.setString('username', _usernameController.text);
     await prefs.setString('phone', _phoneController.text);
     await prefs.setString('email', _emailController.text);
     await prefs.setString('password', _passwordController.text);
@@ -179,13 +176,11 @@ class _EditProfileState extends State<EditProfile> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: Column(
                 children: [
-                  _buildTextField('firstName', _firstNameController,
+                  _buildTextField('Username', _usernameController,
                       icon: Icons.person),
-                  _buildTextField('lastName', _lastNameController,
-                      icon: Icons.person),
-                  _buildTextField('Email', _emailController, icon: Icons.email),
                   _buildTextField('No Telephone', _phoneController,
                       icon: Icons.phone),
+                  _buildTextField('Email', _emailController, icon: Icons.email),
                   _buildTextField('Password', _passwordController,
                       obscureText: true, icon: Icons.lock),
                   _buildTextField('Date of Birth', _dateOfBirthController,
