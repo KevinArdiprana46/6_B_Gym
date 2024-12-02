@@ -3,6 +3,7 @@ import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
+// import 'package:tubes_pbp_6/view/reviewPage.dart';
 
 class BerandaView extends StatefulWidget {
   const BerandaView({super.key});
