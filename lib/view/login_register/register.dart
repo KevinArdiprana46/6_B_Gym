@@ -13,21 +13,21 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController firstNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   // Fungsi untuk menyimpan data ke SharedPreferences
   void _saveProfileData(
     String firstName,
-    String email,
     String lastName,
+    String email,
     String password,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('firstName', firstName);
-    prefs.setString('email', email);
+    await prefs.setString('firstName', firstName);
     await prefs.setString('lastName', lastName);
+    await prefs.setString('email', email);
     await prefs.setString('password', password);
   }
 

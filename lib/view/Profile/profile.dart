@@ -9,9 +9,10 @@ import 'package:tubes_pbp_6/view/home.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class MyWidget extends StatefulWidget {
-  const MyWidget({Key? key}) : super(key: key);
+  const MyWidget({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -51,8 +52,8 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
 
     setState(() {
       firstName = prefs.getString('firstName') ?? 'No firstName';
-      email = prefs.getString('email') ?? 'No Email'; // pastikan ini ada
       lastName = prefs.getString('lastName') ?? 'No lastName';
+      email = prefs.getString('email') ?? 'No Email';
       phone = prefs.getString('phone') ?? 'No Phone';
       gender = prefs.getString('gender') ?? 'No Gender';
       dateOfBirth = prefs.getString('dateOfBirth') ?? 'No Date of Birth';
@@ -68,19 +69,19 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => BerandaView()),
+          MaterialPageRoute(builder: (context) => const BerandaView()),
         );
         break;
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BookClass()),
+          MaterialPageRoute(builder: (context) => const BookClass()),
         );
         break;
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyWidget()),
+          MaterialPageRoute(builder: (context) => const MyWidget()),
         );
         break;
       default:
@@ -102,7 +103,6 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
         backgroundColor: const Color(0xFF5565E8),
         actions: [
           IconButton(
@@ -146,7 +146,9 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    email != null ? email! : 'No Email', // Menampilkan email
+                    lastName != null
+                        ? lastName!
+                        : 'No Email', // Menampilkan email
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white70,
