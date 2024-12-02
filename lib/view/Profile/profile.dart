@@ -16,9 +16,8 @@ class MyWidget extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
-  String? firstName;
+  String? username;
   String? email;
-  String? lastName;
   String? phone;
   String? gender;
   String? dateOfBirth;
@@ -50,9 +49,8 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      firstName = prefs.getString('firstName') ?? 'No firstName';
-      email = prefs.getString('email') ?? 'No Email'; // pastikan ini ada
-      lastName = prefs.getString('lastName') ?? 'No lastName';
+      username = prefs.getString('username') ?? 'No Username';
+      email = prefs.getString('email') ?? 'No Email';
       phone = prefs.getString('phone') ?? 'No Phone';
       gender = prefs.getString('gender') ?? 'No Gender';
       dateOfBirth = prefs.getString('dateOfBirth') ?? 'No Date of Birth';
@@ -135,9 +133,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    firstName != null
-                        ? firstName!
-                        : 'No Name', // Menampilkan firstName
+                    username!,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -146,7 +142,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    email != null ? email! : 'No Email', // Menampilkan email
+                    email!,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white70,

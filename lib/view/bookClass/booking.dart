@@ -5,7 +5,7 @@ import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
 import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
 import 'package:tubes_pbp_6/view/home.dart';
-import 'package:tubes_pbp_6/view/Profile/profile.dart'; // Add your Profile page import
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});

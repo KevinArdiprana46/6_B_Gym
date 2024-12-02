@@ -13,21 +13,20 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController firstNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   // Fungsi untuk menyimpan data ke SharedPreferences
   void _saveProfileData(
-    String firstName,
+    String username,
     String email,
     String lastName,
     String password,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('firstName', firstName);
-    prefs.setString('email', email);
-    await prefs.setString('lastName', lastName);
+    await prefs.setString('username', username);
+    await prefs.setString('email', email);
     await prefs.setString('password', password);
   }
 
@@ -161,15 +160,18 @@ class _RegisterViewState extends State<RegisterView> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      // Simpan data ke SharedPreferences
                       _saveProfileData(
                           firstNameController.text,
                           lastNameController.text,
                           emailController.text,
                           passwordController.text);
+                      // Pindah ke halaman berikutnya setelah menyimpan data
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RegisterView2(),
+                          builder: (context) =>
+                              RegisterView2(), // Pindah ke halaman RegisterView2
                         ),
                       );
                     }
@@ -188,6 +190,7 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
               ),
               SizedBox(height: 20),
+              // Already have an account
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
