@@ -33,16 +33,15 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _firstNameController.text = prefs.getString('username') ?? 'Fahmy';
-      _lastNameController.text = prefs.getString('username') ?? 'Junaidi';
-      _phoneController.text = prefs.getString('phone') ?? '+62xxxxxxxxx';
-      _emailController.text = prefs.getString('email') ?? 'fahmy8394@gmail.com';
-      _passwordController.text = prefs.getString('password') ?? '*******';
-      _dateOfBirthController.text =
-          prefs.getString('dateOfBirth') ?? '1988/01/21';
-      _heightController.text = prefs.getString('height') ?? '200 CM';
-      _weightController.text = prefs.getString('weight') ?? '75 KG';
-      _genderController.text = prefs.getString('gender') ?? 'Male';
+      _firstNameController.text = prefs.getString('firstName') ?? '';
+      _lastNameController.text = prefs.getString('lastName') ?? '';
+      _phoneController.text = prefs.getString('phone') ?? '';
+      _emailController.text = prefs.getString('email') ?? '';
+      _passwordController.text = prefs.getString('password') ?? '';
+      _dateOfBirthController.text = prefs.getString('dateOfBirth') ?? '';
+      _heightController.text = prefs.getString('height') ?? '';
+      _weightController.text = prefs.getString('weight') ?? '';
+      _genderController.text = prefs.getString('gender') ?? '';
       _profileImagePath = prefs.getString('profileImagePath');
     });
   }
@@ -179,11 +178,12 @@ class _EditProfileState extends State<EditProfile> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: Column(
                 children: [
-                  _buildTextField('firstName', _firstNameController,
+                  _buildTextField('FirstName', _firstNameController,
                       icon: Icons.person),
-                  _buildTextField('lastName', _lastNameController,
+                  _buildTextField('LastName', _emailController,
                       icon: Icons.person),
-                  _buildTextField('Email', _emailController, icon: Icons.email),
+                  _buildTextField('Email', _lastNameController,
+                      icon: Icons.email),
                   _buildTextField('No Telephone', _phoneController,
                       icon: Icons.phone),
                   _buildTextField('Password', _passwordController,
