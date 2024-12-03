@@ -20,8 +20,8 @@ class MyWidget extends StatefulWidget {
 
 class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
   String? firstName;
-  String? email;
   String? lastName;
+  String? email;
   String? phone;
   String? gender;
   String? dateOfBirth;
