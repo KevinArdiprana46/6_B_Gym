@@ -5,7 +5,9 @@ import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
 import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
 import 'package:tubes_pbp_6/view/home.dart';
-import 'package:tubes_pbp_6/view/Profile/profile.dart'; // Add your Profile page import
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
+import 'package:tubes_pbp_6/client/layananClient.dart';
+import 'package:tubes_pbp_6/entity/layanan.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
@@ -15,8 +17,9 @@ class BookClass extends StatefulWidget {
 }
 
 class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
-  String selectedDate = "14";
+  String selectedDate = "";
   MotionTabBarController? _motionTabBarController;
+  late Future<List<Layanan>> _layananFuture;
 
   @override
   void initState() {
@@ -26,6 +29,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
+    _layananFuture = LayananClient.getLayananByDate(
+        selectedDate); // Fetch layanan based on selected date
   }
 
   @override
@@ -36,7 +41,10 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
 
   void _onDateSelected(String date) {
     setState(() {
-      selectedDate = date;
+      selectedDate =
+          date; // Menyimpan tanggal sebagai string dengan format "dd"
+      _layananFuture = LayananClient.getLayananByDate(
+          "2024-10-$date"); // Gunakan format 'yyyy-MM-dd' pada API call
     });
   }
 
@@ -65,14 +73,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
   }
 
   void _onBookClass(String className) {
-    setState(() {
-      final classes = classSchedules[selectedDate];
-      if (classes != null) {
-        final classToBook =
-            classes.firstWhere((c) => c['className'] == className);
-        classToBook['state'] = 'ordered';
-      }
-    });
+    // Handle class booking
+    print("Booked: $className");
   }
 
   void _onCancelClass(String className) {
@@ -96,11 +98,28 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
             onDateSelected: _onDateSelected,
           ),
           Expanded(
-            child: ClassList(
-              classes: classSchedules[selectedDate] ?? [],
-              onBook: _onBookClass,
-              onCancel: _onCancelClass,
-              selectedDate: selectedDate,
+            child: FutureBuilder<List<Layanan>>(
+              future:
+                  _layananFuture, // Use the future to load data based on selected date
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: Text("No classes available for this date"));
+                } else {
+                  final services = snapshot
+                      .data!; // List of Layanan classes returned from API
+                  return ClassList(
+                    classes: services, // Pass the list of classes to the widget
+                    onBook: _onBookClass,
+                    onCancel: _onCancelClass,
+                    selectedDate: selectedDate,
+                  );
+                }
+              },
             ),
           ),
         ],
@@ -245,44 +264,51 @@ class CalendarStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    List<DateTime> dates =
+        List.generate(5, (index) => now.add(Duration(days: index)));
+
+    // Fungsi untuk mendapatkan nama hari berdasarkan DateTime.weekday
+    String getDayName(int weekday) {
+      switch (weekday) {
+        case DateTime.monday:
+          return "Mon";
+        case DateTime.tuesday:
+          return "Tue";
+        case DateTime.wednesday:
+          return "Wed";
+        case DateTime.thursday:
+          return "Thu";
+        case DateTime.friday:
+          return "Fri";
+        case DateTime.saturday:
+          return "Sat";
+        case DateTime.sunday:
+          return "Sun";
+        default:
+          return "";
+      }
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width - 70,
       height: 60,
       color: const Color.fromARGB(255, 85, 101, 232),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          DateCircle(
-            day: "Sun",
-            date: "13",
-            isSelected: selectedDate == "13",
+        children: dates.map((date) {
+          String day = getDayName(date.weekday);
+          String dateString = date.day.toString().padLeft(
+              2, '0'); // Menambahkan padding agar dua digit (misal 01, 02)
+
+          return DateCircle(
+            day: day,
+            date: dateString,
+            isSelected:
+                selectedDate == dateString, // Cek apakah tanggal ini dipilih
             onPressed: onDateSelected,
-          ),
-          DateCircle(
-            day: "Mon",
-            date: "14",
-            isSelected: selectedDate == "14",
-            onPressed: onDateSelected,
-          ),
-          DateCircle(
-            day: "Tue",
-            date: "15",
-            isSelected: selectedDate == "15",
-            onPressed: onDateSelected,
-          ),
-          DateCircle(
-            day: "Wed",
-            date: "16",
-            isSelected: selectedDate == "16",
-            onPressed: onDateSelected,
-          ),
-          DateCircle(
-            day: "Thu",
-            date: "17",
-            isSelected: selectedDate == "17",
-            onPressed: onDateSelected,
-          ),
-        ],
+          );
+        }).toList(),
       ),
     );
   }
@@ -345,7 +371,7 @@ class DateCircle extends StatelessWidget {
 }
 
 class ClassList extends StatelessWidget {
-  final List<Map<String, dynamic>> classes;
+  final List<Layanan> classes;
   final Function(String) onBook;
   final Function(String) onCancel;
   final String selectedDate;
@@ -376,13 +402,9 @@ class ClassList extends StatelessWidget {
       return ListView.builder(
         itemCount: classes.length,
         itemBuilder: (context, index) {
-          final classInfo = classes[index];
+          final classInfo = classes[index]; // Layanan object
           return ClassCard(
-            className: classInfo["className"],
-            timeStart: classInfo["timeStart"],
-            timeEnd: classInfo["timeEnd"],
-            imagePath: classInfo["imagePath"],
-            details: classInfo,
+            layanan: classInfo, // Mengirim objek Layanan langsung
             onBook: onBook,
             onCancel: onCancel,
             selectedDate: selectedDate,
@@ -394,22 +416,14 @@ class ClassList extends StatelessWidget {
 }
 
 class ClassCard extends StatelessWidget {
-  final String className;
-  final String timeStart;
-  final String timeEnd;
-  final String imagePath;
-  final Map<String, dynamic> details;
+  final Layanan layanan; // Ganti Map<String, dynamic> dengan Layanan
   final Function(String) onBook;
   final Function(String) onCancel;
   final String selectedDate;
 
   const ClassCard({
     Key? key,
-    required this.className,
-    required this.timeStart,
-    required this.timeEnd,
-    required this.imagePath,
-    required this.details,
+    required this.layanan,
     required this.onBook,
     required this.onCancel,
     required this.selectedDate,
@@ -419,7 +433,7 @@ class ClassCard extends StatelessWidget {
     final currentClasses = classSchedules[selectedDate] ?? [];
 
     return currentClasses.any((classItem) {
-      if (classItem['className'] == className ||
+      if (classItem['className'] == layanan.className ||
           classItem['state'] != 'ordered' && classItem['state'] != 'booked') {
         return false;
       }
@@ -497,9 +511,11 @@ class ClassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String state = details['state'] ?? 'available';
-    final int availableSlots = details['availableSlots'] ?? 0;
-    final bool conflict = _isConflict(timeStart, timeEnd);
+    final String state = layanan.state; // Menggunakan atribut dari Layanan
+    final int availableSlots =
+        layanan.availableSlots; // Menggunakan atribut dari Layanan
+    final bool conflict = _isConflict(
+        layanan.timeStart, layanan.timeEnd); // Menggunakan data dari layanan
 
     return GestureDetector(
       onTap: () {
@@ -508,11 +524,11 @@ class ClassCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => SelectedClassBook(
-                className: className,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
-                imagePath: imagePath,
-                details: details,
+                className: layanan.className, // Menggunakan data dari layanan
+                timeStart: layanan.timeStart,
+                timeEnd: layanan.timeEnd,
+                imagePath: layanan.imagePath,
+                details: layanan.toJson(),
                 onBook: onBook,
                 onCancel: onCancel,
               ),
@@ -529,7 +545,8 @@ class ClassCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
                 image: DecorationImage(
-                  image: AssetImage(imagePath),
+                  image: AssetImage(
+                      layanan.imagePath), // Menggunakan data dari layanan
                   fit: BoxFit.cover,
                 ),
               ),
@@ -552,7 +569,7 @@ class ClassCard extends StatelessWidget {
               left: 16,
               bottom: 16,
               child: Text(
-                className,
+                layanan.className, // Menggunakan data dari layanan
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 32,
@@ -565,7 +582,7 @@ class ClassCard extends StatelessWidget {
               bottom:
                   40, // Adjust as needed to place it above timeStart-timeEnd
               child: Text(
-                '$availableSlots slot left', // Displaying available slots
+                '$availableSlots slot left', // Menggunakan data dari layanan
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18, // Adjust font size as needed
@@ -577,7 +594,7 @@ class ClassCard extends StatelessWidget {
               right: 65,
               bottom: 16,
               child: Text(
-                "$timeStart - $timeEnd WIB",
+                "${layanan.timeStart} - ${layanan.timeEnd} WIB", // Menggunakan data dari layanan
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
