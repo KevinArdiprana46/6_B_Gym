@@ -21,11 +21,9 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
 
   Profile? _profileData;
 
@@ -49,11 +47,9 @@ class _EditProfileState extends State<EditProfile> {
             _lastNameController.text = profileData.nama_belakang ?? '';
             _emailController.text = profileData.email ?? '';
             _phoneController.text = profileData.nomor_telepon ?? '';
-            _passwordController.text = profileData.password ?? '';
             _dateOfBirthController.text = profileData.tanggal_lahir ?? '';
             _heightController.text = profileData.height?.toString() ?? '';
             _weightController.text = profileData.weight?.toString() ?? '';
-            _genderController.text = profileData.jenis_kelamin ?? '';
             _profile_picture = profileData.profile_picture;
           });
         }
@@ -72,11 +68,9 @@ class _EditProfileState extends State<EditProfile> {
         nama_belakang: _lastNameController.text,
         email: _emailController.text,
         nomor_telepon: _phoneController.text,
-        password: _passwordController.text,
         tanggal_lahir: _dateOfBirthController.text,
         height: int.parse(_heightController.text),
         weight: int.parse(_weightController.text),
-        jenis_kelamin: _genderController.text,
         profile_picture:
             _profile_picture, // Pastikan ini terisi dengan path gambar baru
       );
@@ -223,8 +217,6 @@ class _EditProfileState extends State<EditProfile> {
                   _buildTextField('Email', _emailController, icon: Icons.email),
                   _buildTextField('Phone Number', _phoneController,
                       icon: Icons.phone),
-                  _buildTextField('Password', _passwordController,
-                      obscureText: true, icon: Icons.lock),
                   _buildTextField('Date of Birth', _dateOfBirthController,
                       icon: Icons.calendar_today),
                   Row(
@@ -240,8 +232,6 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ],
                   ),
-                  _buildTextField('Gender', _genderController,
-                      icon: Icons.person),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _saveProfileData,

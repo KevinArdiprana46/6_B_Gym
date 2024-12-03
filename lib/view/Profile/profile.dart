@@ -258,7 +258,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  // rield untuk profile
+  // field untuk profile
   Widget _buildProfileField(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

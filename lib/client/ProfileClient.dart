@@ -62,11 +62,9 @@ class ProfileClient {
         'nama_belakang': profile.nama_belakang,
         'email': profile.email,
         'nomor_telepon': profile.nomor_telepon,
-        'password': profile.password,
         'tanggal_lahir': profile.tanggal_lahir,
         'height': profile.height,
         'weight': profile.weight,
-        'jenis_kelamin': profile.jenis_kelamin,
         'profile_picture': profile.profile_picture,
       });
 
