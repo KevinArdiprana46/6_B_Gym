@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/view/home.dart';
 import 'package:tubes_pbp_6/view/login_register/register.dart';
+import 'package:tubes_pbp_6/client/UserClient.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -15,6 +16,33 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final response = await UserClient.login(usernameController.text, passwordController.text);
+        Navigator.pushReplacement(
+          
+          context,
+          MaterialPageRoute(builder: (context) => BerandaView()),
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Login Error"),
+            content: Text(e.toString()),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +74,7 @@ class _LoginViewState extends State<LoginView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'LOGIN',
                     style: TextStyle(
                       fontSize: 30,
@@ -67,7 +95,7 @@ class _LoginViewState extends State<LoginView> {
             ),
             // Bagian form login
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: <Widget>[
                   Form(
@@ -135,17 +163,7 @@ class _LoginViewState extends State<LoginView> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // Aksi login
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BerandaView(),
-                                  ),
-                                );
-                              }
-                            },
+                            onPressed: _login,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF5565E8),
                               shape: RoundedRectangleBorder(

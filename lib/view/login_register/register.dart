@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubes_pbp_6/view/login_register/login.dart';
 import 'package:tubes_pbp_6/view/login_register/register2.dart';
 
@@ -17,20 +16,6 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // Fungsi untuk menyimpan data ke SharedPreferences
-  void _saveProfileData(
-    String firstName,
-    String lastName,
-    String email,
-    String password,
-  ) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('firstName', firstName);
-    await prefs.setString('lastName', lastName);
-    await prefs.setString('email', email);
-    await prefs.setString('password', password);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,32 +27,15 @@ class _RegisterViewState extends State<RegisterView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 60),
-              // Gambar
-              Image.asset(
-                'lib/assets/registerAsset/vektorRegister1.png',
-                height: 200,
-              ),
+              Image.asset('lib/assets/registerAsset/vektorRegister1.png', height: 200),
               SizedBox(height: 20),
-              // Teks judul
-              Text(
-                "Hey there,",
-                style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-              ),
-              Text(
-                "Create an Account",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
+              Text("Hey there,", style: TextStyle(fontSize: 18, color: Colors.grey[700])),
+              Text("Create an Account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
               SizedBox(height: 20),
-              // Form
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    // First Name
                     TextFormField(
                       controller: firstNameController,
                       decoration: InputDecoration(
@@ -75,10 +43,7 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.person),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -88,7 +53,6 @@ class _RegisterViewState extends State<RegisterView> {
                       },
                     ),
                     SizedBox(height: 15),
-                    // Last Name
                     TextFormField(
                       controller: lastNameController,
                       decoration: InputDecoration(
@@ -96,10 +60,7 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.person_outline),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -109,7 +70,6 @@ class _RegisterViewState extends State<RegisterView> {
                       },
                     ),
                     SizedBox(height: 15),
-                    // Email
                     TextFormField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -117,20 +77,16 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.email),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Masukan Email anda';
+                          return 'Please enter your email';
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 15),
-                    // Password
                     TextFormField(
                       controller: passwordController,
                       obscureText: true,
@@ -139,10 +95,7 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.lock),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -151,62 +104,48 @@ class _RegisterViewState extends State<RegisterView> {
                         return null;
                       },
                     ),
+                    SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterView2(
+                                  firstName: firstNameController.text,
+                                  lastName: lastNameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF5565E8),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        child: Text('Next', style: TextStyle(fontSize: 16, color: Colors.white)),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Already have an account?", style: TextStyle(color: Colors.grey)),
+                        TextButton(
+                          onPressed: () {
+                            Navigator(context) => LoginView();
+                          },
+                          child: Text('Login'),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              SizedBox(height: 30),
-              // Button Register
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _saveProfileData(
-                          firstNameController.text,
-                          lastNameController.text,
-                          emailController.text,
-                          passwordController.text);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RegisterView2(),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF5565E8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: Text(
-                    'Register',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have an account?",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginView(),
-                        ),
-                      );
-                    },
-                    child: Text('Login'),
-                  ),
-                ],
               ),
             ],
           ),

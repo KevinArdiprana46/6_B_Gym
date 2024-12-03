@@ -1,12 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
+import 'package:tubes_pbp_6/client/profileClient.dart';
 import 'package:tubes_pbp_6/view/Profile/editprofile.dart';
 import 'package:tubes_pbp_6/view/login_register/login.dart';
 import 'package:tubes_pbp_6/view/home.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
+import 'package:tubes_pbp_6/entity/profile.dart';
 
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
@@ -32,12 +34,12 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _loadProfileData();
     _motionTabBarController = MotionTabBarController(
       initialIndex: 4,
       length: 5,
       vsync: this,
     );
+    _loadProfileData();
   }
 
   @override
@@ -46,21 +48,32 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // Load profile data from SharedPreferences
+  // Load profile data from API
   Future<void> _loadProfileData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      final response = await ProfileClient.getProfile();
+      if (response.statusCode == 200) {
+        final profileData = Profile.fromJson(jsonDecode(response.body));
 
-    setState(() {
-      firstName = prefs.getString('firstName') ?? 'No firstName';
-      lastName = prefs.getString('lastName') ?? 'No lastName';
-      email = prefs.getString('email') ?? 'No Email';
-      phone = prefs.getString('phone') ?? 'No Phone';
-      gender = prefs.getString('gender') ?? 'No Gender';
-      dateOfBirth = prefs.getString('dateOfBirth') ?? 'No Date of Birth';
-      height = prefs.getString('height') ?? 'No Height';
-      weight = prefs.getString('weight') ?? 'No Weight';
-      profileImagePath = prefs.getString('profileImagePath');
-    });
+        if (mounted) {
+          setState(() {
+            firstName = profileData.nama_depan ?? 'No firstName';
+            lastName = profileData.nama_belakang ?? 'No lastName';
+            email = profileData.email ?? 'No Email';
+            phone = profileData.nomor_telepon ?? 'No Phone';
+            gender = profileData.jenis_kelamin ?? 'No Gender';
+            dateOfBirth = profileData.tanggal_lahir ?? 'No Date of Birth';
+            height = profileData.height.toString() ?? 'No Height';
+            weight = profileData.weight.toString() ?? 'No Weight';
+            profileImagePath = profileData.profile_picture ?? 'No Picture';
+          });
+        }
+      } else {
+        throw Exception("Failed to fetch profile data");
+      }
+    } catch (e) {
+      print("Error fetching profile data: $e");
+    }
   }
 
   // Handling tab selection
@@ -124,7 +137,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                 children: [
                   CircleAvatar(
                     radius: 60,
-                    backgroundColor: Colors.white, // Background for the image
+                    backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 55,
                       backgroundImage: profileImagePath != null
@@ -135,9 +148,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    firstName != null
-                        ? firstName!
-                        : 'No Name', // Menampilkan firstName
+                    firstName ?? 'No Name',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -146,9 +157,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    lastName != null
-                        ? lastName!
-                        : 'No Email', // Menampilkan email
+                    lastName ?? 'No Email',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white70,
@@ -163,23 +172,24 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  _buildProfileField('No Telephone', phone!, Icons.phone),
                   _buildProfileField(
-                      'Date of Birth', dateOfBirth!, Icons.calendar_today),
+                      'No Telephone', phone ?? 'N/A', Icons.phone),
+                  _buildProfileField('Date of Birth', dateOfBirth ?? 'N/A',
+                      Icons.calendar_today),
                   Row(
                     children: [
                       Expanded(
-                        child:
-                            _buildProfileField('Height', height!, Icons.height),
+                        child: _buildProfileField(
+                            'Height', height ?? 'N/A', Icons.height),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildProfileField(
-                            'Weight', weight!, Icons.monitor_weight),
+                            'Weight', weight ?? 'N/A', Icons.monitor_weight),
                       ),
                     ],
                   ),
-                  _buildProfileField('Gender', gender!, Icons.person),
+                  _buildProfileField('Gender', gender ?? 'N/A', Icons.person),
                 ],
               ),
             ),
@@ -251,8 +261,8 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: TextEditingController(text: value),
-        enabled: false, // Non-editable for Profile Page
-        readOnly: true, // Ensure the field is not editable
+        enabled: false,
+        readOnly: true,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, color: const Color(0xFF5565E8)),
