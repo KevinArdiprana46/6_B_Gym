@@ -55,7 +55,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
         case 4:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MyWidget()),
+            MaterialPageRoute(builder: (context) => ProfilePage()),
           );
           break;
         default:

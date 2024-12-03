@@ -10,15 +10,16 @@ import 'package:tubes_pbp_6/view/home.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 import 'package:tubes_pbp_6/entity/profile.dart';
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin {
   String? firstName;
   String? lastName;
   String? email;
@@ -27,7 +28,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
   String? dateOfBirth;
   String? height;
   String? weight;
-  String? profileImagePath;
+  String? profile_picture;
 
   MotionTabBarController? _motionTabBarController;
 
@@ -65,7 +66,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
             dateOfBirth = profileData.tanggal_lahir ?? 'No Date of Birth';
             height = profileData.height.toString() ?? 'No Height';
             weight = profileData.weight.toString() ?? 'No Weight';
-            profileImagePath = profileData.profile_picture ?? 'No Picture';
+            profile_picture = profileData.profile_picture ?? 'No Picture';
           });
         }
       } else {
@@ -94,7 +95,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const MyWidget()),
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
         );
         break;
       default:
@@ -115,16 +116,6 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF5565E8),
-        actions: [
-          IconButton(
-            onPressed: _logout,
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-          ),
-        ],
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -135,13 +126,25 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.end, // tombol logout di pojok kanan
+                    children: [
+                      IconButton(
+                        color: Colors.red,
+                        onPressed: _logout,
+                        icon: const Icon(Icons.logout),
+                        tooltip: 'Logout',
+                      ),
+                    ],
+                  ),
                   CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 55,
-                      backgroundImage: profileImagePath != null
-                          ? FileImage(File(profileImagePath!))
+                      backgroundImage: profile_picture != null
+                          ? FileImage(File(profile_picture!))
                           : const AssetImage('images/download.jpg')
                               as ImageProvider,
                     ),
@@ -157,7 +160,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    lastName ?? 'No Email',
+                    email ?? 'No Email',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white70,
@@ -206,7 +209,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
                     ),
                   );
                   if (result == true) {
-                    _loadProfileData(); // Refresh data if profile is updated
+                    _loadProfileData(); // Refresh data
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -255,7 +258,7 @@ class _ProfilePageState extends State<MyWidget> with TickerProviderStateMixin {
     );
   }
 
-  // Widget to build the profile field
+  // rield untuk profile
   Widget _buildProfileField(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

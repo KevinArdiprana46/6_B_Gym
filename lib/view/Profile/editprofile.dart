@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubes_pbp_6/view/Profile/camera.dart';
+import 'package:tubes_pbp_6/client/ProfileClient.dart';
+import 'package:tubes_pbp_6/entity/profile.dart';
+import 'package:tubes_pbp_6/view/Profile/profile.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -12,7 +15,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String? _profileImagePath;
+  String? _profile_picture;
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -24,46 +27,79 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
 
+  Profile? _profileData;
+
   @override
   void initState() {
     super.initState();
     _loadProfileData();
   }
 
+  // Load profile data from API
   Future<void> _loadProfileData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _firstNameController.text = prefs.getString('firstName') ?? '';
-      _lastNameController.text = prefs.getString('lastName') ?? '';
-      _phoneController.text = prefs.getString('phone') ?? '';
-      _emailController.text = prefs.getString('email') ?? '';
-      _passwordController.text = prefs.getString('password') ?? '';
-      _dateOfBirthController.text = prefs.getString('dateOfBirth') ?? '';
-      _heightController.text = prefs.getString('height') ?? '';
-      _weightController.text = prefs.getString('weight') ?? '';
-      _genderController.text = prefs.getString('gender') ?? '';
-      _profileImagePath = prefs.getString('profileImagePath');
-    });
+    try {
+      final response = await ProfileClient.getProfile();
+      if (response.statusCode == 200) {
+        final profileData = Profile.fromJson(jsonDecode(response.body));
+
+        if (mounted) {
+          setState(() {
+            _profileData = profileData;
+            _firstNameController.text = profileData.nama_depan ?? '';
+            _lastNameController.text = profileData.nama_belakang ?? '';
+            _emailController.text = profileData.email ?? '';
+            _phoneController.text = profileData.nomor_telepon ?? '';
+            _passwordController.text = profileData.password ?? '';
+            _dateOfBirthController.text = profileData.tanggal_lahir ?? '';
+            _heightController.text = profileData.height?.toString() ?? '';
+            _weightController.text = profileData.weight?.toString() ?? '';
+            _genderController.text = profileData.jenis_kelamin ?? '';
+            _profile_picture = profileData.profile_picture;
+          });
+        }
+      } else {
+        throw Exception("Failed to fetch profile data");
+      }
+    } catch (e) {
+      print("Error fetching profile data: $e");
+    }
   }
 
   Future<void> _saveProfileData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (_profileData != null) {
+      final updatedProfile = Profile(
+        nama_depan: _firstNameController.text,
+        nama_belakang: _lastNameController.text,
+        email: _emailController.text,
+        nomor_telepon: _phoneController.text,
+        password: _passwordController.text,
+        tanggal_lahir: _dateOfBirthController.text,
+        height: int.parse(_heightController.text),
+        weight: int.parse(_weightController.text),
+        jenis_kelamin: _genderController.text,
+        profile_picture:
+            _profile_picture, // Pastikan ini terisi dengan path gambar baru
+      );
 
-    // Simpan data yang diperbarui
-    await prefs.setString('firstName', _firstNameController.text);
-    await prefs.setString('lastName', _lastNameController.text);
-    await prefs.setString('phone', _phoneController.text);
-    await prefs.setString('email', _emailController.text);
-    await prefs.setString('password', _passwordController.text);
-    await prefs.setString('dateOfBirth', _dateOfBirthController.text);
-    await prefs.setString('height', _heightController.text);
-    await prefs.setString('weight', _weightController.text);
-    await prefs.setString('gender', _genderController.text);
-
-    if (_profileImagePath != null) {
-      await prefs.setString('profileImagePath', _profileImagePath!);
+      try {
+        final response = await ProfileClient.update(profile: updatedProfile);
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Profile updated successfully!")),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ProfilePage()), // Mengarah ke halaman profil setelah update
+          );
+        } else {
+          throw Exception("Failed to update profile");
+        }
+      } catch (e) {
+        print("Error saving profile data: $e");
+      }
     }
-    Navigator.pop(context, true);
   }
 
   Future<void> _showImageSourceActionSheet() async {
@@ -83,7 +119,7 @@ class _EditProfileState extends State<EditProfile> {
                 );
                 if (imagePath != null) {
                   setState(() {
-                    _profileImagePath = imagePath;
+                    _profile_picture = imagePath; // Menyimpan path gambar
                   });
                 }
               },
@@ -93,7 +129,8 @@ class _EditProfileState extends State<EditProfile> {
               title: Text('Choose from Gallery'),
               onTap: () async {
                 Navigator.pop(context);
-                await _pickImage(ImageSource.gallery);
+                await _pickImage(
+                    ImageSource.gallery); // Pilih gambar dari galeri
               },
             ),
           ],
@@ -106,7 +143,7 @@ class _EditProfileState extends State<EditProfile> {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
       setState(() {
-        _profileImagePath = image.path;
+        _profile_picture = image.path; // Menyimpan path gambar
       });
     }
   }
@@ -148,10 +185,11 @@ class _EditProfileState extends State<EditProfile> {
                     children: [
                       CircleAvatar(
                         radius: 45,
-                        backgroundImage: _profileImagePath != null
-                            ? FileImage(File(_profileImagePath!))
+                        backgroundImage: _profile_picture != null
+                            ? FileImage(File(
+                                _profile_picture!)) // Menampilkan gambar baru
                             : AssetImage('images/download.jpg')
-                                as ImageProvider,
+                                as ImageProvider, // Gambar default jika tidak ada gambar
                       ),
                       Positioned(
                         bottom: 0,
@@ -178,13 +216,12 @@ class _EditProfileState extends State<EditProfile> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: Column(
                 children: [
-                  _buildTextField('FirstName', _firstNameController,
+                  _buildTextField('First Name', _firstNameController,
                       icon: Icons.person),
-                  _buildTextField('LastName', _emailController,
+                  _buildTextField('Last Name', _lastNameController,
                       icon: Icons.person),
-                  _buildTextField('Email', _lastNameController,
-                      icon: Icons.email),
-                  _buildTextField('No Telephone', _phoneController,
+                  _buildTextField('Email', _emailController, icon: Icons.email),
+                  _buildTextField('Phone Number', _phoneController,
                       icon: Icons.phone),
                   _buildTextField('Password', _passwordController,
                       obscureText: true, icon: Icons.lock),

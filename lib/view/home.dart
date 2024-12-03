@@ -60,7 +60,7 @@ class _BerandaViewState extends State<BerandaView>
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyWidget()),
+          MaterialPageRoute(builder: (context) => ProfilePage()),
         );
         break;
       default:
