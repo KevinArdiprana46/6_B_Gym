@@ -3,7 +3,8 @@ import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
-// import 'package:tubes_pbp_6/view/reviewPage.dart';
+import 'package:tubes_pbp_6/view/reviewClass/pilihReview.dart';
+
 
 class BerandaView extends StatefulWidget {
   const BerandaView({super.key});
@@ -41,10 +42,10 @@ class _BerandaViewState extends State<BerandaView>
         );
         break;
       case 1:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ReviewPage()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PilihReview()),
+        );
         break;
       case 2:
         Navigator.push(
@@ -103,7 +104,7 @@ class _BerandaViewState extends State<BerandaView>
         tabBarColor: Colors.white,
         onTabItemSelected: _onItemTapped,
       ),
-      body: const HomeContent(), // Tetap menggunakan konten Home
+      body: const HomeContent(), 
     );
   }
 }
