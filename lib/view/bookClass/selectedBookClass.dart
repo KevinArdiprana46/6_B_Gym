@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/entity/booking.dart'; // Import entity Booking
+import 'package:tubes_pbp_6/client/bookingClient.dart'; // Import client BookingClient
+import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
+import 'dart:convert';
 
 class SelectedClassBook extends StatelessWidget {
   final String className;
@@ -22,8 +26,36 @@ class SelectedClassBook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the current state of the class
     final String state = details['state'] ?? 'available';
+
+    // Fungsi untuk memesan kelas
+    // Fungsi untuk memesan kelas, dipanggil saat tombol booking ditekan
+    void _bookClass() async {
+      try {
+        // Ambil layanan_id dari details
+        final layananId = details['layanan_id']; // Pastikan ini integer
+
+        if (layananId == null) {
+          throw Exception('Layanan ID not found');
+        }
+
+        // Panggil fungsi untuk melakukan booking
+        await BookingClient.bookClass(layananId);
+
+        // Tampilkan SnackBar jika booking berhasil
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Class successfully booked!')),
+        );
+
+        // Kembali ke halaman sebelumnya setelah booking berhasil
+        Navigator.pop(context);
+      } catch (e) {
+        // Tampilkan pesan error jika terjadi kesalahan
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 85, 101, 232),
@@ -95,7 +127,7 @@ class SelectedClassBook extends StatelessWidget {
                           color: Colors.grey),
                       const SizedBox(width: 8),
                       Text(
-                        "Burned Calories: ${details['burnedCalories']}",
+                        "Burned Calories: ${details['burned_calories']}",
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -167,7 +199,7 @@ class SelectedClassBook extends StatelessWidget {
                         : ElevatedButton(
                             onPressed: () {
                               if (state == 'available') {
-                                onBook(details['className']);
+                                _bookClass(); // Call the function to book the class
                               } else if (state == 'ordered') {
                                 onCancel(details['className']);
                               }
