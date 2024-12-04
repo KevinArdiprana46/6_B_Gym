@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:tubes_pbp_6/entity/updateProfileResponse.dart';
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import '../entity/profile.dart';
 
@@ -36,14 +35,14 @@ class ProfileClient {
   }
 
   // Update Profile with Image (Multipart Request)
-  // Update Profile with Image (Multipart Request)
   static Future<http.Response> update({required Profile profile}) async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
-      print("token: $token");
       if (token == null || token.isEmpty) {
         throw Exception("No token found. Please login first.");
       }
+      print('ini profile');
+      print(profile);
 
       final url = Uri.parse('$baseUrl$updateProfileEndpoint');
       var request = http.MultipartRequest('POST', url)
@@ -51,33 +50,32 @@ class ProfileClient {
           'Authorization': 'Bearer $token',
         });
 
-      // Tambahkan field lainnya dari Profile
-      request.fields['nama_depan'] = profile.nama_depan!;
-      request.fields['nama_belakang'] = profile.nama_belakang!;
-      request.fields['email'] = profile.email!;
-      request.fields['phone_number'] = profile.nomor_telepon!;
+      // Tambahkan field lainnya
+      request.fields['nama_depan'] = profile.nama_depan ?? '';
+      request.fields['nama_belakang'] = profile.nama_belakang ?? '';
+      request.fields['email'] = profile.email ?? '';
+      request.fields['nomor_telepon'] = profile.nomor_telepon ?? '';
+      request.fields['tanggal_lahir'] = profile.tanggal_lahir ?? '';
+      request.fields['height'] = profile.height?.toString() ?? '';
+      request.fields['weight'] = profile.weight?.toString() ?? '';
 
-      // Handle profile image if it's present
-      if (profile.profile_picture != null) {
-        var imageFile = await http.MultipartFile.fromPath('profile_image',
-            profile.profile_picture! // Adjust based on image type
-            );
+      // Menambahkan gambar jika ada
+      if (profile.profile_picture != null &&
+          profile.profile_picture!.isNotEmpty) {
+        // Jika profile_picture adalah path lokal
+        var imageFile = await http.MultipartFile.fromPath(
+          'profile_picture',
+          profile.profile_picture!, // Path gambar
+          contentType: MediaType(
+              'image', 'jpeg'), // Tentukan jenis konten sesuai dengan gambar
+        );
         request.files.add(imageFile);
       }
 
-      // Kirim permintaan
       final response = await request.send();
-
-      // Tunggu respons
-      final res = await http.Response.fromStream(response);
-      if (res.statusCode != 200) {
-        print(res.body);
-        throw Exception(res.reasonPhrase);
-      }
-
-      return res;
+      return await http.Response.fromStream(response);
     } catch (e) {
-      return Future.error("Error during update profile: $e");
+      return Future.error("Error during profile update: $e");
     }
   }
 }
