@@ -66,7 +66,6 @@ class _EditProfileState extends State<EditProfile> {
       final updatedProfile = Profile(
         nama_depan: _firstNameController.text,
         nama_belakang: _lastNameController.text,
-        email: _emailController.text,
         nomor_telepon: _phoneController.text,
         tanggal_lahir: _dateOfBirthController.text,
         height: int.parse(_heightController.text),
@@ -131,7 +130,7 @@ class _EditProfileState extends State<EditProfile> {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
       setState(() {
-        _profile_picture = image.path; // Menyimpan path gambar
+        _profile_picture = image.path;
       });
     }
   }
@@ -174,10 +173,8 @@ class _EditProfileState extends State<EditProfile> {
                       CircleAvatar(
                         radius: 45,
                         backgroundImage: _profile_picture != null
-                            ? FileImage(File(
-                                _profile_picture!)) // Menampilkan gambar baru
-                            : AssetImage('images/download.jpg')
-                                as ImageProvider, // Gambar default jika tidak ada gambar
+                            ? FileImage(File(_profile_picture!))
+                            : AssetImage('') as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
@@ -208,7 +205,6 @@ class _EditProfileState extends State<EditProfile> {
                       icon: Icons.person),
                   _buildTextField('Last Name', _lastNameController,
                       icon: Icons.person),
-                  _buildTextField('Email', _emailController, icon: Icons.email),
                   _buildTextField('Phone Number', _phoneController,
                       icon: Icons.phone),
                   _buildTextField('Date of Birth', _dateOfBirthController,

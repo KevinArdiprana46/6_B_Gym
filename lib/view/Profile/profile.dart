@@ -127,8 +127,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, // tombol logout di pojok kanan
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
                         color: Colors.red,
@@ -139,12 +138,14 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                   CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.white,
-                    child: CircleAvatar(
-                      radius: 55,
-                    ),
+                    radius: 50,
+                    backgroundImage: profile_picture != null
+                        ? NetworkImage(
+                                'http://10.0.2.2:8000/storage/imagesProfil/$profile_picture')
+                            as ImageProvider
+                        : const NetworkImage(''),
                   ),
+                  SizedBox(height: 16),
                   const SizedBox(height: 16),
                   Text(
                     firstName ?? 'No Name',
@@ -205,7 +206,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   );
                   if (result == true) {
-                    _loadProfileData(); // Refresh data
+                    _loadProfileData();
                   }
                 },
                 style: ElevatedButton.styleFrom(

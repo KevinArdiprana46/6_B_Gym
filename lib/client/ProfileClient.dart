@@ -41,8 +41,6 @@ class ProfileClient {
       if (token == null || token.isEmpty) {
         throw Exception("No token found. Please login first.");
       }
-      print('ini profile');
-      print(profile);
 
       final url = Uri.parse('$baseUrl$updateProfileEndpoint');
       var request = http.MultipartRequest('POST', url)
@@ -50,32 +48,43 @@ class ProfileClient {
           'Authorization': 'Bearer $token',
         });
 
-      // Tambahkan field lainnya
+      // Menambahkan data profil ke request
       request.fields['nama_depan'] = profile.nama_depan ?? '';
       request.fields['nama_belakang'] = profile.nama_belakang ?? '';
-      request.fields['email'] = profile.email ?? '';
-      request.fields['nomor_telepon'] = profile.nomor_telepon ?? '';
-      request.fields['tanggal_lahir'] = profile.tanggal_lahir ?? '';
+      request.fields['phone'] = profile.nomor_telepon ?? '';
+      request.fields['date_of_birth'] = profile.tanggal_lahir ?? '';
       request.fields['height'] = profile.height?.toString() ?? '';
       request.fields['weight'] = profile.weight?.toString() ?? '';
 
-      // Menambahkan gambar jika ada
-      if (profile.profile_picture != null &&
-          profile.profile_picture!.isNotEmpty) {
-        // Jika profile_picture adalah path lokal
-        var imageFile = await http.MultipartFile.fromPath(
-          'profile_picture',
-          profile.profile_picture!, // Path gambar
-          contentType: MediaType(
-              'image', 'jpeg'), // Tentukan jenis konten sesuai dengan gambar
-        );
-        request.files.add(imageFile);
+      // Menambahkan gambar profil jika ada
+      if (profile.profile_picture != null) {
+        final profilePicFile = File(profile.profile_picture!);
+        if (await profilePicFile.exists()) {
+          request.files.add(await http.MultipartFile.fromPath(
+            'profile_picture',
+            profile.profile_picture!,
+            contentType: MediaType('image', 'jpg'),
+          ));
+        }
       }
 
       final response = await request.send();
-      return await http.Response.fromStream(response);
+      print('Response status: ${response.statusCode}');
+      print('Response headers: ${response.headers}');
+
+      if (response.statusCode == 200) {
+        return await http.Response.fromStream(response);
+      } else if (response.statusCode == 302) {
+        // Cek URL redirect
+        print('Redirected to: ${response.headers['location']}');
+        throw Exception("Redirected to login. Please login again.");
+      } else {
+        throw Exception(
+            "Failed to update profile. Status code: ${response.statusCode}");
+      }
     } catch (e) {
-      return Future.error("Error during profile update: $e");
+      print('Error: $e');
+      return Future.error("Error during update profile: $e");
     }
   }
 }
