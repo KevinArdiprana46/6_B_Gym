@@ -13,7 +13,6 @@ import 'package:tubes_pbp_6/entity/booking.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
-
   @override
   State<BookClass> createState() => _BookClassState();
 }
@@ -32,7 +31,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       vsync: this,
     );
     _layananFuture = LayananClient.getLayananWithBookingStatus(
-        '04'); // Fetch layanan based on selected date
+        '04');
   }
 
   @override
@@ -43,10 +42,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
 
   void _onDateSelected(String date) {
     setState(() {
-      selectedDate =
-          date; // Menyimpan tanggal sebagai string dengan format "dd"
-      _layananFuture = LayananClient.getLayananWithBookingStatus(
-          selectedDate); // Gunakan format 'yyyy-MM-dd' pada API call
+      selectedDate = date;
+      _layananFuture = LayananClient.getLayananWithBookingStatus(selectedDate);
     });
   }
 
@@ -60,7 +57,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           );
           break;
         case 2:
-          // Booking tab, can be left empty if we handle the booking UI within this tab
+          // Review
           break;
         case 4:
           Navigator.pushReplacement(
@@ -74,14 +71,12 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     }
   }
 
-  // Method to handle booking
   void _onBookClass(int layananId) async {
     try {
       await BookingClient.bookClass(layananId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Class successfully booked")),
       );
-      // Trigger a refresh to update the booking state
       setState(() {
         _layananFuture =
             LayananClient.getLayananWithBookingStatus(selectedDate);
@@ -93,14 +88,12 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     }
   }
 
-  // Method to handle class cancellation
   void _onCancelClass(int layananId) async {
     try {
       await BookingClient.cancelBooking(layananId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Booking successfully cancelled")),
       );
-      // Trigger a refresh to update the booking state
       setState(() {
         _layananFuture =
             LayananClient.getLayananWithBookingStatus(selectedDate);
@@ -303,7 +296,6 @@ class CalendarStrip extends StatelessWidget {
     List<DateTime> dates =
         List.generate(5, (index) => now.add(Duration(days: index)));
 
-    // Fungsi untuk mendapatkan nama hari berdasarkan DateTime.weekday
     String getDayName(int weekday) {
       switch (weekday) {
         case DateTime.monday:

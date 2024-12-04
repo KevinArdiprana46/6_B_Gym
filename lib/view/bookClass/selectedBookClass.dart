@@ -4,6 +4,8 @@ import 'package:tubes_pbp_6/client/bookingClient.dart'; // Import client Booking
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import 'dart:convert';
 
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
+
 class SelectedClassBook extends StatelessWidget {
   final String className;
   final String timeStart;
@@ -48,7 +50,8 @@ class SelectedClassBook extends StatelessWidget {
         );
 
         // Kembali ke halaman sebelumnya setelah booking berhasil
-        Navigator.pop(context);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) =>  BookClass()));
       } catch (e) {
         // Tampilkan pesan error jika terjadi kesalahan
         ScaffoldMessenger.of(context).showSnackBar(
@@ -203,7 +206,6 @@ class SelectedClassBook extends StatelessWidget {
                               } else if (state == 'ordered') {
                                 onCancel(details['className']);
                               }
-                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: state == 'ordered'
