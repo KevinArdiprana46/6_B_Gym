@@ -71,21 +71,15 @@ class _EditProfileState extends State<EditProfile> {
         tanggal_lahir: _dateOfBirthController.text,
         height: int.parse(_heightController.text),
         weight: int.parse(_weightController.text),
-        profile_picture:
-            _profile_picture, // Pastikan ini terisi dengan path gambar baru
+        profile_picture: _profile_picture,
       );
 
       try {
         final response = await ProfileClient.update(profile: updatedProfile);
         if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Profile updated successfully!")),
-          );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ProfilePage()), // Mengarah ke halaman profil setelah update
+            MaterialPageRoute(builder: (context) => ProfilePage()),
           );
         } else {
           throw Exception("Failed to update profile");
@@ -162,9 +156,9 @@ class _EditProfileState extends State<EditProfile> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: Alignment.center,
                   child: Text(
-                    'Profile',
+                    "Edit Profile",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

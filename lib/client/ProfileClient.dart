@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:tubes_pbp_6/entity/updateProfileResponse.dart';
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import '../entity/profile.dart';
 
@@ -11,20 +14,16 @@ class ProfileClient {
   // Get Profile
   static Future<http.Response> getProfile() async {
     try {
-      // Ambil token dari Shared Preferences
       final token = await SharedPreferenceHelper.getString('token');
-
-      // Validasi jika token null atau kosong
       if (token == null || token.isEmpty) {
         throw Exception("No token found. Please login first.");
       }
 
       final response = await http.get(
-        Uri.parse(
-            '$baseUrl$getProfileEndpoint'), // Gunakan Uri.parse untuk memastikan URL valid
+        Uri.parse('$baseUrl$getProfileEndpoint'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Sertakan token dalam header
+          'Authorization': 'Bearer $token',
         },
       );
 
@@ -36,42 +35,49 @@ class ProfileClient {
     }
   }
 
-  // Update Profile
-
+  // Update Profile with Image (Multipart Request)
+  // Update Profile with Image (Multipart Request)
   static Future<http.Response> update({required Profile profile}) async {
     try {
-      // Ambil token dari Shared Preferences
       final token = await SharedPreferenceHelper.getString('token');
-
-      // Validasi jika token null atau kosong
+      print("token: $token");
       if (token == null || token.isEmpty) {
         throw Exception("No token found. Please login first.");
       }
-      print('ini profile');
-      print(profile);
 
-      final url = Uri.parse(
-          '$baseUrl$updateProfileEndpoint'); // Endpoint untuk update profile tanpa ID
-      final headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // Sertakan token dalam header
-      };
+      final url = Uri.parse('$baseUrl$updateProfileEndpoint');
+      var request = http.MultipartRequest('POST', url)
+        ..headers.addAll({
+          'Authorization': 'Bearer $token',
+        });
 
-      final body = jsonEncode({
-        'nama_depan': profile.nama_depan,
-        'nama_belakang': profile.nama_belakang,
-        'email': profile.email,
-        'nomor_telepon': profile.nomor_telepon,
-        'tanggal_lahir': profile.tanggal_lahir,
-        'height': profile.height,
-        'weight': profile.weight,
-        'profile_picture': profile.profile_picture,
-      });
+      // Tambahkan field lainnya dari Profile
+      request.fields['nama_depan'] = profile.nama_depan!;
+      request.fields['nama_belakang'] = profile.nama_belakang!;
+      request.fields['email'] = profile.email!;
+      request.fields['phone_number'] = profile.nomor_telepon!;
 
-      final response = await http.post(url, headers: headers, body: body);
-      return response;
+      // Handle profile image if it's present
+      if (profile.profile_picture != null) {
+        var imageFile = await http.MultipartFile.fromPath('profile_image',
+            profile.profile_picture! // Adjust based on image type
+            );
+        request.files.add(imageFile);
+      }
+
+      // Kirim permintaan
+      final response = await request.send();
+
+      // Tunggu respons
+      final res = await http.Response.fromStream(response);
+      if (res.statusCode != 200) {
+        print(res.body);
+        throw Exception(res.reasonPhrase);
+      }
+
+      return res;
     } catch (e) {
-      return Future.error("Error during profile update: $e");
+      return Future.error("Error during update profile: $e");
     }
   }
 }

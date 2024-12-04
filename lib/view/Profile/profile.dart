@@ -143,10 +143,6 @@ class _ProfilePageState extends State<ProfilePage>
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 55,
-                      backgroundImage: profile_picture != null
-                          ? FileImage(File(profile_picture!))
-                          : const AssetImage('images/download.jpg')
-                              as ImageProvider,
                     ),
                   ),
                   const SizedBox(height: 16),
