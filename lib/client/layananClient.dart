@@ -47,13 +47,55 @@ class LayananClient {
       );
 
       if (response.statusCode == 200) {
-        List<dynamic> jsonResponse = json.decode(response.body);
-        return jsonResponse.map((item) => Layanan.fromJson(item)).toList();
+        List<dynamic> data = jsonDecode(response.body);
+        // Di sini, kita akan menggunakan data yang sudah memiliki status_booking
+        return data.map((json) => Layanan.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load layanan by date');
+        throw Exception('Failed to load layanan');
       }
     } catch (e) {
       return Future.error("Error during get layanan by date: $e");
+    }
+  }
+
+  static Future<List<Layanan>> getLayananWithBookingStatus(
+      String selectedDate) async {
+    // Ambil token dari SharedPreferences
+    final token = await SharedPreferenceHelper.getString('token');
+    if (token == null || token.isEmpty) {
+      throw Exception('Token is missing or empty');
+    }
+    
+    final url = Uri.parse(
+        'http://10.0.2.2:8000/api/layanan/date/$selectedDate/booking-status');
+
+    final response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = json.decode(response.body);
+      return jsonResponse.map((layanan) => Layanan.fromJson(layanan)).toList();
+    } else {
+      throw Exception('Failed to load layanan');
+    }
+  }
+
+  Future<List<Layanan>> getClassesWithBookingStatus() async {
+    final token = await SharedPreferenceHelper.getString('token');
+    final response = await http.get(
+      Uri.parse('$baseUrl/getAvailableClasses'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => Layanan.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load classes');
     }
   }
 }

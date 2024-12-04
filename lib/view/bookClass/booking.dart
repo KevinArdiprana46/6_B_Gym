@@ -7,7 +7,9 @@ import 'package:tubes_pbp_6/data/classData.dart';
 import 'package:tubes_pbp_6/view/home.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/client/layananClient.dart';
+import 'package:tubes_pbp_6/client/bookingClient.dart';
 import 'package:tubes_pbp_6/entity/layanan.dart';
+import 'package:tubes_pbp_6/entity/booking.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
@@ -29,8 +31,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
-    _layananFuture = LayananClient.getLayananByDate(
-        selectedDate); // Fetch layanan based on selected date
+    _layananFuture = LayananClient.getLayananWithBookingStatus(
+        '04'); // Fetch layanan based on selected date
   }
 
   @override
@@ -43,8 +45,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     setState(() {
       selectedDate =
           date; // Menyimpan tanggal sebagai string dengan format "dd"
-      _layananFuture = LayananClient.getLayananByDate(
-          "2024-10-$date"); // Gunakan format 'yyyy-MM-dd' pada API call
+      _layananFuture = LayananClient.getLayananWithBookingStatus(
+          selectedDate); // Gunakan format 'yyyy-MM-dd' pada API call
     });
   }
 
@@ -58,7 +60,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           );
           break;
         case 2:
-          // Booking
+          // Booking tab, can be left empty if we handle the booking UI within this tab
           break;
         case 4:
           Navigator.pushReplacement(
@@ -72,19 +74,47 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     }
   }
 
-  void _onBookClass(String className) {
-    // Handle class booking
-    print("Booked: $className");
+  // Method to handle booking
+  void _onBookClass(int layananId) async {
+    try {
+      await BookingClient.bookClass(layananId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Class successfully booked")),
+      );
+      // Trigger a refresh to update the booking state
+      setState(() {
+        _layananFuture =
+            LayananClient.getLayananWithBookingStatus(selectedDate);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Booking failed: $e")),
+      );
+    }
   }
 
-  void _onCancelClass(String className) {
+  // Method to handle class cancellation
+  void _onCancelClass(int layananId) async {
+    try {
+      await BookingClient.cancelBooking(layananId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Booking successfully cancelled")),
+      );
+      // Trigger a refresh to update the booking state
+      setState(() {
+        _layananFuture =
+            LayananClient.getLayananWithBookingStatus(selectedDate);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Cancellation failed: $e")),
+      );
+    }
+  }
+
+  void _updateBookingStatus() {
     setState(() {
-      final classes = classSchedules[selectedDate];
-      if (classes != null) {
-        final classToCancel =
-            classes.firstWhere((c) => c['className'] == className);
-        classToCancel['state'] = 'available';
-      }
+      _layananFuture = LayananClient.getLayananWithBookingStatus(selectedDate);
     });
   }
 
@@ -110,13 +140,18 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
                   return const Center(
                       child: Text("No classes available for this date"));
                 } else {
-                  final services = snapshot
-                      .data!; // List of Layanan classes returned from API
-                  return ClassList(
-                    classes: services, // Pass the list of classes to the widget
-                    onBook: _onBookClass,
-                    onCancel: _onCancelClass,
-                    selectedDate: selectedDate,
+                  final services = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: services.length,
+                    itemBuilder: (context, index) {
+                      final layanan = services[index];
+                      return ClassCard(
+                        layanan: layanan,
+                        selectedDate: selectedDate,
+                        onBook: (className) => _onBookClass(layanan.id),
+                        onCancel: (className) => _onCancelClass(layanan.id),
+                      );
+                    },
                   );
                 }
               },
@@ -416,7 +451,7 @@ class ClassList extends StatelessWidget {
 }
 
 class ClassCard extends StatelessWidget {
-  final Layanan layanan; // Ganti Map<String, dynamic> dengan Layanan
+  final Layanan layanan;
   final Function(String) onBook;
   final Function(String) onCancel;
   final String selectedDate;
@@ -461,6 +496,8 @@ class ClassCard extends StatelessWidget {
         return Colors.green;
       case 'booked':
         return Colors.red;
+      case 'available':
+        return const Color.fromARGB(255, 85, 101, 232);
       default:
         return const Color.fromARGB(255, 85, 101, 232);
     }
@@ -473,6 +510,8 @@ class ClassCard extends StatelessWidget {
         return 'O\nR\nD\nE\nR\nE\nD';
       case 'booked':
         return 'B\nO\nO\nK\nE\nD';
+      case 'available':
+        return 'O\nR\nD\nE\nR';
       default:
         return 'O\nR\nD\nE\nR';
     }
@@ -500,6 +539,12 @@ class ClassCard extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 12,
         );
+      case 'available':
+        return const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        );
       default:
         return const TextStyle(
           color: Colors.white,
@@ -516,7 +561,6 @@ class ClassCard extends StatelessWidget {
         layanan.availableSlots; // Menggunakan atribut dari Layanan
     final bool conflict = _isConflict(
         layanan.timeStart, layanan.timeEnd); // Menggunakan data dari layanan
-
     return GestureDetector(
       onTap: () {
         if (availableSlots > 0 && !conflict) {
