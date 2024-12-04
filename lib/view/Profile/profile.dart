@@ -140,12 +140,10 @@ class _ProfilePageState extends State<ProfilePage>
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: profile_picture != null
-                        ? NetworkImage(
-                                'http://10.0.2.2:8000/storage/imagesProfil/$profile_picture')
+                        ? const NetworkImage('profile_pictures/1733320795.jpeg')
                             as ImageProvider
                         : const NetworkImage(''),
                   ),
-                  SizedBox(height: 16),
                   const SizedBox(height: 16),
                   Text(
                     firstName ?? 'No Name',

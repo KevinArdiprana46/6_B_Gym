@@ -37,10 +37,16 @@ class ProfileClient {
   // Update Profile with Image (Multipart Request)
   static Future<http.Response> update({required Profile profile}) async {
     try {
+      // Ambil token dari SharedPreferences
       final token = await SharedPreferenceHelper.getString('token');
+
+      // Validasi jika token null atau kosong
       if (token == null || token.isEmpty) {
         throw Exception("No token found. Please login first.");
       }
+
+      print('Ini profile');
+      print(profile);
 
       final url = Uri.parse('$baseUrl$updateProfileEndpoint');
       var request = http.MultipartRequest('POST', url)
@@ -51,6 +57,7 @@ class ProfileClient {
       // Menambahkan data profil ke request
       request.fields['nama_depan'] = profile.nama_depan ?? '';
       request.fields['nama_belakang'] = profile.nama_belakang ?? '';
+      request.fields['email'] = profile.email ?? '';
       request.fields['phone'] = profile.nomor_telepon ?? '';
       request.fields['date_of_birth'] = profile.tanggal_lahir ?? '';
       request.fields['height'] = profile.height?.toString() ?? '';
@@ -63,27 +70,21 @@ class ProfileClient {
           request.files.add(await http.MultipartFile.fromPath(
             'profile_picture',
             profile.profile_picture!,
-            contentType: MediaType('image', 'jpg'),
+            contentType:
+                MediaType('image', 'jpg'), // Atau 'png' jika formatnya PNG
           ));
         }
       }
 
+      // Kirim request
       final response = await request.send();
-      print('Response status: ${response.statusCode}');
-      print('Response headers: ${response.headers}');
-
       if (response.statusCode == 200) {
         return await http.Response.fromStream(response);
-      } else if (response.statusCode == 302) {
-        // Cek URL redirect
-        print('Redirected to: ${response.headers['location']}');
-        throw Exception("Redirected to login. Please login again.");
       } else {
         throw Exception(
-            "Failed to update profile. Status code: ${response.statusCode}");
+            'Failed to update profile. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error: $e');
       return Future.error("Error during update profile: $e");
     }
   }

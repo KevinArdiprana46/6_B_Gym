@@ -130,7 +130,7 @@ class _EditProfileState extends State<EditProfile> {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
       setState(() {
-        _profile_picture = image.path;
+        _profile_picture = image.path; // Menyimpan path gambar
       });
     }
   }
