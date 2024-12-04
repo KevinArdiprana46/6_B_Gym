@@ -66,8 +66,7 @@ class ProfileClient {
         var imageFile = await http.MultipartFile.fromPath(
           'profile_picture',
           profile.profile_picture!, // Path gambar
-          contentType: MediaType(
-              'image', 'jpeg'), // Tentukan jenis konten sesuai dengan gambar
+          contentType: MediaType('image', 'jpeg'),
         );
         request.files.add(imageFile);
       }
