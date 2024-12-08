@@ -3,6 +3,7 @@ import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
+import 'package:tubes_pbp_6/view/transaksi/keranjang.dart';
 
 class BerandaView extends StatefulWidget {
   const BerandaView({super.key});
@@ -52,10 +53,10 @@ class _BerandaViewState extends State<BerandaView>
         );
         break;
       case 3:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => PaymentPage()),
-        // );
+         Navigator.push(
+           context,
+           MaterialPageRoute(builder: (context) => Keranjang()),
+         );
         break;
       case 4:
         Navigator.push(

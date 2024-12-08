@@ -30,23 +30,27 @@ flutter:
   uses-material-design: true
   
   assets:
+    - images/aerobic.jpg
+    - images/boxing.jpg
+    - images/lifting.jpg
+    - images/barcode.jpg
+    - images/qrislogo.png
+    - images/image.png
     - images/download1.jpg
     - images/gambar1.png
     - images/gambar3.jpg
     - lib/assets/preLoginAsset/Logo.jpg
-    - lib/assets/Logo2.png
     - lib/assets/preLoginAsset/orangPreLogin.png
     - lib/assets/image.png
     - lib/assets/Logo 3.png
     - lib/assets/Logo2.png
+    - lib/assets/gym.jpg
     - images/download.jpg
     - images/zumba.jpg
-    - images/aerobic.jpg
-    - images/boxing.jpg
     - images/pilates.jpg
-    - images/lifting.jpg
     - images/dance.jpg
     - images/yoga.jpg
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/registerAsset/vektorRegister1.png
     - lib/assets/registerAsset/vektorRegister2.png
+

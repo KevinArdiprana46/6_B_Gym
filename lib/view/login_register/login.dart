@@ -24,7 +24,7 @@ class _LoginViewState extends State<LoginView> {
         Navigator.pushReplacement(
           
           context,
-          MaterialPageRoute(builder: (context) => BerandaView()),
+          MaterialPageRoute(builder: (context) =>const BerandaView()),
         );
       } catch (e) {
         showDialog(

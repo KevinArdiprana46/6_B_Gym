@@ -9,8 +9,7 @@ class BookingClient {
   // Endpoint untuk booking
   static const String createBookingEndpoint = '/api/booking';
   static const String getLatestBookingEndpoint = '/api/booking';
-  static const String updateReminderBookingEndpoint =
-      '/api/booking/{bookingId}/reminder';
+  static const String updateReminderBookingEndpoint = '/api/booking/{bookingId}/reminder';
   static const String payAndBookEndpoint = '/api/booking/{bookingId}/pay';
   static const String cancelBookingEndpoint = '/api/booking/{bookingId}';
 

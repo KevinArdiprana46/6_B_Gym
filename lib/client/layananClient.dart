@@ -46,13 +46,15 @@ class LayananClient {
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode == 200) {
+      print(response.body);
+
+      // if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         // Di sini, kita akan menggunakan data yang sudah memiliki status_booking
         return data.map((json) => Layanan.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load layanan');
-      }
+      // } else {
+      //   throw Exception('Failed to load layanan');
+      // }
     } catch (e) {
       return Future.error("Error during get layanan by date: $e");
     }

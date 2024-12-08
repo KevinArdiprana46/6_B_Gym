@@ -36,7 +36,7 @@ class UserClient {
   static Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.http(baseUrl, loginEndPoint),
+        Uri.parse('http://10.0.2.2:8000/api/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
