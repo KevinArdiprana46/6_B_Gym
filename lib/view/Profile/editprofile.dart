@@ -79,12 +79,20 @@ class _EditProfileState extends State<EditProfile> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => ProfilePage()),
+            result: ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Profile updated successfully")),
+            ),
           );
         } else {
+          print('Failed to update profile: ${response.statusCode}');
+          print('Response body: ${response.body}');
           throw Exception("Failed to update profile");
         }
       } catch (e) {
         print("Error saving profile data: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error saving profile data: $e")),
+        );
       }
     }
   }
@@ -174,7 +182,8 @@ class _EditProfileState extends State<EditProfile> {
                         radius: 45,
                         backgroundImage: _profile_picture != null
                             ? FileImage(File(_profile_picture!))
-                            : AssetImage('') as ImageProvider,
+                            : AssetImage('assets/default_avatar.png')
+                                as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,

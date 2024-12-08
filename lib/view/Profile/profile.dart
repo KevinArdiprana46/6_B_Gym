@@ -74,6 +74,11 @@ class _ProfilePageState extends State<ProfilePage>
       }
     } catch (e) {
       print("Error fetching profile data: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading profile: $e')),
+        );
+      }
     }
   }
 
@@ -93,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage>
         );
         break;
       case 4:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const ProfilePage()),
         );
@@ -140,9 +145,8 @@ class _ProfilePageState extends State<ProfilePage>
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: profile_picture != null
-                        ? const NetworkImage('profile_pictures/1733320795.jpeg')
-                            as ImageProvider
-                        : const NetworkImage(''),
+                        ? NetworkImage(profile_picture!)
+                        : const NetworkImage("https://i.pravatar.cc/300"),
                   ),
                   const SizedBox(height: 16),
                   Text(
