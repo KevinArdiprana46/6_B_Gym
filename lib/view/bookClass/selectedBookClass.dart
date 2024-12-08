@@ -3,7 +3,6 @@ import 'package:tubes_pbp_6/entity/booking.dart'; // Import entity Booking
 import 'package:tubes_pbp_6/client/bookingClient.dart'; // Import client BookingClient
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import 'dart:convert';
-
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class SelectedClassBook extends StatelessWidget {
@@ -50,12 +49,50 @@ class SelectedClassBook extends StatelessWidget {
         );
 
         // Kembali ke halaman sebelumnya setelah booking berhasil
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) =>  BookClass()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BookClass()));
       } catch (e) {
         // Tampilkan pesan error jika terjadi kesalahan
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+
+    void _cancelBooking() async {
+      try {
+        final layananId = details['layanan_id'];
+        final bookingId = await BookingClient.getBookingId(layananId);
+        print("Layanan ID: $layananId");
+
+        if (bookingId == null) {
+          throw Exception('Booking ID not found');
+        }
+
+        // Panggil API atau fungsi untuk membatalkan booking dengan booking_id
+        final response = await BookingClient.cancelBooking(bookingId);
+
+        if (response['success']) {
+          // Tampilkan SnackBar jika berhasil membatalkan
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Booking canceled successfully')),
+          );
+
+          // Kembali ke halaman sebelumnya setelah membatalkan
+          Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BookClass()));
+        } else {
+          // Tampilkan error message jika gagal
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text(response['message'] ?? 'Failed to cancel booking')),
+          );
+        }
+      } catch (e) {
+        // Tangani error jika ada masalah dalam proses pembatalan
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}")),
         );
       }
     }
@@ -204,7 +241,7 @@ class SelectedClassBook extends StatelessWidget {
                               if (state == 'available') {
                                 _bookClass(); // Call the function to book the class
                               } else if (state == 'ordered') {
-                                onCancel(details['className']);
+                                _cancelBooking();
                               }
                             },
                             style: ElevatedButton.styleFrom(

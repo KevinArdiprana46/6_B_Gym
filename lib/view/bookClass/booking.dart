@@ -30,8 +30,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
-    _layananFuture = LayananClient.getLayananWithBookingStatus(
-        '04');
+    _onDateSelected('08');
   }
 
   @override
@@ -123,7 +122,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           Expanded(
             child: FutureBuilder<List<Layanan>>(
               future:
-                  _layananFuture, // Use the future to load data based on selected date
+                  _layananFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
