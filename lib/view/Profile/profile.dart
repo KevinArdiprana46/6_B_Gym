@@ -14,7 +14,6 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -75,14 +74,15 @@ class _ProfilePageState extends State<ProfilePage>
     } catch (e) {
       print("Error fetching profile data: $e");
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading profile: $e')),
-        );
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error loading profile: $e')),
+          );
+        });
       }
     }
   }
 
-  // Handling tab selection
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
@@ -92,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage>
         );
         break;
       case 2:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const BookClass()),
         );
@@ -108,7 +108,6 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
-  // Logout function
   void _logout() {
     Navigator.pushReplacement(
       context,
@@ -144,9 +143,11 @@ class _ProfilePageState extends State<ProfilePage>
                   ),
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: profile_picture != null
-                        ? NetworkImage(profile_picture!)
-                        : const NetworkImage("https://i.pravatar.cc/300"),
+                    backgroundImage:
+                        profile_picture != null && profile_picture!.isNotEmpty
+                            ? NetworkImage(profile_picture!)
+                            : const AssetImage('images/download.jpg')
+                                as ImageProvider,
                   ),
                   const SizedBox(height: 16),
                   Text(

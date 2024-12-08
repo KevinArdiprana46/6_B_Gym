@@ -5,7 +5,7 @@ class Profile {
   String? nama_depan;
   String? nama_belakang;
   String? password;
-  String? tanggal_lahir;
+  final dynamic tanggal_lahir;
   int? height;
   int? weight;
   String? email;

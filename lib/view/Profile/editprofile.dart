@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tubes_pbp_6/view/Profile/camera.dart';
-import 'package:tubes_pbp_6/client/ProfileClient.dart';
+import 'package:tubes_pbp_6/client/profileClient.dart';
 import 'package:tubes_pbp_6/entity/profile.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
 
@@ -15,7 +14,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String? _profile_picture;
+  String? _profilePicture;
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -50,7 +49,7 @@ class _EditProfileState extends State<EditProfile> {
             _dateOfBirthController.text = profileData.tanggal_lahir ?? '';
             _heightController.text = profileData.height?.toString() ?? '';
             _weightController.text = profileData.weight?.toString() ?? '';
-            _profile_picture = profileData.profile_picture;
+            _profilePicture = profileData.profile_picture;
           });
         }
       } else {
@@ -61,6 +60,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+  // Save profile data to API
   Future<void> _saveProfileData() async {
     if (_profileData != null) {
       final updatedProfile = Profile(
@@ -68,20 +68,22 @@ class _EditProfileState extends State<EditProfile> {
         nama_belakang: _lastNameController.text,
         nomor_telepon: _phoneController.text,
         tanggal_lahir: _dateOfBirthController.text,
-        height: int.parse(_heightController.text),
-        weight: int.parse(_weightController.text),
-        profile_picture: _profile_picture,
+        height: int.tryParse(_heightController.text),
+        weight: int.tryParse(_weightController.text),
+        profile_picture: _profilePicture,
       );
 
       try {
         final response = await ProfileClient.update(profile: updatedProfile);
         if (response.statusCode == 200) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Profile updated successfully")),
+            );
+          }
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ProfilePage()),
-            result: ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Profile updated successfully")),
-            ),
+            MaterialPageRoute(builder: (context) => const ProfilePage()),
           );
         } else {
           print('Failed to update profile: ${response.statusCode}');
@@ -104,28 +106,29 @@ class _EditProfileState extends State<EditProfile> {
         child: Wrap(
           children: [
             ListTile(
-              leading: Icon(Icons.photo_camera),
-              title: Text('Take Photo'),
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Take Photo'),
               onTap: () async {
                 Navigator.pop(context);
-                final imagePath = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CameraView()),
-                );
+                final imagePath = await _pickImage(ImageSource.camera);
                 if (imagePath != null) {
                   setState(() {
-                    _profile_picture = imagePath; // Menyimpan path gambar
+                    _profilePicture = imagePath;
                   });
                 }
               },
             ),
             ListTile(
-              leading: Icon(Icons.photo_library),
-              title: Text('Choose from Gallery'),
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choose from Gallery'),
               onTap: () async {
                 Navigator.pop(context);
-                await _pickImage(
-                    ImageSource.gallery); // Pilih gambar dari galeri
+                final imagePath = await _pickImage(ImageSource.gallery);
+                if (imagePath != null) {
+                  setState(() {
+                    _profilePicture = imagePath;
+                  });
+                }
               },
             ),
           ],
@@ -134,13 +137,9 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<String?> _pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(source: source);
-    if (image != null) {
-      setState(() {
-        _profile_picture = image.path; // Menyimpan path gambar
-      });
-    }
+    return image?.path;
   }
 
   @override
@@ -152,8 +151,8 @@ class _EditProfileState extends State<EditProfile> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.3,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: const BoxDecoration(
               color: Color(0xFF5565E8),
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(30),
@@ -162,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Text(
                     "Edit Profile",
@@ -180,10 +179,9 @@ class _EditProfileState extends State<EditProfile> {
                     children: [
                       CircleAvatar(
                         radius: 45,
-                        backgroundImage: _profile_picture != null
-                            ? FileImage(File(_profile_picture!))
-                            : AssetImage('assets/default_avatar.png')
-                                as ImageProvider,
+                        backgroundImage: _profilePicture != null
+                            ? FileImage(File(_profilePicture!))
+                            : const NetworkImage("") as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
@@ -192,7 +190,7 @@ class _EditProfileState extends State<EditProfile> {
                           backgroundColor: Colors.white,
                           radius: 16,
                           child: IconButton(
-                            icon: Icon(Icons.camera_alt,
+                            icon: const Icon(Icons.camera_alt,
                                 color: Color(0xFF5565E8)),
                             onPressed: _showImageSourceActionSheet,
                             iconSize: 16,
@@ -210,39 +208,57 @@ class _EditProfileState extends State<EditProfile> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: Column(
                 children: [
-                  _buildTextField('First Name', _firstNameController,
-                      icon: Icons.person),
-                  _buildTextField('Last Name', _lastNameController,
-                      icon: Icons.person),
-                  _buildTextField('Phone Number', _phoneController,
-                      icon: Icons.phone),
-                  _buildTextField('Date of Birth', _dateOfBirthController,
-                      icon: Icons.calendar_today),
+                  _buildTextField(
+                    'First Name',
+                    _firstNameController,
+                    icon: Icons.person,
+                  ),
+                  _buildTextField(
+                    'Last Name',
+                    _lastNameController,
+                    icon: Icons.person,
+                  ),
+                  _buildTextField(
+                    'Phone Number',
+                    _phoneController,
+                    icon: Icons.phone,
+                  ),
+                  _buildTextField(
+                    'Date of Birth',
+                    _dateOfBirthController,
+                    icon: Icons.calendar_today,
+                  ),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField('Height', _heightController,
-                            icon: Icons.height),
+                        child: _buildTextField(
+                          'Height',
+                          _heightController,
+                          icon: Icons.height,
+                        ),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField('Weight', _weightController,
-                            icon: Icons.monitor_weight),
+                        child: _buildTextField(
+                          'Weight',
+                          _weightController,
+                          icon: Icons.monitor_weight,
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _saveProfileData,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF5565E8),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 12, horizontal: 80),
+                      backgroundColor: const Color(0xFF5565E8),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 80),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Save',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
@@ -266,7 +282,7 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
           labelText: label,
           prefixIcon:
-              icon != null ? Icon(icon, color: Color(0xFF5565E8)) : null,
+              icon != null ? Icon(icon, color: const Color(0xFF5565E8)) : null,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),
