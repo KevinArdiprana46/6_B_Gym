@@ -121,8 +121,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           ),
           Expanded(
             child: FutureBuilder<List<Layanan>>(
-              future:
-                  _layananFuture,
+              future: _layananFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -324,14 +323,12 @@ class CalendarStrip extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: dates.map((date) {
           String day = getDayName(date.weekday);
-          String dateString = date.day.toString().padLeft(
-              2, '0'); // Menambahkan padding agar dua digit (misal 01, 02)
+          String dateString = date.day.toString().padLeft(2, '0');
 
           return DateCircle(
             day: day,
             date: dateString,
-            isSelected:
-                selectedDate == dateString, // Cek apakah tanggal ini dipilih
+            isSelected: selectedDate == dateString,
             onPressed: onDateSelected,
           );
         }).toList(),
@@ -428,9 +425,9 @@ class ClassList extends StatelessWidget {
       return ListView.builder(
         itemCount: classes.length,
         itemBuilder: (context, index) {
-          final classInfo = classes[index]; // Layanan object
+          final classInfo = classes[index];
           return ClassCard(
-            layanan: classInfo, // Mengirim objek Layanan langsung
+            layanan: classInfo,
             onBook: onBook,
             onCancel: onCancel,
             selectedDate: selectedDate,
@@ -483,6 +480,8 @@ class ClassCard extends StatelessWidget {
   Color _getContainerColor(String state, bool conflict, int availableSlots) {
     if (availableSlots == 0 || conflict) return Colors.grey;
     switch (state) {
+      case 'unavailable':
+        return Colors.grey;
       case 'ordered':
         return Colors.green;
       case 'booked':
@@ -495,8 +494,10 @@ class ClassCard extends StatelessWidget {
   }
 
   String _getContainerText(String state, bool conflict, int availableSlots) {
-    if (availableSlots == 0 || conflict) return 'Not\nAvailable';
+    if (availableSlots == 0 || conflict) return 'unavailable';
     switch (state) {
+      case 'unavailable':
+        return 'Unavailable';
       case 'ordered':
         return 'O\nR\nD\nE\nR\nE\nD';
       case 'booked':
@@ -518,6 +519,12 @@ class ClassCard extends StatelessWidget {
       );
     }
     switch (state) {
+      case 'unavailable':
+        return const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        );
       case 'ordered':
         return const TextStyle(
           color: Colors.white,
@@ -660,7 +667,10 @@ class ClassCard extends StatelessWidget {
                         style: _getContainerTextStyle(
                             state, conflict, availableSlots),
                       ),
-                      if (availableSlots > 0 && !conflict) ...[
+                      if (state != 'booked' &&
+                          state != 'unavailable' &&
+                          availableSlots > 0 &&
+                          !conflict) ...[
                         const SizedBox(height: 8),
                         const Icon(
                           Icons.arrow_forward,

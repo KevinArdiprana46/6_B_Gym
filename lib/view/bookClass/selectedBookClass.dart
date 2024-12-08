@@ -232,14 +232,13 @@ class SelectedClassBook extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  // Conditional Button for "Order Class" or "Cancel Order"
                   Center(
-                    child: state == 'booked'
-                        ? const SizedBox() // Do nothing if the class is booked
+                    child: (state == 'booked' || state == 'unavailable')
+                        ? const SizedBox()
                         : ElevatedButton(
                             onPressed: () {
                               if (state == 'available') {
-                                _bookClass(); // Call the function to book the class
+                                _bookClass();
                               } else if (state == 'ordered') {
                                 _cancelBooking();
                               }
