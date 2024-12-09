@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/client/bookingClient.dart';
+import 'package:tubes_pbp_6/entity/layanan.dart';
 import 'package:tubes_pbp_6/view/bookClass/changeReminder.dart';
 
 class NotificationBooking extends StatefulWidget {
-  final List<Map<String, dynamic>> bookedClasses;
+  // final List<Layanan> bookedClasses;
 
-  const NotificationBooking({
-    Key? key,
-    required this.bookedClasses,
-  }) : super(key: key);
+  // const NotificationBooking({
+  //   Key? key,
+  //   required this.bookedClasses,
+  // }) : super(key: key);
+  const NotificationBooking({Key? key}) : super(key: key);
 
   @override
   _NotificationBookingState createState() => _NotificationBookingState();
@@ -15,23 +18,41 @@ class NotificationBooking extends StatefulWidget {
 
 class _NotificationBookingState extends State<NotificationBooking> {
   late TextEditingController _searchController;
-  List<Map<String, dynamic>> _filteredClasses = [];
+  late List<Layanan> _allClasses; // Daftar kelas yang sudah dibooking
+  late List<Layanan> _filteredClasses = [];
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    _filteredClasses = widget.bookedClasses;
 
-    _searchController.addListener(() {
+    // Inisialisasi daftar kelas yang sudah dipesan dari API
+    _allClasses = [];
+
+    // Ambil data booking user
+    _getBookedClasses();
+  }
+
+  Future<void> _getBookedClasses() async {
+    try {
+      List<Layanan> bookings = await BookingClient.getUserBookings("");
+
       setState(() {
-        _filteredClasses = widget.bookedClasses
-            .where((classInfo) => classInfo['className']
-                .toLowerCase()
-                .startsWith(_searchController.text
-                    .toLowerCase()))
-            .toList();
+        _allClasses = bookings;
+        _filteredClasses = _allClasses;
       });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void _filterClasses(String query) {
+    setState(() {
+      // Filter kelas berdasarkan query pencarian
+      _filteredClasses = _allClasses
+          .where((classInfo) =>
+              classInfo.className.toLowerCase().startsWith(query.toLowerCase()))
+          .toList();
     });
   }
 
@@ -77,6 +98,7 @@ class _NotificationBookingState extends State<NotificationBooking> {
               ),
               child: TextField(
                 controller: _searchController,
+                onChanged: _filterClasses,
                 decoration: InputDecoration(
                   hintText: "Search Class",
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -85,6 +107,7 @@ class _NotificationBookingState extends State<NotificationBooking> {
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
 
             // List of Filtered Classes
@@ -106,15 +129,19 @@ class _NotificationBookingState extends State<NotificationBooking> {
                       itemBuilder: (context, index) {
                         final classInfo = _filteredClasses[index];
                         return ClassCard(
-                          className: classInfo['className'],
-                          timeStart: classInfo['timeStart'],
-                          timeEnd: classInfo['timeEnd'],
-                          imagePath: classInfo['imagePath'] ??
-                              'assets/default.jpg', // Fallback image
-                          details: classInfo,
+                          className: classInfo
+                              .className, // Akses data dari objek Layanan
+                          timeStart:
+                              classInfo.timeStart, // Akses waktu mulai kelas
+                          timeEnd:
+                              classInfo.timeEnd, // Akses waktu selesai kelas
+                          imagePath: classInfo.imagePath,
+                          details: classInfo
+                              .toJson(), // Menyertakan objek Layanan lengkap sebagai detail
                           onReminderChanged: (newTime) {
                             setState(() {
-                              classInfo['reminderTime'] = newTime;
+                              // Jika reminderTime adalah atribut dalam objek Layanan
+                              classInfo.reminderTime = newTime;
                             });
                           },
                         );

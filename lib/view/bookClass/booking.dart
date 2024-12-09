@@ -255,7 +255,7 @@ class CustomHeader extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => NotificationBooking(
-                                  bookedClasses: bookedClasses,
+                                  //bookedClasses: bookedClasses,
                                 ),
                               ),
                             );

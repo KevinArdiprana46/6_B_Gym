@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import '../entity/booking.dart';
+import '../entity/layanan.dart';
 
 class BookingClient {
   static const String baseUrl = 'http://10.0.2.2:8000';
@@ -77,8 +78,7 @@ class BookingClient {
   }
 
   Future<void> fetchBooking(String layananId) async {
-    final token = await SharedPreferenceHelper.getString(
-        'token');
+    final token = await SharedPreferenceHelper.getString('token');
 
     if (token == null || token.isEmpty) {
       return null; // Jika token tidak ditemukan
@@ -147,6 +147,38 @@ class BookingClient {
       return Booking.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load latest booking');
+    }
+  }
+
+  static Future<List<Layanan>> getUserBookings(String search) async {
+    final token = await SharedPreferenceHelper.getString(
+        'token'); // Token bisa diambil dari local storage
+
+    if (token == null || token.isEmpty) {
+      throw Exception("No token found. Please login first.");
+    }
+
+    final url =
+        Uri.parse('http://10.0.2.2:8000/api/getBookedUser?search=$search');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Cek apakah response body berisi data yang benar
+      List jsonResponse = json.decode(response.body);
+      List<Layanan> bookings = jsonResponse.map((data) {
+        // Memastikan kita memetakan data dengan benar ke objek Layanan
+        return Layanan.fromJson(data['layanan']);
+      }).toList();
+      return bookings;
+    } else {
+      throw Exception('Failed to load bookings');
     }
   }
 

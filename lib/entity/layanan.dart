@@ -11,7 +11,7 @@ class Layanan {
   final String description;
   final String state;
   final String imagePath;
-  final String reminderTime;
+  String reminderTime;
   final int availableSlots;
   final String classDate;
 
