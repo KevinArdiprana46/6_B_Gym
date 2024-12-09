@@ -1,16 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/client/bookingClient.dart';
+import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 
 class ChangeReminder extends StatefulWidget {
   final String reminderTime;
   final String timeStart;
   final Function(String) onReminderChanged;
+  final int layananId;
 
   const ChangeReminder({
     Key? key,
     required this.reminderTime,
     required this.timeStart,
     required this.onReminderChanged,
+    required this.layananId,
   }) : super(key: key);
 
   @override
@@ -25,43 +29,46 @@ class _ChangeReminderState extends State<ChangeReminder> {
   void initState() {
     super.initState();
     // Parse the existing reminder time from the dataset
-    final timeParts = widget.reminderTime.split(":");
-    _selectedHour = int.parse(timeParts[0]);
-    _selectedMinute = int.parse(timeParts[1]);
+    DateTime reminderDateTime = DateTime.parse(widget.reminderTime);
+
+    // Extract hours and minutes from the DateTime object
+    _selectedHour = reminderDateTime.hour;
+    _selectedMinute = reminderDateTime.minute;
   }
 
   void _saveReminder() {
-    // Format selected time as HH:mm
-    final formattedTime =
-        "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')}";
-
-    // Check if reminder is at least 1 hour before the start time
-    final selectedDateTime = DateTime(0, 1, 1, _selectedHour, _selectedMinute);
-    final timeStartParts = widget.timeStart.split(":");
-    final timeStartDateTime = DateTime(
-      0,
-      1,
-      1,
-      int.parse(timeStartParts[0]),
-      int.parse(timeStartParts[1]),
+    //final bookingId = BookingClient.getBookingId(classInfo.layananId);
+    DateTime oldReminderDateTime = DateTime.parse(widget.reminderTime);
+    DateTime newReminderDateTime = DateTime(
+      oldReminderDateTime.year,
+      oldReminderDateTime.month,
+      oldReminderDateTime.day,
+      _selectedHour,
+      _selectedMinute,
     );
 
-    final durationBeforeStart = timeStartDateTime.difference(selectedDateTime);
-    if (durationBeforeStart.inMinutes >= 60) {
-      // Update the dataset reminderTime via the callback
-      widget.onReminderChanged(formattedTime);
+    // Ubah ke format string ISO8601
+    String newReminderTime = newReminderDateTime.toIso8601String();
 
-      // Close the screen
-      Navigator.pop(context);
-    } else {
+    // Panggil fungsi untuk mengupdate waktu pengingat di API
+    BookingClient.updateReminderTime(widget.layananId, newReminderTime)
+        .then((_) {
+      // Tampilkan snackbar atau feedback lainnya setelah berhasil
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text("Reminder must be at least 1 hour before the start time."),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('Reminder updated to $newReminderTime')),
       );
-    }
+
+      // Kembali ke halaman sebelumnya
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => NotificationBooking()),
+      );
+    }).catchError((error) {
+      // Tampilkan error jika terjadi
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update reminder')),
+      );
+    });
   }
 
   @override

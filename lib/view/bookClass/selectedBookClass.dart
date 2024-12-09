@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/client/bookingClient.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class SelectedClassBook extends StatelessWidget {
   final String className;
@@ -22,8 +24,75 @@ class SelectedClassBook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the current state of the class
     final String state = details['state'] ?? 'available';
+
+    // Fungsi untuk memesan kelas
+    // Fungsi untuk memesan kelas, dipanggil saat tombol booking ditekan
+    void _bookClass() async {
+      try {
+        // Ambil layanan_id dari details
+        final layananId = details['layanan_id']; // Pastikan ini integer
+
+        if (layananId == null) {
+          throw Exception('Layanan ID not found');
+        }
+
+        // Panggil fungsi untuk melakukan booking
+        await BookingClient.bookClass(layananId);
+
+        // Tampilkan SnackBar jika booking berhasil
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Class successfully booked!')),
+        );
+
+        // Kembali ke halaman sebelumnya setelah booking berhasil
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BookClass()));
+      } catch (e) {
+        // Tampilkan pesan error jika terjadi kesalahan
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+
+    void _cancelBooking() async {
+      try {
+        final layananId = details['layanan_id'];
+        final bookingId = await BookingClient.getBookingId(layananId);
+        print("Layanan ID: $layananId");
+
+        if (bookingId == null) {
+          throw Exception('Booking ID not found');
+        }
+
+        // Panggil API atau fungsi untuk membatalkan booking dengan booking_id
+        final response = await BookingClient.cancelBooking(bookingId);
+
+        if (response['success']) {
+          // Tampilkan SnackBar jika berhasil membatalkan
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Booking canceled successfully')),
+          );
+
+          // Kembali ke halaman sebelumnya setelah membatalkan
+          Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BookClass()));
+        } else {
+          // Tampilkan error message jika gagal
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text(response['message'] ?? 'Failed to cancel booking')),
+          );
+        }
+      } catch (e) {
+        // Tangani error jika ada masalah dalam proses pembatalan
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}")),
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 85, 101, 232),
@@ -95,7 +164,7 @@ class SelectedClassBook extends StatelessWidget {
                           color: Colors.grey),
                       const SizedBox(width: 8),
                       Text(
-                        "Burned Calories: ${details['burnedCalories']}",
+                        "Burned Calories: ${details['burned_calories']}",
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -160,18 +229,16 @@ class SelectedClassBook extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  // Conditional Button for "Order Class" or "Cancel Order"
                   Center(
-                    child: state == 'booked'
-                        ? const SizedBox() // Do nothing if the class is booked
+                    child: (state == 'booked' || state == 'unavailable')
+                        ? const SizedBox()
                         : ElevatedButton(
                             onPressed: () {
                               if (state == 'available') {
-                                onBook(details['className']);
+                                _bookClass();
                               } else if (state == 'ordered') {
-                                onCancel(details['className']);
+                                _cancelBooking();
                               }
-                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: state == 'ordered'

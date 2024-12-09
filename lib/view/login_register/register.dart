@@ -27,10 +27,16 @@ class _RegisterViewState extends State<RegisterView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 60),
-              Image.asset('lib/assets/registerAsset/vektorRegister1.png', height: 200),
+              Image.asset('lib/assets/registerAsset/vektorRegister1.png',
+                  height: 200),
               SizedBox(height: 20),
-              Text("Hey there,", style: TextStyle(fontSize: 18, color: Colors.grey[700])),
-              Text("Create an Account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
+              Text("Hey there,",
+                  style: TextStyle(fontSize: 18, color: Colors.grey[700])),
+              Text("Create an Account",
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
               SizedBox(height: 20),
               Form(
                 key: _formKey,
@@ -43,7 +49,9 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.person),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -60,7 +68,9 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.person_outline),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -77,7 +87,9 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.email),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -95,7 +107,9 @@ class _RegisterViewState extends State<RegisterView> {
                         prefixIcon: Icon(Icons.lock),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -125,20 +139,29 @@ class _RegisterViewState extends State<RegisterView> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF5565E8),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25)),
                           padding: EdgeInsets.symmetric(vertical: 15),
                         ),
-                        child: Text('Next', style: TextStyle(fontSize: 16, color: Colors.white)),
+                        child: Text('Next',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white)),
                       ),
                     ),
                     SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Already have an account?", style: TextStyle(color: Colors.grey)),
+                        Text("Already have an account?",
+                            style: TextStyle(color: Colors.grey)),
                         TextButton(
                           onPressed: () {
-                            Navigator(context) => LoginView();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginView(),
+                              ),
+                            );
                           },
                           child: Text('Login'),
                         ),
