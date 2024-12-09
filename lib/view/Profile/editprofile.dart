@@ -32,7 +32,6 @@ class _EditProfileState extends State<EditProfile> {
     _loadProfileData();
   }
 
-  // Load profile data from API
   Future<void> _loadProfileData() async {
     try {
       final response = await ProfileClient.getProfile();
@@ -60,7 +59,6 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  // Save profile data to API
   Future<void> _saveProfileData() async {
     if (_profileData != null) {
       final updatedProfile = Profile(
@@ -78,7 +76,10 @@ class _EditProfileState extends State<EditProfile> {
         if (response.statusCode == 200) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Profile updated successfully")),
+              const SnackBar(
+                content: Text("Profile updated successfully"),
+                backgroundColor: Colors.green,
+              ),
             );
           }
           Navigator.pushReplacement(

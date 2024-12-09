@@ -52,7 +52,6 @@ class ProfileClient {
       request.fields['nomor_telepon'] = profile.nomor_telepon ?? '';
       request.fields['email'] = profile.email ?? '';
 
-      // Format tanggal_lahir ke format 'YYYY-MM-DD'
       String formattedDate = '';
       if (profile.tanggal_lahir != null) {
         try {
