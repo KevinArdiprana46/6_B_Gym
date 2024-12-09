@@ -175,20 +175,24 @@ class ClassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String reminderTime = details['reminder_time'];
+
+    // Parsing string menjadi objek DateTime
+    DateTime reminderDateTime = DateTime.parse(reminderTime);
+
+    // Format waktu menjadi jam dan menit
+    String formattedTime =
+        '${reminderDateTime.hour.toString().padLeft(2, '0')}:${reminderDateTime.minute.toString().padLeft(2, '0')}';
     return GestureDetector(
       onTap: () {
-        // Navigate to ChangeReminder screen
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ChangeReminder(
-              reminderTime: details['reminderTime'],
+              reminderTime: details['reminder_time'],
               timeStart: timeStart,
               onReminderChanged: (newTime) {
-                // Callback to update the reminder time
                 onReminderChanged(newTime);
-
-                // Optionally, show a confirmation message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text("Reminder updated to $newTime"),
@@ -278,7 +282,7 @@ class ClassCard extends StatelessWidget {
                           const Icon(Icons.lock_clock, color: Colors.white),
                           const SizedBox(width: 8),
                           Text(
-                            "Reminder: ${details['reminderTime']}",
+                            "Reminder: $formattedTime",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,

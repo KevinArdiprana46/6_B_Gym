@@ -9,7 +9,6 @@ import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/client/layananClient.dart';
 import 'package:tubes_pbp_6/client/bookingClient.dart';
 import 'package:tubes_pbp_6/entity/layanan.dart';
-import 'package:tubes_pbp_6/entity/booking.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
@@ -245,12 +244,6 @@ class CustomHeader extends StatelessWidget {
                             color: Colors.black,
                           ),
                           onPressed: () {
-                            final bookedClasses = classSchedules.values
-                                .expand((classes) => classes)
-                                .where((classInfo) =>
-                                    classInfo['state'] == 'booked')
-                                .toList();
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(

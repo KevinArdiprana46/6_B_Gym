@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tubes_pbp_6/entity/booking.dart'; // Import entity Booking
-import 'package:tubes_pbp_6/client/bookingClient.dart'; // Import client BookingClient
-import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
-import 'dart:convert';
+import 'package:tubes_pbp_6/client/bookingClient.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class SelectedClassBook extends StatelessWidget {
