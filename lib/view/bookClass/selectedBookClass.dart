@@ -77,7 +77,7 @@ class SelectedClassBook extends StatelessWidget {
 
           // Kembali ke halaman sebelumnya setelah membatalkan
           Navigator.push(
-            context, MaterialPageRoute(builder: (context) => BookClass()));
+              context, MaterialPageRoute(builder: (context) => BookClass()));
         } else {
           // Tampilkan error message jika gagal
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,6 +88,45 @@ class SelectedClassBook extends StatelessWidget {
         }
       } catch (e) {
         // Tangani error jika ada masalah dalam proses pembatalan
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}")),
+        );
+      }
+    }
+
+    void _completeClass() async {
+      try {
+        final layananId = details['layanan_id'];
+        final bookingId =
+            await BookingClient.getBookingId(layananId); // Dapatkan booking ID
+        print("Layanan ID: $layananId");
+
+        if (bookingId == null) {
+          throw Exception('Booking ID not found');
+        }
+
+        // Panggil API atau fungsi untuk menyelesaikan kelas dengan booking_id
+        final response = await BookingClient.completeClass(bookingId);
+
+        if (response['success']) {
+          // Tampilkan SnackBar jika berhasil menyelesaikan kelas
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Class completed successfully')),
+          );
+
+          // Kembali ke halaman sebelumnya setelah kelas selesai
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => BookClass()));
+        } else {
+          // Tampilkan error message jika gagal
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                    response['message'] ?? 'Failed to complete the class')),
+          );
+        }
+      } catch (e) {
+        // Tangani error jika ada masalah dalam proses penyelesaian kelas
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e.toString()}")),
         );
@@ -231,13 +270,36 @@ class SelectedClassBook extends StatelessWidget {
                   const SizedBox(height: 24),
                   Center(
                     child: (state == 'booked' || state == 'unavailable')
-                        ? const SizedBox()
+                        ? ElevatedButton(
+                            onPressed: () {
+                              if (state == 'booked') {
+                                _completeClass(); // Fungsi untuk menyelesaikan kelas
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green, // Warna hijau
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 100,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              "Complete Class",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
                         : ElevatedButton(
                             onPressed: () {
                               if (state == 'available') {
-                                _bookClass();
+                                _bookClass(); // Fungsi untuk booking kelas
                               } else if (state == 'ordered') {
-                                _cancelBooking();
+                                _cancelBooking(); // Fungsi untuk cancel booking
                               }
                             },
                             style: ElevatedButton.styleFrom(
