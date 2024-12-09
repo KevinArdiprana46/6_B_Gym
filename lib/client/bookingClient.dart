@@ -71,7 +71,7 @@ class BookingClient {
       final data = json.decode(response.body);
       return data['booking_id'];
     } else if (response.statusCode == 404) {
-      return null; // Jika tidak ditemukan
+      return null;
     } else {
       throw Exception('Failed to fetch booking ID');
     }
@@ -152,7 +152,7 @@ class BookingClient {
 
   static Future<List<Layanan>> getUserBookings(String search) async {
     final token = await SharedPreferenceHelper.getString(
-        'token'); // Token bisa diambil dari local storage
+        'token');
 
     if (token == null || token.isEmpty) {
       throw Exception("No token found. Please login first.");
@@ -184,7 +184,7 @@ class BookingClient {
 
   // Update reminder time for booking
   static Future<http.Response> updateReminderTime(
-      int bookingId, String reminderTime) async {
+      int layananId, String reminderTime) async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
 
@@ -192,16 +192,20 @@ class BookingClient {
         throw Exception("No token found. Please login first.");
       }
 
+      final url =
+          Uri.parse('http://10.0.2.2:8000/api/booking/$layananId/reminder');
+
+      final body = json.encode({
+        'reminder_time': reminderTime,
+      });
+
       final response = await http.put(
-        Uri.http(
-            baseUrl,
-            updateReminderBookingEndpoint.replaceAll(
-                "{bookingId}", bookingId.toString())),
+        url,
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
         },
-        body: json.encode({'reminder_time': reminderTime}),
+        body: body,
       );
 
       if (response.statusCode == 200) {
@@ -211,6 +215,34 @@ class BookingClient {
       }
     } catch (e) {
       return Future.error("Error during update reminder time: $e");
+    }
+  }
+
+  static Future<String?> getReminderTime(int layananId) async {
+    try {
+      final token = await SharedPreferenceHelper.getString('token');
+
+      if (token == null || token.isEmpty) {
+        throw Exception("No token found. Please login first.");
+      }
+
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:8000/api/booking/$layananId/reminder'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        return data['reminder_time']; // Mengambil reminder_time dari respons
+      } else {
+        print("Error: ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching reminder time: $e");
+      return null;
     }
   }
 

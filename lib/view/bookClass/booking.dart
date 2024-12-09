@@ -29,7 +29,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
-    _onDateSelected('08');
+    _onDateSelected('09');
   }
 
   @override
@@ -247,9 +247,7 @@ class CustomHeader extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => NotificationBooking(
-                                  //bookedClasses: bookedClasses,
-                                ),
+                                builder: (context) => NotificationBooking(),
                               ),
                             );
                           },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/client/bookingClient.dart';
 import 'package:tubes_pbp_6/entity/layanan.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 import 'package:tubes_pbp_6/view/bookClass/changeReminder.dart';
 
 class NotificationBooking extends StatefulWidget {
@@ -74,7 +75,10 @@ class _NotificationBookingState extends State<NotificationBooking> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BookClass()),
+            );
           },
         ),
       ),
@@ -110,7 +114,6 @@ class _NotificationBookingState extends State<NotificationBooking> {
 
             const SizedBox(height: 16),
 
-            // List of Filtered Classes
             _filteredClasses.isEmpty
                 ? const Expanded(
                     child: Center(
@@ -173,172 +176,197 @@ class ClassCard extends StatelessWidget {
     required this.onReminderChanged,
   }) : super(key: key);
 
+  Future<int?> _getBookingId(int layananId) async {
+    try {
+      final bookingId = await BookingClient.getBookingId(layananId);
+      return bookingId;
+    } catch (e) {
+      print("Error fetching bookingId: $e");
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String reminderTime = details['reminder_time'];
+    final layananId = details['layanan_id'];
 
-    // Parsing string menjadi objek DateTime
-    DateTime reminderDateTime = DateTime.parse(reminderTime);
+    return FutureBuilder<String?>(
+      future: BookingClient.getReminderTime(
+          layananId), // Memanggil API untuk mengambil reminder_time
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-    // Format waktu menjadi jam dan menit
-    String formattedTime =
-        '${reminderDateTime.hour.toString().padLeft(2, '0')}:${reminderDateTime.minute.toString().padLeft(2, '0')}';
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChangeReminder(
-              reminderTime: details['reminder_time'],
-              timeStart: timeStart,
-              onReminderChanged: (newTime) {
-                onReminderChanged(newTime);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Reminder updated to $newTime"),
-                    backgroundColor: Colors.green,
+        if (snapshot.hasError) {
+          return Center(child: Text('Error fetching reminder time'));
+        }
+
+        String reminderTime = snapshot.data ?? '';
+        // Parsing string menjadi objek DateTime
+        DateTime reminderDateTime = DateTime.parse(reminderTime);
+
+        // Format waktu menjadi jam dan menit
+        String formattedTime =
+            '${reminderDateTime.hour.toString().padLeft(2, '0')}:${reminderDateTime.minute.toString().padLeft(2, '0')}';
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChangeReminder(
+                  reminderTime: reminderTime,
+                  timeStart: timeStart,
+                  layananId: layananId,
+                  onReminderChanged: (newTime) {
+                    onReminderChanged(newTime); // Panggil fungsi di parent
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Reminder updated to $newTime"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Stack(
+              children: [
+                Container(
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    image: DecorationImage(
+                      image: AssetImage(imagePath),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                );
-              },
+                ),
+                Container(
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.7),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+                // Class Info
+                Positioned(
+                  left: 16,
+                  bottom: 40,
+                  child: Text(
+                    className,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  bottom: 45,
+                  child: Text(
+                    "$timeStart - $timeEnd WIB",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 85, 101, 232),
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(16),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.lock_clock, color: Colors.white),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Reminder: $formattedTime",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Navigate to ChangeReminder screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangeReminder(
+                                  reminderTime:
+                                      details['reminder_time'] ?? "08:00",
+                                  timeStart: timeStart,
+                                  layananId: layananId,
+                                  onReminderChanged: (newTime) {
+                                    // Update the reminder time in the dataset
+                                    onReminderChanged(newTime);
+
+                                    // Show confirmation message
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            "Reminder updated to $newTime"),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: const [
+                              Text(
+                                "Change reminder time",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 4),
+                              Icon(Icons.arrow_forward, color: Colors.white),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Stack(
-          children: [
-            // Background Image
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            // Gradient Overlay
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.7),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-            // Class Info
-            Positioned(
-              left: 16,
-              bottom: 40,
-              child: Text(
-                className,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Positioned(
-              right: 10,
-              bottom: 45,
-              child: Text(
-                "$timeStart - $timeEnd WIB",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            // Reminder and Change Button
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 85, 101, 232),
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(16),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.lock_clock, color: Colors.white),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Reminder: $formattedTime",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Navigate to ChangeReminder screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChangeReminder(
-                              reminderTime: details['reminderTime'] ?? "08:00",
-                              timeStart: timeStart,
-                              onReminderChanged: (newTime) {
-                                // Update the reminder time in the dataset
-                                onReminderChanged(newTime);
-
-                                // Show confirmation message
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content:
-                                        Text("Reminder updated to $newTime"),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: Row(
-                        children: const [
-                          Text(
-                            "Change reminder time",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward, color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
