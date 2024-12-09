@@ -477,6 +477,8 @@ class ClassCard extends StatelessWidget {
         return Colors.green;
       case 'booked':
         return Colors.red;
+      case 'completed':
+        return Colors.black;
       case 'available':
         return const Color.fromARGB(255, 85, 101, 232);
       default:
@@ -493,6 +495,8 @@ class ClassCard extends StatelessWidget {
         return 'O\nR\nD\nE\nR\nE\nD';
       case 'booked':
         return 'B\nO\nO\nK\nE\nD';
+      case 'completed':
+        return 'C\nO\nM\nP\nL\nE\nT\nE';
       case 'available':
         return 'O\nR\nD\nE\nR';
       default:
@@ -527,6 +531,12 @@ class ClassCard extends StatelessWidget {
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 12,
+        );
+      case 'completed':
+        return const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
         );
       case 'available':
         return const TextStyle(
@@ -660,6 +670,7 @@ class ClassCard extends StatelessWidget {
                       ),
                       if (state != 'booked' &&
                           state != 'unavailable' &&
+                          state != 'completed' &&
                           availableSlots > 0 &&
                           !conflict) ...[
                         const SizedBox(height: 8),

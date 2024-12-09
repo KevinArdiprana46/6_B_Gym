@@ -151,8 +151,7 @@ class BookingClient {
   }
 
   static Future<List<Layanan>> getUserBookings(String search) async {
-    final token = await SharedPreferenceHelper.getString(
-        'token');
+    final token = await SharedPreferenceHelper.getString('token');
 
     if (token == null || token.isEmpty) {
       throw Exception("No token found. Please login first.");
@@ -294,6 +293,33 @@ class BookingClient {
       return json.decode(response.body);
     } else {
       throw Exception('Failed to cancel booking');
+    }
+  }
+
+  static Future<Map<String, dynamic>> completeClass(int bookingId) async {
+    final token = await SharedPreferenceHelper.getString('token');
+
+    if (token == null || token.isEmpty) {
+      throw Exception("No token found. Please login first.");
+    }
+    
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/booking/complete-class/$bookingId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // Gunakan token jika perlu
+        },
+      );
+
+      // Mengecek status response dari backend
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to complete class');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
     }
   }
 }
