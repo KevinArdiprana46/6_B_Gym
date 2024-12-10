@@ -32,6 +32,7 @@ class _EditProfileState extends State<EditProfile> {
     _loadProfileData();
   }
 
+//load data
   Future<void> _loadProfileData() async {
     try {
       final response = await ProfileClient.getProfile();
@@ -59,6 +60,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+//save data
   Future<void> _saveProfileData() async {
     if (_profileData != null) {
       final updatedProfile = Profile(
@@ -82,6 +84,7 @@ class _EditProfileState extends State<EditProfile> {
               ),
             );
           }
+          //setelah save pindah page ke profile
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const ProfilePage()),
@@ -94,12 +97,16 @@ class _EditProfileState extends State<EditProfile> {
       } catch (e) {
         print("Error saving profile data: $e");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error saving profile data: $e")),
+          SnackBar(
+            content: Text("Error saving profile data: $e"),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
   }
 
+//milih foto atau ambil dari gallery
   Future<void> _showImageSourceActionSheet() async {
     showModalBottomSheet(
       context: context,
@@ -138,6 +145,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+//cara ambil di galery
   Future<String?> _pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(source: source);
     return image?.path;

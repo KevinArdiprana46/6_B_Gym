@@ -28,7 +28,6 @@ class _BerandaViewState extends State<BerandaView>
     );
     _fetchUserLogin(); // Panggil data user saat halaman dimuat
   }
-  
 
   Future<void> _fetchUserLogin() async {
     try {
@@ -82,7 +81,6 @@ class _BerandaViewState extends State<BerandaView>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("UNI FIT"),
@@ -124,9 +122,10 @@ class HomeContent extends StatelessWidget {
   final String? username;
 
   const HomeContent({Key? key, required this.username}) : super(key: key);
-  void  _fetchUserLogin() async {
+  void _fetchUserLogin() async {
     await UserClient.getUserLogin();
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -142,8 +141,8 @@ class HomeContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
-                  onTap: (){
-                        _fetchUserLogin();
+                  onTap: () {
+                    _fetchUserLogin();
                   },
                   child: Text(
                     "Morning, ${username ?? 'Loading...'}",
