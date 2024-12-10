@@ -9,6 +9,31 @@ class UserClient {
   static const String registerEndPoint = '/api/register';
   static const String loginEndPoint = '/api/login';
 
+  static Future<Map<String, dynamic>> getUserLogin() async {
+ 
+    final token = SharedPreferenceHelper.getString('token');
+    if (token.isEmpty) {
+      throw Exception('Token not found');
+    }
+  print("haha");
+    final response = await http.get(
+     Uri.http(baseUrl, '/api/users/getUserLogin'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+  //  print("masuk gakk ${response.body}");
+    // print(response.body); 
+
+    if (response.statusCode == 200) {
+      final res= json.decode(response.body);
+      // print(res['user']);
+
+
+      return res;
+    } else {
+      throw Exception('Failed to fetch user data');
+    }
+  }
+
   /// Register User
   static Future<Map<String, dynamic>> register(User user) async {
     try {
@@ -43,7 +68,7 @@ class UserClient {
 
       if (response.statusCode == 200) {
         var a = Loginresponse.fromJson(jsonDecode(response.body));
-        print(response.body);
+        // print(response.body);
         SharedPreferenceHelper.setString('token', a.token!);
         print(a.token);
         return json.decode(response.body);

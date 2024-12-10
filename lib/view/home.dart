@@ -1,6 +1,8 @@
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
+import 'package:tubes_pbp_6/client/UserClient.dart';
 import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
@@ -13,6 +15,7 @@ class BerandaView extends StatefulWidget {
 
 class _BerandaViewState extends State<BerandaView>
     with TickerProviderStateMixin {
+  String? username; // Variabel untuk menyimpan nama user
   MotionTabBarController? _motionTabBarController;
 
   @override
@@ -23,6 +26,21 @@ class _BerandaViewState extends State<BerandaView>
       length: 5,
       vsync: this,
     );
+    _fetchUserLogin(); // Panggil data user saat halaman dimuat
+  }
+  
+
+  Future<void> _fetchUserLogin() async {
+    try {
+      final user = await UserClient.getUserLogin(); // Panggil API
+      setState(() {
+        username = user['nama_depan']; // Simpan nama depan user
+      });
+    } catch (e) {
+      setState(() {
+        username = 'User'; // Tampilkan 'User' jika terjadi error
+      });
+    }
   }
 
   @override
@@ -40,10 +58,7 @@ class _BerandaViewState extends State<BerandaView>
         );
         break;
       case 1:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ReviewPage()),
-        // );
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => ReviewPage()));
         break;
       case 2:
         Navigator.push(
@@ -52,10 +67,7 @@ class _BerandaViewState extends State<BerandaView>
         );
         break;
       case 3:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => PaymentPage()),
-        // );
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage()));
         break;
       case 4:
         Navigator.push(
@@ -70,6 +82,7 @@ class _BerandaViewState extends State<BerandaView>
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("UNI FIT"),
@@ -102,14 +115,18 @@ class _BerandaViewState extends State<BerandaView>
         tabBarColor: Colors.white,
         onTabItemSelected: _onItemTapped,
       ),
-      body: const HomeContent(), // Tetap menggunakan konten Home
+      body: HomeContent(username: username), // Kirim username ke HomeContent
     );
   }
 }
 
 class HomeContent extends StatelessWidget {
-  const HomeContent({Key? key}) : super(key: key);
+  final String? username;
 
+  const HomeContent({Key? key, required this.username}) : super(key: key);
+  void  _fetchUserLogin() async {
+    await UserClient.getUserLogin();
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -124,9 +141,16 @@ class HomeContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Morning, Fahmy",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                InkWell(
+                  onTap: (){
+                        _fetchUserLogin();
+                  },
+                  child: Text(
+                    "Morning, ${username ?? 'Loading...'}",
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Row(
                   children: [

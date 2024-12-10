@@ -14,7 +14,6 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -49,7 +48,6 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
-  // Load profile data from API
   Future<void> _loadProfileData() async {
     try {
       final response = await ProfileClient.getProfile();
@@ -74,10 +72,19 @@ class _ProfilePageState extends State<ProfilePage>
       }
     } catch (e) {
       print("Error fetching profile data: $e");
+      if (mounted) {
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error loading profile: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        });
+      }
     }
   }
 
-  // Handling tab selection
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
@@ -87,13 +94,13 @@ class _ProfilePageState extends State<ProfilePage>
         );
         break;
       case 2:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const BookClass()),
         );
         break;
       case 4:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const ProfilePage()),
         );
@@ -103,7 +110,6 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
-  // Logout function
   void _logout() {
     Navigator.pushReplacement(
       context,
@@ -119,7 +125,6 @@ class _ProfilePageState extends State<ProfilePage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Profile Header
             Container(
               width: double.infinity,
               color: const Color(0xFF5565E8),
@@ -127,8 +132,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, // tombol logout di pojok kanan
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
                         color: Colors.red,
@@ -139,11 +143,11 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                   CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.white,
-                    child: CircleAvatar(
-                      radius: 55,
-                    ),
+                    radius: 50,
+                    backgroundImage:
+                        profile_picture != null && profile_picture!.isNotEmpty
+                            ? NetworkImage(profile_picture!)
+                            : const AssetImage('') as ImageProvider,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -166,7 +170,6 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
             const SizedBox(height: 20),
-            // Data Fields
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -193,7 +196,6 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
             const SizedBox(height: 20),
-            // Edit Profile Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: ElevatedButton(
@@ -205,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   );
                   if (result == true) {
-                    _loadProfileData(); // Refresh data
+                    _loadProfileData();
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -254,7 +256,6 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  // field untuk profile
   Widget _buildProfileField(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

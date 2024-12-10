@@ -16,28 +16,26 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       try {
         final response = await UserClient.login(usernameController.text, passwordController.text);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Login berhasil! Selamat datang."),
+            backgroundColor: Colors.green,
+          ),
+        );
+        await Future.delayed(Duration(seconds: 2));
         Navigator.pushReplacement(
-          
           context,
           MaterialPageRoute(builder: (context) => BerandaView()),
         );
       } catch (e) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Login Error"),
-            content: Text(e.toString()),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text("OK"),
-              ),
-            ],
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Login gagal: ${e.toString()}"),
+            backgroundColor: Colors.red,
           ),
         );
       }
