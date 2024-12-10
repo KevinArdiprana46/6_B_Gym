@@ -48,6 +48,9 @@ flutter:
     - images/lifting.jpg
     - images/dance.jpg
     - images/yoga.jpg
+    - images/qrisLogo.jpg
+    - images/qrCode.jpg
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/registerAsset/vektorRegister1.png
     - lib/assets/registerAsset/vektorRegister2.png
+    

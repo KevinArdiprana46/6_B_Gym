@@ -111,8 +111,10 @@ class SelectedClassBook extends StatelessWidget {
         if (response['success']) {
           // Tampilkan SnackBar jika berhasil menyelesaikan kelas
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Class completed successfully')),
+            const SnackBar(content: Text('Class completed successfully'), backgroundColor: Colors.green,),
           );
+          await Future.delayed(const Duration(seconds: 1));
+
 
           // Kembali ke halaman sebelumnya setelah kelas selesai
           Navigator.push(

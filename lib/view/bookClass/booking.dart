@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
+import 'package:tubes_pbp_6/view/bookClass/cart_page.dart';
 import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
 import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
@@ -29,7 +30,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
-    _onDateSelected('09');
+    _onDateSelected('10');
   }
 
   @override
@@ -57,6 +58,11 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
         case 2:
           // Review
           break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => CartPage()),
+          );
         case 4:
           Navigator.pushReplacement(
             context,
@@ -75,6 +81,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Class successfully booked")),
       );
+      await Future.delayed(const Duration(seconds: 2));
+
       setState(() {
         _layananFuture =
             LayananClient.getLayananWithBookingStatus(selectedDate);

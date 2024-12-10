@@ -322,4 +322,36 @@ class BookingClient {
       throw Exception('Error: $e');
     }
   }
+
+  static Future<List<Layanan>> getOrderedServices() async {
+    final token = await SharedPreferenceHelper.getString('token');
+
+    if (token == null || token.isEmpty) {
+      throw Exception("No token found. Please login first.");
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/services/ordered'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parsing respons ke dalam list objek Layanan
+        List jsonResponse = json.decode(response.body);
+        return jsonResponse.map((data) => Layanan.fromJson(data)).toList();
+      } else {
+        // Jika respons gagal
+        final errorMessage = json.decode(response.body)['message'];
+        throw Exception('Failed to fetch ordered services: $errorMessage');
+      }
+    } catch (e) {
+      // Tangani error saat pengambilan data
+      print("Error fetching ordered services: $e");
+      throw Exception("Error fetching ordered services: $e");
+    }
+  }
 }
