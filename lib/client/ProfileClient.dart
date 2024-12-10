@@ -35,6 +35,7 @@ class ProfileClient {
     }
   }
 
+//update profile + foto profile
   static Future<http.Response> update({required Profile profile}) async {
     try {
       final token = await SharedPreferenceHelper.getString('token');

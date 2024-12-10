@@ -48,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
+//load data
   Future<void> _loadProfileData() async {
     try {
       final response = await ProfileClient.getProfile();
@@ -110,6 +111,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
+//logout
   void _logout() {
     Navigator.pushReplacement(
       context,
