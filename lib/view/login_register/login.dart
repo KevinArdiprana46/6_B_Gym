@@ -20,9 +20,9 @@ class _LoginViewState extends State<LoginView> {
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       try {
-        final response = await UserClient.login(usernameController.text, passwordController.text);
+        final response = await UserClient.login(
+            usernameController.text, passwordController.text);
         Navigator.pushReplacement(
-          
           context,
           MaterialPageRoute(builder: (context) => BerandaView()),
         );

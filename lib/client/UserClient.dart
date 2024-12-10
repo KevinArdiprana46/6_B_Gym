@@ -5,14 +5,14 @@ import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import '../entity/user.dart';
 
 class UserClient {
-  static const String baseUrl = '10.0.2.2:8000'; 
+  static const String baseUrl = '10.0.2.2:8000';
   static const String registerEndPoint = '/api/register';
   static const String loginEndPoint = '/api/login';
 
   /// Register User
   static Future<Map<String, dynamic>> register(User user) async {
     try {
-      print( Uri.http(baseUrl, registerEndPoint));
+      print(Uri.http(baseUrl, registerEndPoint));
       final response = await http.post(
         Uri.http(baseUrl, registerEndPoint),
         headers: {'Content-Type': 'application/json'},
@@ -33,7 +33,8 @@ class UserClient {
   }
 
   /// Login User
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(
+      String email, String password) async {
     try {
       final response = await http.post(
         Uri.http(baseUrl, loginEndPoint),
@@ -56,4 +57,6 @@ class UserClient {
       return Future.error("Error during login: $e");
     }
   }
+
+  static getUserLogin() {}
 }
