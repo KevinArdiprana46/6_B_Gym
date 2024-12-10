@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tubes_pbp_6/client/paymentClient.dart';
 import 'package:tubes_pbp_6/entity/layanan.dart';
 import 'package:tubes_pbp_6/view/bookClass/invoice.dart';
 
@@ -6,6 +7,35 @@ class PaymentMethodPage extends StatelessWidget {
   final Layanan layanan;
 
   const PaymentMethodPage({Key? key, required this.layanan}) : super(key: key);
+
+  Future<void> _createPayment(BuildContext context) async {
+    try {
+      // Panggil API untuk membuat pembayaran
+      final payment = await PaymentClient.createPayment(
+        layananId: layanan.id,
+        status: "paid", // Set status pembayaran
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Payment Successful!")),
+      );
+
+      // Navigasi ke halaman invoice setelah pembayaran berhasil
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InvoicePage(
+            layanan: layanan,
+            paymentDetails: payment, // Kirimkan seluruh detail pembayaran
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Payment failed: $e")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +107,7 @@ class PaymentMethodPage extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-             Center(
+            Center(
               child: Column(
                 children: [
                   Image.asset(
@@ -98,11 +128,7 @@ class PaymentMethodPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InvoicePage(layanan: layanan))); // Kembali ke halaman sebelumnya
-                },
+                onPressed: () => _createPayment(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 16),

@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/entity/layanan.dart';
+import 'package:tubes_pbp_6/entity/payment_respon.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class InvoicePage extends StatelessWidget {
   final Layanan layanan;
+  final Payment paymentDetails;
 
-  const InvoicePage({Key? key, required this.layanan}) : super(key: key);
+  const InvoicePage({Key? key, required this.layanan, required this.paymentDetails}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     const int fixedPrice = 750000; // Harga tetap
     const int taxAmount = 7500; // Pajak tetap
     const int adminFees = 2500; // Admin fee tetap
-    const int totalAmount = fixedPrice + taxAmount + adminFees; // Total
+    const int totalAmount = fixedPrice + taxAmount + adminFees; // Total pembayaran
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Invoice'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -24,20 +33,12 @@ class InvoicePage extends StatelessWidget {
             const SizedBox(height: 16),
             const Text(
               'Payment Success',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
             const SizedBox(height: 8),
             Text(
-              "IDR $fixedPrice",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
+              "IDR $totalAmount",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
             const SizedBox(height: 16),
             Container(
@@ -53,7 +54,8 @@ class InvoicePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Payment ID'),
-                      Text('71289462', style: TextStyle(color: Colors.black)),
+                      Text(paymentDetails.paymentId.toString(),
+                          style: const TextStyle(color: Colors.black)),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -61,63 +63,27 @@ class InvoicePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Transaction Date'),
-                      Text(
-                        'June 15 2024',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Transaction Time'),
-                      Text(
-                        '20:35:38 WIB',
-                        style: TextStyle(color: Colors.black),
-                      ),
+                      Text(paymentDetails.paymentDate.toString(),
+                          style: const TextStyle(color: Colors.black)),
                     ],
                   ),
                   const Divider(color: Colors.black, thickness: 0.5),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Payer Name'),
-                      Text(
-                        'Fahmy Junaedi',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Debit Account'),
-                      Text(
-                        '07283475',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  const Divider(color: Colors.black, thickness: 0.5),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Nominal'),
+                    children: const [
+                      Text('Nominal'),
                       Text(
                         'IDR $fixedPrice',
                         style: TextStyle(color: Colors.black),
-                      ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Tax'),
+                    children: const [
+                      Text('Tax'),
                       Text(
                         'IDR $taxAmount',
                         style: TextStyle(color: Colors.black),
@@ -127,19 +93,13 @@ class InvoicePage extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Admin Fees'),
+                    children: const [
+                      Text('Admin Fees'),
                       Text(
                         'IDR $adminFees',
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
-                  ),
-                  const Divider(color: Colors.black, thickness: 0.5),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Your class will be reminded to you at 15:00',
-                    style: TextStyle(fontSize: 14, color: Colors.black),
                   ),
                 ],
               ),
@@ -149,7 +109,6 @@ class InvoicePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Logika untuk mencetak invoice
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Invoice printed successfully!")),
                   );
@@ -172,8 +131,8 @@ class InvoicePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName('/')); // Kembali ke home
+                  Navigator.push(context, 
+                  MaterialPageRoute(builder: (context) => BookClass()));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
