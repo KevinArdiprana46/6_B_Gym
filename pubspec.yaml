@@ -16,6 +16,7 @@ dependencies:
   http: ^1.2.2
   flutter_riverpod: ^2.6.1
   provider: ^6.1.2
+  intl: ^0.18.0
 
 
 dev_dependencies:
@@ -48,7 +49,9 @@ flutter:
     - images/lifting.jpg
     - images/dance.jpg
     - images/yoga.jpg
+    - images/qrisLogo.jpg
+    - images/qrCode.jpg
     - lib/assets/preLoginAsset/Logo.jpg
     - lib/assets/registerAsset/vektorRegister1.png
     - lib/assets/registerAsset/vektorRegister2.png
-
+    

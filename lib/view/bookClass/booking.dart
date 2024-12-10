@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBar.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
+import 'package:tubes_pbp_6/view/bookClass/cart_page.dart';
 import 'package:tubes_pbp_6/view/bookClass/selectedBookClass.dart';
 import 'package:tubes_pbp_6/view/bookClass/notificationBooking.dart';
 import 'package:tubes_pbp_6/data/classData.dart';
@@ -9,11 +10,9 @@ import 'package:tubes_pbp_6/view/Profile/profile.dart';
 import 'package:tubes_pbp_6/client/layananClient.dart';
 import 'package:tubes_pbp_6/client/bookingClient.dart';
 import 'package:tubes_pbp_6/entity/layanan.dart';
-import 'package:tubes_pbp_6/entity/booking.dart';
 
 class BookClass extends StatefulWidget {
   const BookClass({super.key});
-
   @override
   State<BookClass> createState() => _BookClassState();
 }
@@ -31,8 +30,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
-    _layananFuture = LayananClient.getLayananWithBookingStatus(
-        '04'); // Fetch layanan based on selected date
+    _onDateSelected('10');
   }
 
   @override
@@ -43,10 +41,8 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
 
   void _onDateSelected(String date) {
     setState(() {
-      selectedDate =
-          date; // Menyimpan tanggal sebagai string dengan format "dd"
-      _layananFuture = LayananClient.getLayananWithBookingStatus(
-          selectedDate); // Gunakan format 'yyyy-MM-dd' pada API call
+      selectedDate = date;
+      _layananFuture = LayananClient.getLayananWithBookingStatus(selectedDate);
     });
   }
 
@@ -60,8 +56,13 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           );
           break;
         case 2:
-          // Booking tab, can be left empty if we handle the booking UI within this tab
+          // Review
           break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => CartPage()),
+          );
         case 4:
           Navigator.pushReplacement(
             context,
@@ -74,14 +75,14 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     }
   }
 
-  // Method to handle booking
   void _onBookClass(int layananId) async {
     try {
       await BookingClient.bookClass(layananId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Class successfully booked")),
       );
-      // Trigger a refresh to update the booking state
+      await Future.delayed(const Duration(seconds: 2));
+
       setState(() {
         _layananFuture =
             LayananClient.getLayananWithBookingStatus(selectedDate);
@@ -93,14 +94,12 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     }
   }
 
-  // Method to handle class cancellation
   void _onCancelClass(int layananId) async {
     try {
       await BookingClient.cancelBooking(layananId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Booking successfully cancelled")),
       );
-      // Trigger a refresh to update the booking state
       setState(() {
         _layananFuture =
             LayananClient.getLayananWithBookingStatus(selectedDate);
@@ -129,8 +128,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
           ),
           Expanded(
             child: FutureBuilder<List<Layanan>>(
-              future:
-                  _layananFuture, // Use the future to load data based on selected date
+              future: _layananFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -254,18 +252,10 @@ class CustomHeader extends StatelessWidget {
                             color: Colors.black,
                           ),
                           onPressed: () {
-                            final bookedClasses = classSchedules.values
-                                .expand((classes) => classes)
-                                .where((classInfo) =>
-                                    classInfo['state'] == 'booked')
-                                .toList();
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => NotificationBooking(
-                                  bookedClasses: bookedClasses,
-                                ),
+                                builder: (context) => NotificationBooking(),
                               ),
                             );
                           },
@@ -303,7 +293,6 @@ class CalendarStrip extends StatelessWidget {
     List<DateTime> dates =
         List.generate(5, (index) => now.add(Duration(days: index)));
 
-    // Fungsi untuk mendapatkan nama hari berdasarkan DateTime.weekday
     String getDayName(int weekday) {
       switch (weekday) {
         case DateTime.monday:
@@ -333,14 +322,12 @@ class CalendarStrip extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: dates.map((date) {
           String day = getDayName(date.weekday);
-          String dateString = date.day.toString().padLeft(
-              2, '0'); // Menambahkan padding agar dua digit (misal 01, 02)
+          String dateString = date.day.toString().padLeft(2, '0');
 
           return DateCircle(
             day: day,
             date: dateString,
-            isSelected:
-                selectedDate == dateString, // Cek apakah tanggal ini dipilih
+            isSelected: selectedDate == dateString,
             onPressed: onDateSelected,
           );
         }).toList(),
@@ -437,9 +424,9 @@ class ClassList extends StatelessWidget {
       return ListView.builder(
         itemCount: classes.length,
         itemBuilder: (context, index) {
-          final classInfo = classes[index]; // Layanan object
+          final classInfo = classes[index];
           return ClassCard(
-            layanan: classInfo, // Mengirim objek Layanan langsung
+            layanan: classInfo,
             onBook: onBook,
             onCancel: onCancel,
             selectedDate: selectedDate,
@@ -492,10 +479,14 @@ class ClassCard extends StatelessWidget {
   Color _getContainerColor(String state, bool conflict, int availableSlots) {
     if (availableSlots == 0 || conflict) return Colors.grey;
     switch (state) {
+      case 'unavailable':
+        return Colors.grey;
       case 'ordered':
         return Colors.green;
       case 'booked':
         return Colors.red;
+      case 'completed':
+        return Colors.black;
       case 'available':
         return const Color.fromARGB(255, 85, 101, 232);
       default:
@@ -504,12 +495,16 @@ class ClassCard extends StatelessWidget {
   }
 
   String _getContainerText(String state, bool conflict, int availableSlots) {
-    if (availableSlots == 0 || conflict) return 'Not\nAvailable';
+    if (availableSlots == 0 || conflict) return 'unavailable';
     switch (state) {
+      case 'unavailable':
+        return 'Unavailable';
       case 'ordered':
         return 'O\nR\nD\nE\nR\nE\nD';
       case 'booked':
         return 'B\nO\nO\nK\nE\nD';
+      case 'completed':
+        return 'C\nO\nM\nP\nL\nE\nT\nE';
       case 'available':
         return 'O\nR\nD\nE\nR';
       default:
@@ -527,6 +522,12 @@ class ClassCard extends StatelessWidget {
       );
     }
     switch (state) {
+      case 'unavailable':
+        return const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        );
       case 'ordered':
         return const TextStyle(
           color: Colors.white,
@@ -538,6 +539,12 @@ class ClassCard extends StatelessWidget {
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 12,
+        );
+      case 'completed':
+        return const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
         );
       case 'available':
         return const TextStyle(
@@ -669,7 +676,11 @@ class ClassCard extends StatelessWidget {
                         style: _getContainerTextStyle(
                             state, conflict, availableSlots),
                       ),
-                      if (availableSlots > 0 && !conflict) ...[
+                      if (state != 'booked' &&
+                          state != 'unavailable' &&
+                          state != 'completed' &&
+                          availableSlots > 0 &&
+                          !conflict) ...[
                         const SizedBox(height: 8),
                         const Icon(
                           Icons.arrow_forward,

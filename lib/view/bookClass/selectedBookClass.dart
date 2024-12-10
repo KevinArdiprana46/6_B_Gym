@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tubes_pbp_6/entity/booking.dart'; // Import entity Booking
-import 'package:tubes_pbp_6/client/bookingClient.dart'; // Import client BookingClient
-import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
-import 'dart:convert';
+import 'package:tubes_pbp_6/client/bookingClient.dart';
+import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 
 class SelectedClassBook extends StatelessWidget {
   final String className;
@@ -48,11 +46,91 @@ class SelectedClassBook extends StatelessWidget {
         );
 
         // Kembali ke halaman sebelumnya setelah booking berhasil
-        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BookClass()));
       } catch (e) {
         // Tampilkan pesan error jika terjadi kesalahan
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+
+    void _cancelBooking() async {
+      try {
+        final layananId = details['layanan_id'];
+        final bookingId = await BookingClient.getBookingId(layananId);
+        print("Layanan ID: $layananId");
+
+        if (bookingId == null) {
+          throw Exception('Booking ID not found');
+        }
+
+        // Panggil API atau fungsi untuk membatalkan booking dengan booking_id
+        final response = await BookingClient.cancelBooking(bookingId);
+
+        if (response['success']) {
+          // Tampilkan SnackBar jika berhasil membatalkan
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Booking canceled successfully')),
+          );
+
+          // Kembali ke halaman sebelumnya setelah membatalkan
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => BookClass()));
+        } else {
+          // Tampilkan error message jika gagal
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text(response['message'] ?? 'Failed to cancel booking')),
+          );
+        }
+      } catch (e) {
+        // Tangani error jika ada masalah dalam proses pembatalan
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}")),
+        );
+      }
+    }
+
+    void _completeClass() async {
+      try {
+        final layananId = details['layanan_id'];
+        final bookingId =
+            await BookingClient.getBookingId(layananId); // Dapatkan booking ID
+        print("Layanan ID: $layananId");
+
+        if (bookingId == null) {
+          throw Exception('Booking ID not found');
+        }
+
+        // Panggil API atau fungsi untuk menyelesaikan kelas dengan booking_id
+        final response = await BookingClient.completeClass(bookingId);
+
+        if (response['success']) {
+          // Tampilkan SnackBar jika berhasil menyelesaikan kelas
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Class completed successfully'), backgroundColor: Colors.green,),
+          );
+          await Future.delayed(const Duration(seconds: 1));
+
+
+          // Kembali ke halaman sebelumnya setelah kelas selesai
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => BookClass()));
+        } else {
+          // Tampilkan error message jika gagal
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                    response['message'] ?? 'Failed to complete the class')),
+          );
+        }
+      } catch (e) {
+        // Tangani error jika ada masalah dalam proses penyelesaian kelas
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}")),
         );
       }
     }
@@ -192,18 +270,39 @@ class SelectedClassBook extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  // Conditional Button for "Order Class" or "Cancel Order"
                   Center(
-                    child: state == 'booked'
-                        ? const SizedBox() // Do nothing if the class is booked
+                    child: (state == 'booked' || state == 'unavailable')
+                        ? ElevatedButton(
+                            onPressed: () {
+                              if (state == 'booked') {
+                                _completeClass(); // Fungsi untuk menyelesaikan kelas
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green, // Warna hijau
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 100,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              "Complete Class",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
                         : ElevatedButton(
                             onPressed: () {
                               if (state == 'available') {
-                                _bookClass(); // Call the function to book the class
+                                _bookClass(); // Fungsi untuk booking kelas
                               } else if (state == 'ordered') {
-                                onCancel(details['className']);
+                                _cancelBooking(); // Fungsi untuk cancel booking
                               }
-                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: state == 'ordered'
