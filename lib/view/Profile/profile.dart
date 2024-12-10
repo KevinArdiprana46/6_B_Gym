@@ -48,7 +48,6 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
-  // Load profile data from API
   Future<void> _loadProfileData() async {
     try {
       final response = await ProfileClient.getProfile();
@@ -91,11 +90,15 @@ class _ProfilePageState extends State<ProfilePage>
           MaterialPageRoute(builder: (context) => const BerandaView()),
         );
         break;
+      case 1:
+        break;
       case 2:
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const BookClass()),
         );
+        break;
+      case 3:
         break;
       case 4:
         Navigator.pushReplacement(
@@ -123,7 +126,6 @@ class _ProfilePageState extends State<ProfilePage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Profile Header
             Container(
               width: double.infinity,
               color: const Color(0xFF5565E8),
@@ -146,8 +148,7 @@ class _ProfilePageState extends State<ProfilePage>
                     backgroundImage:
                         profile_picture != null && profile_picture!.isNotEmpty
                             ? NetworkImage(profile_picture!)
-                            : const AssetImage('images/download.jpg')
-                                as ImageProvider,
+                            : const AssetImage('') as ImageProvider,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -170,7 +171,6 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
             const SizedBox(height: 20),
-            // Data Fields
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -197,7 +197,6 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
             const SizedBox(height: 20),
-            // Edit Profile Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: ElevatedButton(
@@ -258,7 +257,6 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  // field untuk profile
   Widget _buildProfileField(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
