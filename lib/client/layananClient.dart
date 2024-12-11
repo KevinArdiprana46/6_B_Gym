@@ -59,9 +59,9 @@ class LayananClient {
     if (token == null || token.isEmpty) {
       throw Exception('Token is missing or empty');
     }
-    
-    final url = Uri.parse(
-        '$baseUrl/api/layanan/date/$selectedDate/booking-status');
+
+    final url =
+        Uri.parse('$baseUrl/api/layanan/date/$selectedDate/booking-status');
 
     final response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
