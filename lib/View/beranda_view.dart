@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tubes_pbp_6/view/reviewPage.dart';
-import 'package:tubes_pbp_6/view/profile.dart';
+import 'package:tubes_pbp_6/view/profile/profile.dart';
 import 'package:tubes_pbp_6/view/listReview.blade.dart';
 
 class BerandaView extends StatefulWidget {

@@ -12,6 +12,10 @@ class dataLayanan {
     this.trainerImage,
     this.classImage,
   );
+
+  get trainerId => null;
+
+  get classId => null;
 }
 final List<dataLayanan> data = _data.map(
   (e) => dataLayanan(
@@ -36,20 +40,62 @@ final List<Map<String, Object>> _data = [
     "deskripsi": "Membangun Massa Otot",
     "jadwal": "Setiap Kamis",
     "trainerImage": "lib/assets/class.png",
-    "classImage": "lib/assets/gym.jpg",
+    "classImage": "images/lifting.jpg",
   },
   {
     "namaLayanan": "Kelas Yoga",
     "deskripsi": "Membangun ketenangan jiwa",
     "jadwal": "Setiap Minggu",
     "trainerImage": "lib/assets/class.png",
-    "classImage": "lib/assets/class.png",
+    "classImage": "images/yoga.jpg",
   },
   {
     "namaLayanan": "Boxing",
     "deskripsi": "Kelas Boxing untuk latihan intens",
     "jadwal": "Setiap Sabtu",
-    "trainerImage": "lib/assets/class.png",
-    "classImage": "lib/assets/trainer.png",
+    "trainerImage": "lib/assets/boxing.jpg",
+    "classImage": "images/boxing.jpg",
   },
+];
+
+class ReviewData {
+  final dataLayanan layanan;  
+  final double rating;  
+  final String review;  
+  final String reviewerName;  
+
+  ReviewData({
+    required this.layanan,
+    required this.rating,
+    required this.review,
+    required this.reviewerName,
+  });
+}
+
+
+final List<ReviewData> reviewData = [
+  ReviewData(
+    layanan: data[0], 
+    rating: 4.5,
+    review: "Kelas yang sangat membantu dalam membakar lemak dan menjaga kesehatan jantung.",
+    reviewerName: "Arianto",
+  ),
+  ReviewData(
+    layanan: data[1], 
+    rating: 5.0,
+    review: "Latihan angkat beban yang menantang dan efektif untuk membentuk massa otot.",
+    reviewerName: "Budi",
+  ),
+  ReviewData(
+    layanan: data[2], 
+    rating: 4.0,
+    review: "Kelas yoga ini sangat menenangkan, namun bisa lebih banyak variasi pose.",
+    reviewerName: "Siti",
+  ),
+  ReviewData(
+    layanan: data[3], 
+    rating: 4.7,
+    review: "Latihan boxing yang intens, cocok untuk meningkatkan ketahanan dan kekuatan.",
+    reviewerName: "Andi",
+  ),
 ];
