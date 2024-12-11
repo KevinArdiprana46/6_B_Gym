@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tubes_pbp_6/entity/review.dart';
+import 'package:tubes_pbp_6/entity/review_respons.dart';
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 
 class ReviewClient {
@@ -29,15 +30,39 @@ class ReviewClient {
   }
 }
 
+  static Future<ReviewRespon> getAll() async {
+    final url = Uri.parse('$baseUrl/api/reviews'); // Sesuaikan endpoint
+    try {
+      final response = await http.get(url);
+
+      // Log untuk debugging
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return ReviewRespon.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Failed to fetch reviews. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching reviews: $e');
+      rethrow;
+    }
+  }
+
   // Menambahkan review
   static Future<review> addReview(int layananId, review newReview) async {
   final token = await SharedPreferenceHelper.getString('token');
-  
+  print('isi data');
+    print(newReview.layanan_id);
+    print(layananId);
     if (token == null || token.isEmpty) {
       throw Exception("No token found. Please login first.");
     }
 
-    final url = Uri.parse('$baseUrl/api$addReviewEndpoint');
+    final url = Uri.parse('$baseUrl/api/reviews/store');
+    print('ini url ');
+    print(url);
     try {
       final response = await http.post(
         url,
@@ -45,13 +70,21 @@ class ReviewClient {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(newReview.toJson()),
+        body: newReview.toRawJson(),
+      
       );
+      print('hail ');
+          print(response.body);
+
+      print(newReview);
       print('Response Status Code: ${response.statusCode}');
       print('url ${url}');
       print('Token: $token');
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      print('test');
+      if (response.statusCode == 201) {
+        print('tes');
         final jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
         return review.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to add review');

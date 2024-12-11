@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 class review {
   int? userId;
+  int? layanan_id;
   int? rating;
   String? komentar;
   String? tanggalReview;
@@ -8,8 +11,10 @@ class review {
   int? reviewId;
 
   review(
-      {this.userId,
+      {
+       this.userId,
       this.rating,
+      this.layanan_id,
       this.komentar,
       this.tanggalReview,
       this.updatedAt,
@@ -18,6 +23,7 @@ class review {
 
   review.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
+    layanan_id = json['layanan_id'];
     rating = json['rating'];
     komentar = json['komentar'];
     tanggalReview = json['tanggal_review'];
@@ -27,14 +33,17 @@ class review {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['rating'] = this.rating;
-    data['komentar'] = this.komentar;
-    data['tanggal_review'] = this.tanggalReview;
-    data['updated_at'] = this.updatedAt;
-    data['created_at'] = this.createdAt;
-    data['review_id'] = this.reviewId;
-    return data;
+     return {
+      'user_id': userId,
+      'layanan_id': layanan_id,
+      'rating': rating,
+      'komentar': komentar,
+      'tanggal_review': tanggalReview,
+      'updated_at': updatedAt,
+      'created_at': createdAt,
+      'review_id': reviewId,
+    };
   }
+
+  String toRawJson() => json.encode(toJson());
 }
