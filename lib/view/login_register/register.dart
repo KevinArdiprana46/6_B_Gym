@@ -32,7 +32,7 @@ class _RegisterViewState extends State<RegisterView> {
               SizedBox(height: 20),
               Text("Hey there,",
                   style: TextStyle(fontSize: 18, color: Colors.grey[700])),
-              Text("Create an Account",
+              const Text("Create an Account",
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -143,7 +143,7 @@ class _RegisterViewState extends State<RegisterView> {
                               borderRadius: BorderRadius.circular(25)),
                           padding: EdgeInsets.symmetric(vertical: 15),
                         ),
-                        child: Text('Next',
+                        child: const Text('Next',
                             style:
                                 TextStyle(fontSize: 16, color: Colors.white)),
                       ),
@@ -152,7 +152,7 @@ class _RegisterViewState extends State<RegisterView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Already have an account?",
+                        const Text("Already have an account?",
                             style: TextStyle(color: Colors.grey)),
                         TextButton(
                           onPressed: () {

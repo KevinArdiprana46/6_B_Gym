@@ -75,12 +75,6 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
       appBar: AppBar(
         title: const Text('Pembayaran'),
         backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: FutureBuilder<List<Layanan>>(
         future: _layananFuture,
@@ -102,7 +96,8 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentMethodPage(layanan: layanan),
+                        builder: (context) =>
+                            PaymentMethodPage(layanan: layanan),
                       ),
                     );
                   },

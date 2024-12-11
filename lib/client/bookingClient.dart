@@ -285,7 +285,7 @@ class BookingClient {
     if (token == null || token.isEmpty) {
       throw Exception("No token found. Please login first.");
     }
-    
+
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/booking/complete-class/$bookingId'),

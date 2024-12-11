@@ -67,7 +67,8 @@ class _BerandaViewState extends State<BerandaView>
         );
         break;
       case 3:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => CartPage()));
         break;
       case 4:
         Navigator.push(
@@ -114,7 +115,7 @@ class _BerandaViewState extends State<BerandaView>
         tabBarColor: Colors.white,
         onTabItemSelected: _onItemTapped,
       ),
-      body: HomeContent(username: username), // Kirim username ke HomeContent
+      body: HomeContent(username: username),
     );
   }
 }
@@ -172,8 +173,8 @@ class HomeContent extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  children: const [
+                const Row(
+                  children: [
                     Chip(
                         label: Text("Aerobic",
                             style: TextStyle(color: Colors.white)),
@@ -203,11 +204,11 @@ class HomeContent extends StatelessWidget {
           const Text("Personal Trainer:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          SizedBox(
+          const SizedBox(
             height: 300,
             child: SingleChildScrollView(
               child: Column(
-                children: const [
+                children: [
                   TrainerCard(
                       name: "Tretan",
                       expertise: "Jomok",

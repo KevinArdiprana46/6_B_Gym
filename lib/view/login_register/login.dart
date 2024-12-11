@@ -28,13 +28,10 @@ class _LoginViewState extends State<LoginView> {
       );
 
       if (authenticated) {
-        // Ambil data pengguna setelah autentikasi berhasil
-        int userId = 12; // ID pengguna yang relevan
+        int userId = 12;
         final userData = await UserClient.getUserData(userId);
 
-        // Setelah mendapatkan data pengguna, lakukan login otomatis
-        usernameController.text =
-            userData['email']; // Isi email ke field username
+        usernameController.text = userData['email'];
         passwordController.text = '12345678';
 
         await _login();
@@ -53,7 +50,7 @@ class _LoginViewState extends State<LoginView> {
         final response = await UserClient.login(
             usernameController.text, passwordController.text);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text("Login berhasil! Selamat datang."),
             backgroundColor: Colors.green,
           ),
@@ -109,7 +106,6 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
             ),
-            // Teks LOGIN dan deskripsi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: Column(
@@ -134,7 +130,6 @@ class _LoginViewState extends State<LoginView> {
                 ],
               ),
             ),
-            // Bagian form login
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
@@ -143,7 +138,6 @@ class _LoginViewState extends State<LoginView> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        // TextField untuk Username
                         TextFormField(
                           controller: usernameController,
                           decoration: InputDecoration(
@@ -164,7 +158,6 @@ class _LoginViewState extends State<LoginView> {
                           },
                         ),
                         SizedBox(height: 20),
-                        // TextField untuk Password
                         TextFormField(
                           controller: passwordController,
                           obscureText: true,
@@ -186,13 +179,10 @@ class _LoginViewState extends State<LoginView> {
                           },
                         ),
                         SizedBox(height: 20),
-                        // Tautan Lupa Password
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {
-                              // Aksi lupa password
-                            },
+                            onPressed: () {},
                             child: Text(
                               "Lupa password?",
                               style: TextStyle(color: Colors.grey),
@@ -200,7 +190,6 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        // Tombol Login
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -220,7 +209,6 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        // Tautan untuk Sign Up
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -230,7 +218,6 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Navigasi ke halaman Register
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -260,7 +247,6 @@ class _LoginViewState extends State<LoginView> {
   }
 }
 
-// BottomWaveClipper untuk membuat lengkungan di bagian bawah
 class BottomWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

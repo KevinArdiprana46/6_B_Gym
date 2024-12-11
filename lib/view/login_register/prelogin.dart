@@ -60,7 +60,6 @@ class PreLoginView extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 30),
-                  // Tombol Login
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -86,7 +85,6 @@ class PreLoginView extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Tombol Register
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
