@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tubes_pbp_6/client/ReviewClient.dart';
 import 'package:tubes_pbp_6/entity/review.dart';
 
 class ReviewClassPage extends StatefulWidget {
   final int userId;
   final int classId;
+  final int layanan_id;
 
-  const ReviewClassPage({Key? key, required this.userId, required this.classId}) : super(key: key);
+  const ReviewClassPage({Key? key, required this.userId, required this.classId, required this.layanan_id}) : super(key: key);
 
   @override
   _ReviewClassPageState createState() => _ReviewClassPageState();
@@ -15,22 +17,28 @@ class ReviewClassPage extends StatefulWidget {
 class _ReviewClassPageState extends State<ReviewClassPage> {
   int _rating = 0;
   String _reviewText = '';
+  DateTime sekarang = DateTime.now();
+  String? tanggalReview;
 
   // Submit review to the database
+  
   void _submitReview() async {
-    final reviewData = review(
+    tanggalReview = DateFormat('yyyy-MM-dd').format(sekarang);
+    final reviewData = await review(
       userId: widget.userId,
       rating: _rating,
+    layanan_id: widget.layanan_id,
       komentar: _reviewText,
-      tanggalReview: DateTime.now().toIso8601String(),
+      tanggalReview: tanggalReview,
     );
-
+    print('sdf');
+    print( reviewData.komentar);
     try {
       await ReviewClient.addReview(widget.classId, reviewData); // Create new review using static method
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Review submitted successfully')),
       );
-
+       
       // Optionally navigate back or show another success action
       await Future.delayed(const Duration(seconds: 2));
       Navigator.pop(context); // Navigate back to the previous screen after submission

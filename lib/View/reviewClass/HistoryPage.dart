@@ -79,8 +79,9 @@ class _HistoryPageState extends State<HistoryPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReviewClassPage(
-                          userId: userId,  // Kirimkan userId yang sesuai
-                          classId: history.bookingId!,  // Kirimkan classId dari history
+                          userId: history.user_id!,  // Kirimkan userId yang sesuai
+                          classId: history.bookingId!, 
+                          layanan_id: history.layanan_id!, // Kirimkan classId dari history
                         ),
                       ),
                     );
