@@ -26,30 +26,21 @@ class SelectedClassBook extends StatelessWidget {
   Widget build(BuildContext context) {
     final String state = details['state'] ?? 'available';
 
-    // Fungsi untuk memesan kelas
-    // Fungsi untuk memesan kelas, dipanggil saat tombol booking ditekan
     void _bookClass() async {
       try {
-        // Ambil layanan_id dari details
-        final layananId = details['layanan_id']; // Pastikan ini integer
+        final layananId = details['layanan_id'];
 
         if (layananId == null) {
           throw Exception('Layanan ID not found');
         }
 
-        // Panggil fungsi untuk melakukan booking
         await BookingClient.bookClass(layananId);
-
-        // Tampilkan SnackBar jika booking berhasil
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Class successfully booked!')),
         );
-
-        // Kembali ke halaman sebelumnya setelah booking berhasil
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => BookClass()));
       } catch (e) {
-        // Tampilkan pesan error jika terjadi kesalahan
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
         );
@@ -66,20 +57,15 @@ class SelectedClassBook extends StatelessWidget {
           throw Exception('Booking ID not found');
         }
 
-        // Panggil API atau fungsi untuk membatalkan booking dengan booking_id
         final response = await BookingClient.cancelBooking(bookingId);
 
         if (response['success']) {
-          // Tampilkan SnackBar jika berhasil membatalkan
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Booking canceled successfully')),
           );
-
-          // Kembali ke halaman sebelumnya setelah membatalkan
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => BookClass()));
         } else {
-          // Tampilkan error message jika gagal
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content:
@@ -87,7 +73,6 @@ class SelectedClassBook extends StatelessWidget {
           );
         }
       } catch (e) {
-        // Tangani error jika ada masalah dalam proses pembatalan
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e.toString()}")),
         );
@@ -97,28 +82,22 @@ class SelectedClassBook extends StatelessWidget {
     void _completeClass() async {
       try {
         final layananId = details['layanan_id'];
-        final bookingId =
-            await BookingClient.getBookingId(layananId); // Dapatkan booking ID
+        final bookingId = await BookingClient.getBookingId(layananId);
         print("Layanan ID: $layananId");
 
         if (bookingId == null) {
           throw Exception('Booking ID not found');
         }
-
-        // Panggil API atau fungsi untuk menyelesaikan kelas dengan booking_id
         final response = await BookingClient.completeClass(bookingId);
 
         if (response['success']) {
-          // Tampilkan SnackBar jika berhasil menyelesaikan kelas
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Class completed successfully')),
           );
 
-          // Kembali ke halaman sebelumnya setelah kelas selesai
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => BookClass()));
         } else {
-          // Tampilkan error message jika gagal
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text(
@@ -126,7 +105,6 @@ class SelectedClassBook extends StatelessWidget {
           );
         }
       } catch (e) {
-        // Tangani error jika ada masalah dalam proses penyelesaian kelas
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e.toString()}")),
         );
@@ -152,7 +130,6 @@ class SelectedClassBook extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Class image
             Container(
               height: MediaQuery.of(context).size.height * 0.3,
               decoration: BoxDecoration(
@@ -162,7 +139,6 @@ class SelectedClassBook extends StatelessWidget {
                 ),
               ),
             ),
-            // Class details and description
             Container(
               height: MediaQuery.of(context).size.height,
               padding: const EdgeInsets.all(16.0),
@@ -269,61 +245,63 @@ class SelectedClassBook extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Center(
-                    child: (state == 'booked' || state == 'unavailable')
-                        ? ElevatedButton(
-                            onPressed: () {
-                              if (state == 'booked') {
-                                _completeClass(); // Fungsi untuk menyelesaikan kelas
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green, // Warna hijau
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 100,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text(
-                              "Complete Class",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          )
-                        : ElevatedButton(
-                            onPressed: () {
-                              if (state == 'available') {
-                                _bookClass(); // Fungsi untuk booking kelas
-                              } else if (state == 'ordered') {
-                                _cancelBooking(); // Fungsi untuk cancel booking
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: state == 'ordered'
-                                  ? Colors.red
-                                  : const Color.fromARGB(255, 85, 101, 232),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 100,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: Text(
-                              state == 'ordered'
-                                  ? "Cancel Order"
-                                  : "Order Class",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                    child: (state != 'completed' && state != 'unavailable')
+                        ? (state == 'booked')
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  if (state == 'booked') {
+                                    _completeClass();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 100,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Complete Class",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : ElevatedButton(
+                                onPressed: () {
+                                  if (state == 'available') {
+                                    _bookClass();
+                                  } else if (state == 'ordered') {
+                                    _cancelBooking();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: state == 'ordered'
+                                      ? Colors.red
+                                      : const Color.fromARGB(255, 85, 101, 232),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 100,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(
+                                  state == 'ordered'
+                                      ? "Cancel Order"
+                                      : "Order Class",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                        : Container(),
                   ),
                 ],
               ),

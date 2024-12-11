@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:tubes_pbp_6/view/home.dart';
 import 'package:tubes_pbp_6/view/login_register/register.dart';
 import 'package:tubes_pbp_6/client/UserClient.dart';
@@ -13,13 +15,43 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  late final LocalAuthentication auth;
+  bool supportState = false;
+
+  Future<void> _authenticate() async {
+    try {
+      bool authenticated = await auth.authenticate(
+        localizedReason: 'Scan fingerprint to authenticate',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+        ),
+      );
+
+      if (authenticated) {
+        // Ambil data pengguna setelah autentikasi berhasil
+        int userId = 12; // ID pengguna yang relevan
+        final userData = await UserClient.getUserData(userId);
+
+        // Setelah mendapatkan data pengguna, lakukan login otomatis
+        usernameController.text =
+            userData['email']; // Isi email ke field username
+        passwordController.text = '12345678';
+
+        await _login();
+      }
+    } on PlatformException catch (e) {
+      print('Error: $e');
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       try {
-        final response = await UserClient.login(usernameController.text, passwordController.text);
+        final response = await UserClient.login(
+            usernameController.text, passwordController.text);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Login berhasil! Selamat datang."),
@@ -40,6 +72,17 @@ class _LoginViewState extends State<LoginView> {
         );
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    auth = LocalAuthentication();
+    auth.isDeviceSupported().then(
+          (bool isSupported) => setState(() {
+            supportState = isSupported;
+          }),
+        );
   }
 
   @override
@@ -199,6 +242,11 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           ],
                         ),
+                        const Divider(height: 100),
+                        ElevatedButton(
+                          onPressed: _authenticate,
+                          child: Text('Authenticate'),
+                        )
                       ],
                     ),
                   ),

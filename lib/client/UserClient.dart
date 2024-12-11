@@ -5,28 +5,26 @@ import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 import '../entity/user.dart';
 
 class UserClient {
-  static const String baseUrl = '10.0.2.2:8000'; 
+  static const String baseUrl = '10.0.2.2:8000';
   static const String registerEndPoint = '/api/register';
   static const String loginEndPoint = '/api/login';
 
   static Future<Map<String, dynamic>> getUserLogin() async {
- 
     final token = SharedPreferenceHelper.getString('token');
     if (token.isEmpty) {
       throw Exception('Token not found');
     }
-  print("haha");
+    print("haha");
     final response = await http.get(
-     Uri.http(baseUrl, '/api/users/getUserLogin'),
+      Uri.http(baseUrl, '/api/users/getUserLogin'),
       headers: {'Authorization': 'Bearer $token'},
     );
-  //  print("masuk gakk ${response.body}");
-    // print(response.body); 
+    //  print("masuk gakk ${response.body}");
+    // print(response.body);
 
     if (response.statusCode == 200) {
-      final res= json.decode(response.body);
+      final res = json.decode(response.body);
       // print(res['user']);
-
 
       return res;
     } else {
@@ -37,7 +35,7 @@ class UserClient {
   /// Register User
   static Future<Map<String, dynamic>> register(User user) async {
     try {
-      print( Uri.http(baseUrl, registerEndPoint));
+      print(Uri.http(baseUrl, registerEndPoint));
       final response = await http.post(
         Uri.http(baseUrl, registerEndPoint),
         headers: {'Content-Type': 'application/json'},
@@ -58,7 +56,8 @@ class UserClient {
   }
 
   /// Login User
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(
+      String email, String password) async {
     try {
       final response = await http.post(
         Uri.http(baseUrl, loginEndPoint),
@@ -79,6 +78,27 @@ class UserClient {
       }
     } catch (e) {
       return Future.error("Error during login: $e");
+    }
+  }
+
+  static Future<Map<String, dynamic>> getUserData(int userId) async {
+    final String url =
+        'http://10.0.2.2:8000/api/getUserData/$userId'; // Menggunakan userId dalam bentuk string
+
+    try {
+      // Melakukan permintaan GET ke API
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Jika server mengembalikan status OK (200), parse response JSON
+        Map<String, dynamic> userData = json.decode(response.body);
+        return userData;
+      } else {
+        // Jika server gagal merespons dengan status selain 200
+        throw Exception('Gagal mengambil data pengguna');
+      }
+    } catch (e) {
+      throw Exception('Terjadi kesalahan: $e');
     }
   }
 }

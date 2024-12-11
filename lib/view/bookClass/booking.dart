@@ -29,7 +29,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
       length: 5,
       vsync: this,
     );
-    _onDateSelected('09');
+    _onDateSelected('11');
   }
 
   @override

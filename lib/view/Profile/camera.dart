@@ -60,7 +60,6 @@ class _CameraViewState extends State<CameraView> {
 
             final image = await _cameraController.takePicture();
 
-            // Navigate to DisplayPictureScreen and pass the image path
             final result = await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
@@ -68,7 +67,6 @@ class _CameraViewState extends State<CameraView> {
               ),
             );
 
-            // If image path is returned, pop back to EditProfile with result
             if (result != null) {
               Navigator.pop(context, result);
             }
@@ -106,13 +104,13 @@ class DisplayPictureScreen extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.delete, color: Colors.red, size: 40),
                   onPressed: () {
-                    Navigator.pop(context, null); // Discard the photo
+                    Navigator.pop(context, null);
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.check_circle, color: Colors.green, size: 40),
                   onPressed: () {
-                    Navigator.pop(context, imagePath); // Confirm the photo
+                    Navigator.pop(context, imagePath);
                   },
                 ),
               ],
