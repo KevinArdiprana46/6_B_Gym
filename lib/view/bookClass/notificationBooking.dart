@@ -5,12 +5,6 @@ import 'package:tubes_pbp_6/view/bookClass/booking.dart';
 import 'package:tubes_pbp_6/view/bookClass/changeReminder.dart';
 
 class NotificationBooking extends StatefulWidget {
-  // final List<Layanan> bookedClasses;
-
-  // const NotificationBooking({
-  //   Key? key,
-  //   required this.bookedClasses,
-  // }) : super(key: key);
   const NotificationBooking({Key? key}) : super(key: key);
 
   @override
@@ -19,7 +13,7 @@ class NotificationBooking extends StatefulWidget {
 
 class _NotificationBookingState extends State<NotificationBooking> {
   late TextEditingController _searchController;
-  late List<Layanan> _allClasses; // Daftar kelas yang sudah dibooking
+  late List<Layanan> _allClasses;
   late List<Layanan> _filteredClasses = [];
 
   @override
@@ -27,10 +21,8 @@ class _NotificationBookingState extends State<NotificationBooking> {
     super.initState();
     _searchController = TextEditingController();
 
-    // Inisialisasi daftar kelas yang sudah dipesan dari API
     _allClasses = [];
 
-    // Ambil data booking user
     _getBookedClasses();
   }
 
@@ -49,7 +41,6 @@ class _NotificationBookingState extends State<NotificationBooking> {
 
   void _filterClasses(String query) {
     setState(() {
-      // Filter kelas berdasarkan query pencarian
       _filteredClasses = _allClasses
           .where((classInfo) =>
               classInfo.className.toLowerCase().startsWith(query.toLowerCase()))
@@ -87,7 +78,6 @@ class _NotificationBookingState extends State<NotificationBooking> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Search Bar
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -133,17 +123,16 @@ class _NotificationBookingState extends State<NotificationBooking> {
                         final classInfo = _filteredClasses[index];
                         return ClassCard(
                           className: classInfo
-                              .className, // Akses data dari objek Layanan
+                              .className,
                           timeStart:
-                              classInfo.timeStart, // Akses waktu mulai kelas
+                              classInfo.timeStart,
                           timeEnd:
-                              classInfo.timeEnd, // Akses waktu selesai kelas
+                              classInfo.timeEnd,
                           imagePath: classInfo.imagePath,
                           details: classInfo
-                              .toJson(), // Menyertakan objek Layanan lengkap sebagai detail
+                              .toJson(),
                           onReminderChanged: (newTime) {
                             setState(() {
-                              // Jika reminderTime adalah atribut dalam objek Layanan
                               classInfo.reminderTime = newTime;
                             });
                           },
@@ -192,7 +181,7 @@ class ClassCard extends StatelessWidget {
 
     return FutureBuilder<String?>(
       future: BookingClient.getReminderTime(
-          layananId), // Memanggil API untuk mengambil reminder_time
+          layananId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -203,10 +192,8 @@ class ClassCard extends StatelessWidget {
         }
 
         String reminderTime = snapshot.data ?? '';
-        // Parsing string menjadi objek DateTime
         DateTime reminderDateTime = DateTime.parse(reminderTime);
 
-        // Format waktu menjadi jam dan menit
         String formattedTime =
             '${reminderDateTime.hour.toString().padLeft(2, '0')}:${reminderDateTime.minute.toString().padLeft(2, '0')}';
         return GestureDetector(
@@ -219,7 +206,7 @@ class ClassCard extends StatelessWidget {
                   timeStart: timeStart,
                   layananId: layananId,
                   onReminderChanged: (newTime) {
-                    onReminderChanged(newTime); // Panggil fungsi di parent
+                    onReminderChanged(newTime);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Reminder updated to $newTime"),
@@ -259,7 +246,6 @@ class ClassCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Class Info
                 Positioned(
                   left: 16,
                   bottom: 40,
@@ -317,7 +303,6 @@ class ClassCard extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Navigate to ChangeReminder screen
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -327,10 +312,8 @@ class ClassCard extends StatelessWidget {
                                   timeStart: timeStart,
                                   layananId: layananId,
                                   onReminderChanged: (newTime) {
-                                    // Update the reminder time in the dataset
                                     onReminderChanged(newTime);
 
-                                    // Show confirmation message
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(

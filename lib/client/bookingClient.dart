@@ -7,7 +7,6 @@ import '../entity/layanan.dart';
 class BookingClient {
   static const String baseUrl = 'http://10.0.2.2:8000';
 
-  // Endpoint untuk booking
   static const String createBookingEndpoint = '/api/booking';
   static const String getBookingIdEndpoint = '/api/booking';
   static const String getLatestBookingEndpoint = '/api/booking';
@@ -16,7 +15,6 @@ class BookingClient {
   static const String payAndBookEndpoint = '/api/booking/{bookingId}/pay';
   static const String cancelBookingEndpoint = '/api/booking';
 
-  // API untuk mengambil user_id berdasarkan token
   static Future<int?> getUserIdFromToken() async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
@@ -25,7 +23,6 @@ class BookingClient {
         return null;
       }
 
-      // Menggunakan header Bearer token
       final response = await http.get(
         Uri.parse('$baseUrl/getUserId'),
         headers: {
@@ -36,7 +33,6 @@ class BookingClient {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // Pastikan response memiliki 'user_id'
         if (data['user_id'] != null) {
           return data['user_id'];
         } else {
@@ -46,7 +42,6 @@ class BookingClient {
         throw Exception('Failed to fetch user data: ${response.statusCode}');
       }
     } catch (e) {
-      // Tangani exception
       print("Error fetching user ID: $e");
       return null;
     }
@@ -81,7 +76,7 @@ class BookingClient {
     final token = await SharedPreferenceHelper.getString('token');
 
     if (token == null || token.isEmpty) {
-      return null; // Jika token tidak ditemukan
+      return null;
     }
 
     final url = Uri.parse('$baseUrl/api/booking/$layananId');
@@ -94,20 +89,16 @@ class BookingClient {
     );
 
     if (response.statusCode == 200) {
-      // Jika respons berhasil, parsing data booking
       final data = json.decode(response.body);
       final bookingId = data['booking_id'];
       print('Booking found: $data');
     } else {
-      // Jika gagal, tampilkan pesan error
       final data = json.decode(response.body);
       print('Error: ${data['message']}');
     }
   }
 
-  // Membuat booking baru
   static Future<void> bookClass(int layananId) async {
-    // Ambil token dari SharedPreferences
     final token = await SharedPreferenceHelper.getString('token');
     if (token == null || token.isEmpty) {
       throw Exception('Token is missing or empty');
@@ -122,23 +113,20 @@ class BookingClient {
         'Content-Type': 'application/json',
       },
       body: json.encode({
-        'layanan_id': layananId, // Kirimkan layanan_id untuk booking
+        'layanan_id': layananId,
       }),
     );
 
     if (response.statusCode == 201) {
-      // Booking berhasil
       final booking = json.decode(response.body);
       print("Booking berhasil: ${booking['id']}");
     } else {
-      // Jika gagal
       final errorMessage = json.decode(response.body)['message'];
       print("Error: $errorMessage");
       throw Exception('Failed to book class');
     }
   }
 
-  // Ambil booking terbaru
   static Future<Booking> getLatestBooking() async {
     final response =
         await http.get(Uri.parse('$baseUrl$getLatestBookingEndpoint'));
@@ -169,10 +157,8 @@ class BookingClient {
     );
 
     if (response.statusCode == 200) {
-      // Cek apakah response body berisi data yang benar
       List jsonResponse = json.decode(response.body);
       List<Layanan> bookings = jsonResponse.map((data) {
-        // Memastikan kita memetakan data dengan benar ke objek Layanan
         return Layanan.fromJson(data['layanan']);
       }).toList();
       return bookings;
@@ -181,7 +167,6 @@ class BookingClient {
     }
   }
 
-  // Update reminder time for booking
   static Future<http.Response> updateReminderTime(
       int layananId, String reminderTime) async {
     try {
@@ -226,7 +211,7 @@ class BookingClient {
       }
 
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/booking/$layananId/reminder'),
+        Uri.parse('$baseUrl/api/booking/$layananId/reminder'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -234,7 +219,7 @@ class BookingClient {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        return data['reminder_time']; // Mengambil reminder_time dari respons
+        return data['reminder_time'];
       } else {
         print("Error: ${response.body}");
         return null;
@@ -245,7 +230,6 @@ class BookingClient {
     }
   }
 
-  // Pay and book (update booking state)
   static Future<http.Response> payAndBook(int bookingId) async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
@@ -273,7 +257,6 @@ class BookingClient {
     }
   }
 
-  // Cancel booking
   static Future<Map<String, dynamic>> cancelBooking(int bookingId) async {
     final token = await SharedPreferenceHelper.getString('token');
 
@@ -308,11 +291,10 @@ class BookingClient {
         Uri.parse('$baseUrl/api/booking/complete-class/$bookingId'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Gunakan token jika perlu
+          'Authorization': 'Bearer $token',
         },
       );
 
-      // Mengecek status response dari backend
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -340,16 +322,13 @@ class BookingClient {
       );
 
       if (response.statusCode == 200) {
-        // Parsing respons ke dalam list objek Layanan
         List jsonResponse = json.decode(response.body);
         return jsonResponse.map((data) => Layanan.fromJson(data)).toList();
       } else {
-        // Jika respons gagal
         final errorMessage = json.decode(response.body)['message'];
         throw Exception('Failed to fetch ordered services: $errorMessage');
       }
     } catch (e) {
-      // Tangani error saat pengambilan data
       print("Error fetching ordered services: $e");
       throw Exception("Error fetching ordered services: $e");
     }

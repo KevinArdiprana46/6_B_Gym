@@ -28,16 +28,13 @@ class _ChangeReminderState extends State<ChangeReminder> {
   @override
   void initState() {
     super.initState();
-    // Parse the existing reminder time from the dataset
     DateTime reminderDateTime = DateTime.parse(widget.reminderTime);
 
-    // Extract hours and minutes from the DateTime object
     _selectedHour = reminderDateTime.hour;
     _selectedMinute = reminderDateTime.minute;
   }
 
   void _saveReminder() {
-    //final bookingId = BookingClient.getBookingId(classInfo.layananId);
     DateTime oldReminderDateTime = DateTime.parse(widget.reminderTime);
     DateTime newReminderDateTime = DateTime(
       oldReminderDateTime.year,
@@ -47,24 +44,19 @@ class _ChangeReminderState extends State<ChangeReminder> {
       _selectedMinute,
     );
 
-    // Ubah ke format string ISO8601
     String newReminderTime = newReminderDateTime.toIso8601String();
 
-    // Panggil fungsi untuk mengupdate waktu pengingat di API
     BookingClient.updateReminderTime(widget.layananId, newReminderTime)
         .then((_) {
-      // Tampilkan snackbar atau feedback lainnya setelah berhasil
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Reminder updated to $newReminderTime')),
       );
 
-      // Kembali ke halaman sebelumnya
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => NotificationBooking()),
       );
     }).catchError((error) {
-      // Tampilkan error jika terjadi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update reminder')),
       );
@@ -110,7 +102,6 @@ class _ChangeReminderState extends State<ChangeReminder> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Hour Picker
                     Expanded(
                       child: CupertinoPicker(
                         itemExtent: 50,
@@ -144,7 +135,6 @@ class _ChangeReminderState extends State<ChangeReminder> {
                         color: Colors.white,
                       ),
                     ),
-                    // Minute Picker
                     Expanded(
                       child: CupertinoPicker(
                         itemExtent: 50,

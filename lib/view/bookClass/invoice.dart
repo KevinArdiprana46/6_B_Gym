@@ -11,10 +11,10 @@ class InvoicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int fixedPrice = 750000; // Harga tetap
-    const int taxAmount = 7500; // Pajak tetap
-    const int adminFees = 2500; // Admin fee tetap
-    const int totalAmount = fixedPrice + taxAmount + adminFees; // Total pembayaran
+    const int fixedPrice = 750000;
+    const int taxAmount = 7500;
+    const int adminFees = 2500;
+    const int totalAmount = fixedPrice + taxAmount + adminFees;
 
     return Scaffold(
       appBar: AppBar(
@@ -105,27 +105,6 @@ class InvoicePage extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Invoice printed successfully!")),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Print Invoice',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,

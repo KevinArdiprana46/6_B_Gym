@@ -79,7 +79,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     try {
       await BookingClient.bookClass(layananId);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Class successfully booked")),
+        const SnackBar(content: Text("Class successfully booked")),
       );
       await Future.delayed(const Duration(seconds: 2));
 
@@ -98,7 +98,7 @@ class _BookClassState extends State<BookClass> with TickerProviderStateMixin {
     try {
       await BookingClient.cancelBooking(layananId);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Booking successfully cancelled")),
+        const SnackBar(content: Text("Booking successfully cancelled")),
       );
       setState(() {
         _layananFuture =
@@ -563,7 +563,7 @@ class ClassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String state = layanan.state; // Menggunakan atribut dari Layanan
+    final String state = layanan.state;
     final int availableSlots =
         layanan.availableSlots; // Menggunakan atribut dari Layanan
     final bool conflict = _isConflict(

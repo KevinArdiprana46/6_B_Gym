@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
-import '../entity/layanan.dart'; // Entity Layanan
+import '../entity/layanan.dart';
 
 class LayananClient {
   static const String baseUrl = 'http://10.0.2.2:8000';
 
-  // Endpoint untuk layanan
   static const String getLayananEndpoint = '/api/layanan';
   static const String getLayananByIdEndpoint = '/api/layanan/{id}';
   static const String getLayananByDateEndpoint = '/api/layanan/date/{date}';
@@ -14,7 +13,6 @@ class LayananClient {
   static const String updateLayananEndpoint = '/api/layanan/{id}';
   static const String deleteLayananEndpoint = '/api/layanan/{id}';
 
-  // Ambil semua layanan
   static Future<List<Layanan>> getLayanan() async {
     final response = await http.get(Uri.parse(baseUrl + getLayananEndpoint));
 
@@ -26,7 +24,6 @@ class LayananClient {
     }
   }
 
-  // Ambil layanan berdasarkan ID
   static Future<Layanan> getLayananById(int id) async {
     final response = await http.get(Uri.parse(
         baseUrl + getLayananByIdEndpoint.replaceFirst('{id}', '$id')));
@@ -38,17 +35,15 @@ class LayananClient {
     }
   }
 
-  // Get layanan by date
   static Future<List<Layanan>> getLayananByDate(String date) async {
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/layanan/date/$date'),
+        Uri.parse('$baseUrl/api/layanan/date/$date'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
-        // Di sini, kita akan menggunakan data yang sudah memiliki status_booking
         return data.map((json) => Layanan.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load layanan');
@@ -60,14 +55,13 @@ class LayananClient {
 
   static Future<List<Layanan>> getLayananWithBookingStatus(
       String selectedDate) async {
-    // Ambil token dari SharedPreferences
     final token = await SharedPreferenceHelper.getString('token');
     if (token == null || token.isEmpty) {
       throw Exception('Token is missing or empty');
     }
     
     final url = Uri.parse(
-        'http://10.0.2.2:8000/api/layanan/date/$selectedDate/booking-status');
+        '$baseUrl/api/layanan/date/$selectedDate/booking-status');
 
     final response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',

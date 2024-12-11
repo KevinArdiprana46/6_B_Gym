@@ -19,12 +19,9 @@ class UserClient {
       Uri.http(baseUrl, '/api/users/getUserLogin'),
       headers: {'Authorization': 'Bearer $token'},
     );
-    //  print("masuk gakk ${response.body}");
-    // print(response.body);
 
     if (response.statusCode == 200) {
       final res = json.decode(response.body);
-      // print(res['user']);
 
       return res;
     } else {
@@ -32,7 +29,6 @@ class UserClient {
     }
   }
 
-  /// Register User
   static Future<Map<String, dynamic>> register(User user) async {
     try {
       print(Uri.http(baseUrl, registerEndPoint));
@@ -55,7 +51,6 @@ class UserClient {
     }
   }
 
-  /// Login User
   static Future<Map<String, dynamic>> login(
       String email, String password) async {
     try {
@@ -67,7 +62,6 @@ class UserClient {
 
       if (response.statusCode == 200) {
         var a = Loginresponse.fromJson(jsonDecode(response.body));
-        // print(response.body);
         SharedPreferenceHelper.setString('token', a.token!);
         print(a.token);
         return json.decode(response.body);
@@ -83,18 +77,15 @@ class UserClient {
 
   static Future<Map<String, dynamic>> getUserData(int userId) async {
     final String url =
-        'http://10.0.2.2:8000/api/getUserData/$userId'; // Menggunakan userId dalam bentuk string
+        'http://10.0.2.2:8000/api/getUserData/$userId';
 
     try {
-      // Melakukan permintaan GET ke API
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        // Jika server mengembalikan status OK (200), parse response JSON
         Map<String, dynamic> userData = json.decode(response.body);
         return userData;
       } else {
-        // Jika server gagal merespons dengan status selain 200
         throw Exception('Gagal mengambil data pengguna');
       }
     } catch (e) {

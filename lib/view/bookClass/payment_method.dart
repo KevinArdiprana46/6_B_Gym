@@ -10,23 +10,21 @@ class PaymentMethodPage extends StatelessWidget {
 
   Future<void> _createPayment(BuildContext context) async {
     try {
-      // Panggil API untuk membuat pembayaran
       final payment = await PaymentClient.createPayment(
         layananId: layanan.id,
-        status: "paid", // Set status pembayaran
+        status: "paid",
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Payment Successful!")),
       );
 
-      // Navigasi ke halaman invoice setelah pembayaran berhasil
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => InvoicePage(
             layanan: layanan,
-            paymentDetails: payment, // Kirimkan seluruh detail pembayaran
+            paymentDetails: payment,
           ),
         ),
       );
@@ -39,9 +37,9 @@ class PaymentMethodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int fixedPrice = 700000; // Harga tetap
-    const int taxAmount = 7000; // Pajak tetap
-    const int totalAmount = 707000; // Total tetap (harga + pajak)
+    const int fixedPrice = 700000;
+    const int taxAmount = 7000;
+    const int totalAmount = 707000;
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +47,7 @@ class PaymentMethodPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Navigasi kembali ke halaman sebelumnya
+            Navigator.pop(context);
           },
         ),
         backgroundColor: Colors.white,
@@ -70,11 +68,11 @@ class PaymentMethodPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  layanan.className, // Nama layanan
+                  layanan.className,
                   style: const TextStyle(fontSize: 16),
                 ),
                 const Text(
-                  "IDR $fixedPrice", // Harga tetap
+                  "IDR $fixedPrice",
                   style: TextStyle(fontSize: 16),
                 ),
               ],
@@ -84,7 +82,7 @@ class PaymentMethodPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Tax', style: TextStyle(color: Colors.red)),
-                Text('1% IDR $taxAmount', style: TextStyle(color: Colors.red)), // Pajak tetap
+                Text('1% IDR $taxAmount', style: TextStyle(color: Colors.red)),
               ],
             ),
             const Divider(thickness: 1, height: 32),
@@ -96,7 +94,7 @@ class PaymentMethodPage extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  "IDR $totalAmount", // Total tetap
+                  "IDR $totalAmount",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],

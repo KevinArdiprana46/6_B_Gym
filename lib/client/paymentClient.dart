@@ -6,10 +6,8 @@ import 'package:tubes_pbp_6/helper/shared_preference.helper.entity.dart';
 class PaymentClient {
   static const String baseUrl = 'http://10.0.2.2:8000/api';
 
-  /// Fungsi untuk mendapatkan semua pembayaran
   static Future<List<Map<String, dynamic>>> getPayments() async {
     try {
-      // Ambil token dari SharedPreferences (jika memerlukan autentikasi)
       final token = await SharedPreferenceHelper.getString('token');
 
       final response = await http.get(
@@ -38,7 +36,6 @@ class PaymentClient {
     }
   }
 
-  /// Fungsi untuk mendapatkan detail pembayaran berdasarkan ID pembayaran
   static Future<Map<String, dynamic>> getPaymentById(int paymentId) async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
@@ -69,7 +66,6 @@ class PaymentClient {
     }
   }
 
-  /// Fungsi untuk membuat pembayaran baru
   static Future<Payment> createPayment({
     required int layananId,
     required String status,

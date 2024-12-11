@@ -11,7 +11,6 @@ class ProfileClient {
   static const String getProfileEndpoint = '/api/profile/getProfile';
   static const String updateProfileEndpoint = '/api/profile/updateProfile';
 
-  // Get Profile
   static Future<http.Response> getProfile() async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
@@ -35,7 +34,6 @@ class ProfileClient {
     }
   }
 
-//update profile + foto profile
   static Future<http.Response> update({required Profile profile}) async {
     try {
       final token = await SharedPreferenceHelper.getString('token');
